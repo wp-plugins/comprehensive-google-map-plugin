@@ -1,0 +1,26 @@
+<h2>Comprehensive Google Map by Alexander Zagniotov</h2>
+<div class="tools-tabs">
+	<ul class="tools-tabs-nav hide-if-no-js">
+		<li class="">
+			<a title="Documentation" href="#documentation">Documentation</a>
+		</li>
+		<li class="">
+			<a title="Contribute" href="#contribute">Contribute</a>
+		</li>
+	</ul>
+	<div class="tools-tab-body" id="googleanalytics" style="">
+		<div class="tools-tab-content documentation">
+			<h3 class="hide-if-js">Documentation</h3>
+			DOCUMENTATION_TOKEN
+		</div>
+		<div><span style="color: gray; font-size: 9px;">Disclaimer: The content text used in the plugin documentation and tooltips, has been adopted from Google Map API reference pages.</span></div>
+	</div>
+	<div class="tools-tab-body" id="contribute" style="">
+		<div class="tools-tab-content">
+			<h3 class="hide-if-js">Contribute</h3>
+			<h4>Supporting This Plugin</h4>
+			<p>If you’ve found some value in the features which Comprehensive Google Map provides for enhancing your site, and you'd like to say thanks, a direct contribution toward the development effort via PayPal is always welcome. Alternatively, you can write on your own blog about the plugin, thanks!</p>
+			<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8"><img src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online." /></a>
+		</div>
+	</div>
+</div>
