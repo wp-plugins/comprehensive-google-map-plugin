@@ -219,9 +219,10 @@ if ( !function_exists('cgmp_create_html_input') ):
 		}
 		$slider = "";
 		if ($elem_type == "range") {
-			$slider = "<div id='".$role."' class='slider'></div>";
+				$slider = "<div id='".$role."' class='slider'></div>";
+				$class .= " slider-output";
 		}
-		return $slider."<input role='".$role."' {$steps} class='".$class." shortcodeitem' id='".$id."' name='".$name."' type='".$elem_type."' value='".$value."' style='".$style."' />";
+		return $slider."<input role='".$role."' {$steps} class='".$class." shortcodeitem' id='".$id."' name='".$name."' value='".$value."' style='".$style."' />";
 	}
 endif;
 

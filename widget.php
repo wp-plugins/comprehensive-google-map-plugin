@@ -163,7 +163,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$v = "width";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Width (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $width, "class" => "widefat alex", "style" => "")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $width, "class" => "widefat", "style" => "")); 
 
 
 		$v = "height";
