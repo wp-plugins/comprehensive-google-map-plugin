@@ -9,12 +9,6 @@
 					<td>INPUT_HEIGHT</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="Latitude in degrees. Part of geographic coordinate, used together with longitude">[?]</a>&nbsp;LABEL_LATITUDE</td>
-					<td>INPUT_LATITUDE</td>
-					<td><a href="javascript:void(0);" title="Longitude in degrees. Part of geographic coordinate, used together with latitude">[?]</a>&nbsp;LABEL_LONGITUDE</td>
-					<td>INPUT_LONGITUDE</td>
-				</tr>
-				<tr>
 					<td><a href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view.">[?]</a>&nbsp;LABEL_ZOOM</td>
 					<td>INPUT_ZOOM</td>
 					<td><a href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
@@ -25,39 +19,67 @@
 	</fieldset>
 
 	<fieldset>
+		<legend>LEGEND_ADDRESS</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td><a href="javascript:void(0);" title="Latitude in degrees. Part of geographic coordinate, used together with longitude">[?]</a>&nbsp;LABEL_LATITUDE</td>
+					<td>INPUT_LATITUDE</td>
+					<td><a href="javascript:void(0);" title="Longitude in degrees. Part of geographic coordinate, used together with latitude">[?]</a>&nbsp;LABEL_LONGITUDE</td>
+					<td>INPUT_LONGITUDE</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="text-align: center;" height="35px">
+					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
+				</tr>
+				<tr>	
+					<td><a href="javascript:void(0);" title="Destination address string. Combined from street number, city (possibly post or zip code) and a country name. Please note: address *supersedes* latitude/longitude settings">[?]</a>&nbsp;LABEL_ADDRESSCONTENT</td>
+					<td colspan="3">INPUT_ADDRESSCONTENT</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="text-align: center;" height="35px">
+					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
+				</tr>
+				<tr>	
+					<td><a href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify URL here, thats starts with http(s). Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
+					<td colspan="3">INPUT_KML</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</fieldset>
+
+
+	<fieldset>
 		<legend>LEGEND_MARKER</legend>
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
 				<tr>
-					<td><a href="javascript:void(0);" title="Show/hide map location marker">[?]</a>&nbsp;LABEL_SHOWMARKER</td>
+					<td><a href="javascript:void(0);" title="Show/hide primary location marker on the map">[?]</a>&nbsp;LABEL_SHOWMARKER</td>
 					<td>SELECT_SHOWMARKER</td>
-					<td><a href="javascript:void(0);" title="Determines what dynamic movement marker exhibits when displayed on the map">[?]</a>&nbsp;LABEL_ANIMATION</td>
+					<td><a href="javascript:void(0);" title="Determines what dynamic movement primary marker exhibits when displayed on the map">[?]</a>&nbsp;LABEL_ANIMATION</td>
 					<td>SELECT_ANIMATION</td>
 				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>LEGEND_INFOBUBBLE</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="The info bubble content text">[?]</a>&nbsp;LABEL_INFOBUBBLECONTENT</td>
-					<td colspan="3">INPUT_INFOBUBBLECONTENT</td>
+				<tr>
+					<td colspan="4">&nbsp;</td>
 				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-
-
-	<fieldset>
-		<legend>LEGEND_ADDRESS</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="Destination address string. Combined from street number, city (possibly post or zip code) and a country name. Please note: address *supersedes* latitude/longitude settings">[?]</a>&nbsp;LABEL_ADDRESSCONTENT</td>
-					<td colspan="3">INPUT_ADDRESSCONTENT</td>
+				<tr>
+					<td>
+						<a href="javascript:void(0);" title="Apart from specifying primary marker for the map, you can specify additional markers. You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content">[?]</a>&nbsp;LABEL_ADDMARKERINPUT
+					</td>
+					<td colspan="2">
+						INPUT_ADDMARKERINPUT
+					</td>
+					<td>
+						BUTTON_ADDMARKER
+					</td>
+				</tr>
+				<tr>
+					<!-- <td>&nbsp;</td> -->
+					<td colspan="4">
+						LIST_ADDMARKERLIST
+						HIDDEN_ADDMARKERLISTHIDDEN
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -73,6 +95,13 @@
 					<td><a href="javascript:void(0);" title="A layer showing vehicle traffic as overlay on a Google Map">[?]</a>&nbsp;LABEL_SHOWTRAFFIC</td>
 					<td>SELECT_SHOWTRAFFIC</td>
 				</tr>
+				<tr>
+					<td><a href="javascript:void(0);" title="Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Maps">[?]</a>&nbsp;LABEL_SHOWPANORAMIO</td>
+					<td>SELECT_SHOWPANORAMIO</td>
+					<td><p style="width: 90px">&nbsp;</p></td>
+					<td><p style="width: 90px">&nbsp;</p></td>
+				</tr>
+
 			</tbody>
 		</table>
 	</fieldset>
@@ -104,15 +133,4 @@
 		</table>
 	</fieldset>
 
-	<fieldset>
-		<legend>LEGEND_KML</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
-					<td colspan="3">INPUT_KML</td>
-				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-    <div align="right"><span style="font-size: 9px;"><a href="DOC_URL">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8">Support</a></span></div>
+    <div align="right">FOOTER_NOTICES</div>

@@ -28,38 +28,39 @@ endif;
 if ( !function_exists('cgmp_begin_map_init') ):
 	function cgmp_begin_map_init($id, $lat, $long, $zoom, $type, $controlOpts) {
 		$result =  '<script type="text/javascript">'.PHP_EOL;
-		$result .= 'var initloc = new google.maps.LatLng('.$lat.', '.$long.');'.PHP_EOL;
-		$result .= 'var myOptions = {'.PHP_EOL;
-		$result .= 'zoom: '.$zoom.','.PHP_EOL;
-		$result .= 'mapTypeId: google.maps.MapTypeId.'.strtoupper(trim($type)).','.PHP_EOL;
-		$result .= 'mapTypeControl: '.$controlOpts['m_aptypecontrol'].','.PHP_EOL; //The selectable map types, eg: terrain, satellite
-    	$result .= 'mapTypeControlOptions: {'.PHP_EOL;
-        $result .= 'style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,'.PHP_EOL;
-    	$result .= '},'.PHP_EOL;
-    	$result .= 'panControl: '.$controlOpts['pancontrol'].','.PHP_EOL; //The round steering wheel with little hand in the middle`
-    	$result .= 'zoomControl: '.$controlOpts['z_oomcontrol'].','.PHP_EOL;
-    	$result .= 'scaleControl: '.$controlOpts['scalecontrol'].','.PHP_EOL;
-    	$result .= 'streetViewControl: '.$controlOpts['streetviewcontrol'].','.PHP_EOL; //The little yellow/orange dude that you can drag
-		$result .= 'center: initloc'.PHP_EOL;
-		$result .= '};'.PHP_EOL.PHP_EOL;
-		$result .= 'var map_'.$id.' = new google.maps.Map(';
-		$result .= 'document.getElementById("'.$id.'"), myOptions);'.PHP_EOL;
+		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
+		$result .= '    var orc = new jQuery.GoogleMapOrchestrator(map_'.$id.', {initLocation: "'.$lat.','.$long.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
+
+		$result .= '    orc.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQuery.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['pancontrol'].', jQuery.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['z_oomcontrol'].', jQuery.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['scalecontrol'].', jQuery.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['streetviewcontrol'].', jQuery.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
+
 		return $result;
 	}
 endif;
 
 
 if ( !function_exists('cgmp_draw_map_marker') ):
-	function cgmp_draw_map_marker($id, $showmarker, $animation) {
-		$result = ''.PHP_EOL.PHP_EOL;
-		$result .= 'var marker_' . $id . ' = null;'.PHP_EOL;
-		$result .= 'marker_' . $id . ' = new google.maps.Marker({'.PHP_EOL;
-		$result .= 'map: map_' . $id . ','.PHP_EOL;
-		$result .= 'visible: ' . $showmarker. ','.PHP_EOL;
-		$result .= 'position: map_' . $id . '.getCenter()'.','.PHP_EOL;
-		$result .= 'animation: google.maps.Animation.'.strtoupper(trim($animation)).''.PHP_EOL;
-		$result .= '});'.PHP_EOL;
+	function cgmp_draw_map_marker($id, $showmarker, $animation, $address, $extramarkers) {
 		
+		$result = "";
+
+		if (isset($address) && $address != '') {
+			$result .= '    orc.updateInitLocationMarker("'.$address.'", jQuery.GoogleMapOrchestrator.AnimationType.'.$animation.');'.PHP_EOL;
+		} else if ($animation == "BOUNCE") {
+			$result .= '    orc.updateInitLocationMarker(orc.getOption("initLocation"), jQuery.GoogleMapOrchestrator.AnimationType.'.$animation.');'.PHP_EOL;
+		}
+
+		if (isset($showmarker) && strtolower(trim($showmarker)) == 'true') {
+			$result .= '    orc.buildInitLocationMarker();'.PHP_EOL;
+		}
+
+		if (isset($extramarkers) && $extramarkers != '') {
+			$result .= '    orc.buildAddressMarkers("'.$extramarkers.'");'.PHP_EOL;
+		}
+
 		return $result;
 	}
 endif;
@@ -124,8 +125,7 @@ if ( !function_exists('cgmp_draw_map_bikepath') ):
 	function cgmp_draw_map_bikepath($id, $showbikepath) {
 		$result = '';
 		if (isset($showbikepath) && strtolower(trim($showbikepath)) == 'true') {
-			$result = 'var bikeLayer = new google.maps.BicyclingLayer();'.PHP_EOL;
-			$result .= 'bikeLayer.setMap(map_' . $id . ');'.PHP_EOL;
+			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -135,8 +135,7 @@ if ( !function_exists('cgmp_draw_map_traffic') ):
 	function cgmp_draw_map_traffic($id, $showtraffic) {
 		$result = '';
 		if (isset($showtraffic) && strtolower(trim($showtraffic)) == 'true') {
-			$result = 'var trafficLayer = new google.maps.TrafficLayer();'.PHP_EOL;
-			$result .= 'trafficLayer.setMap(map_' . $id . ');'.PHP_EOL;
+			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -146,14 +145,25 @@ endif;
 if ( !function_exists('cgmp_draw_kml') ):
 	function cgmp_draw_kml($id, $kml) {
 		$result = '';
-		if (isset($kml) && strtolower(trim(strpos($kml, "http"))) !== false) {
+		if (isset($kml) && $kml != "" && strtolower(trim(strpos($kml, "http"))) !== false) {
 			$kml = str_replace("&#038;", "&", $kml);
-			$result = 'var kmlLayer = new google.maps.KmlLayer("'.$kml.'");'.PHP_EOL;
-			$result .= 'kmlLayer.setMap(map_' . $id . ');'.PHP_EOL;
+			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
 		}
 		return $result;
 	}
 endif;
+
+
+if ( !function_exists('cgmp_draw_panoramio') ):
+	function cgmp_draw_panoramio($id, $showpanoramio) {
+		$result = '';
+		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
+			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO);'.PHP_EOL;
+		}
+		return $result;
+	}
+endif;
+
 
 
 if ( !function_exists('cgmp_end_map_init') ):
@@ -225,6 +235,40 @@ if ( !function_exists('cgmp_create_html_input') ):
 		return $slider."<input role='".$role."' {$steps} class='".$class." shortcodeitem' id='".$id."' name='".$name."' value='".$value."' style='".$style."' />";
 	}
 endif;
+
+if ( !function_exists('cgmp_create_html_hidden') ):
+		function cgmp_create_html_hidden($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$value = $attr['value'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+			return "<input class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' type='hidden' />";
+	}
+endif;
+
+
+if ( !function_exists('cgmp_create_html_button') ):
+		function cgmp_create_html_button($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$value = $attr['value'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+			return "<input class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' type='button' />";
+	}
+endif;
+
+if ( !function_exists('cgmp_create_html_list') ):
+		function cgmp_create_html_list($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+			return "<ul class='".$class."' id='".$id."' name='".$name."' style='".$style."'></ul>";
+	}
+endif;
+
 
 
 if ( !function_exists('cgmp_create_html_label') ):

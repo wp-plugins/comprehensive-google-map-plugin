@@ -23,6 +23,7 @@ if ( !function_exists('cgmp_google_map_admin_add_style') ):
 		
 			wp_enqueue_style('jquery-ui-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css', false, false, 'screen');
 			wp_enqueue_style('comprehensive-google-map-style', CGMP_PLUGIN_CSS . '/style.css', false, CGMP_VERSION, "screen");
+			wp_enqueue_style('token-input-style', CGMP_PLUGIN_CSS . '/token-input.css', false, CGMP_VERSION, "screen");
 	}
 endif;
 
@@ -32,18 +33,21 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
 			wp_enqueue_script('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js', array('jquery'), '1.8.6');	
 			wp_enqueue_script('cgmp-jquery-tools-tabs', CGMP_PLUGIN_JS .'/jquery.tools.tabs.min.js', array('jquery'), '1.2.5', true);
 			wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5', true);
+			wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/jquery.tokeninput.js', array('jquery'), CGMP_VERSION, true);
 			wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/comprehensive-google-map-plugin.js', array('jquery'), CGMP_VERSION, true);
 	}
 endif;
-
 
 if ( !function_exists('cgmp_google_mp_head_scripts') ):
 	function cgmp_google_map_head_scripts() {	
 			$css = CGMP_PLUGIN_CSS;
 			$api = CGMP_GOOGLE_API_URL;
+			$js = CGMP_PLUGIN_JS;
+			$version = CGMP_VERSION;
 echo <<<HTML
 		<link rel='stylesheet' id='google-map-override-css'  href='{$css}/override.css' type='text/css' media='screen' />
 		<script type='text/javascript' src='{$api}'></script>
+		<script type='text/javascript' src='{$js}/plugin-framework.js?ver={$version}'></script>
 HTML;
 	}
 endif;

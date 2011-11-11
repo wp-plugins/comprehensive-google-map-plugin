@@ -42,12 +42,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         padding-left: 10px;
         padding-bottom: 15px;
         margin-bottom: 15px;
-        background-color: #E6E6E6;
-		background-image: -moz-linear-gradient(center top , #F6F6F6, #E6E6E6);
+        background-color: #F1F1F1;
+		background-image: -moz-linear-gradient(center top , #F8F8F8, #F1F1F1);
 }
 
 .widget-google-map-container table {
-		width: 460px !important;
+		width: 480px !important;
 }
 
 #google_map_shortcode_builder table td ,
@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 #google_map_shortcode_builder fieldset table {
-		width: 660px !important;
+		width: 602px !important;
 }
 
 #google_map_shortcode_builder table td {
@@ -158,20 +158,32 @@ ul.tools-tabs-nav {
 }
 
 input.slider-output {
-    width: 28px;
+    width: 42px;
     border: 1px solid #999999;
 }
 
+span.italic {
+    font-style: normal;
+    color: green;
+}
+
+span.sep {
+    font-style: normal;
+    color: red;
+    font-weight: normal;
+    font-size: 16px;
+}
+
 .widget-google-map-container div.slider {
-    margin-left: 7px;
+    margin-left: 5px;
     margin-top: 7px;
-    width: 55px;
+    width: 50px;
 }
 
 #google_map_shortcode_builder div.slider {
     margin-left: 7px;
     margin-top: 7px;
-    width: 100px;
+    width: 75px;
 }
 
 a.ui-slider-handle {

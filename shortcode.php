@@ -34,36 +34,62 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 		'infobubblecontent' => '',
 		'animation' => 'DROP',
 		'm_aptypecontrol' => 'true',
+		'maptypecontrol' => 'true',
 		'pancontrol' => 'true',
 		'z_oomcontrol' => 'true',
+		'zoomcontrol' => 'true',
 		'scalecontrol' => 'true',
 		'streetviewcontrol' => 'true',
 		'addresscontent' => '',
 		'showbike' => 'false',
 		'showtraffic' => 'false',
+		'showpanoramio' => 'false',
+		'addmarkerlist' => '',
 		'kml' => ''
 	), $attr));
 	
-
 	$id = md5(time().' '.rand()); 
 
+
 	$controlOpts = array();
-	$controlOpts['m_aptypecontrol'] = $m_aptypecontrol;
+
+	if ($m_aptypecontrol == "true" && $maptypecontrol == "false") {
+			$controlOpts['m_aptypecontrol'] = "false";
+
+	} else 	if ($m_aptypecontrol == "false" && $maptypecontrol == "true") {
+			$controlOpts['m_aptypecontrol'] = "false";
+
+	} else {
+			$controlOpts['m_aptypecontrol'] = "true";
+	} 
+
 	$controlOpts['pancontrol'] = $pancontrol;
-	$controlOpts['z_oomcontrol'] = $z_oomcontrol;
+	
+	if ($z_oomcontrol == "true" && $zoomcontrol == "false") {
+			$controlOpts['z_oomcontrol'] = "false";
+
+	} else 	if ($z_oomcontrol == "false" && $zoomcontrol == "true") {
+			$controlOpts['z_oomcontrol'] = "false";
+
+	} else {
+			$controlOpts['z_oomcontrol'] = "true";
+	} 
+
+	
 	$controlOpts['scalecontrol'] = $scalecontrol;
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
 
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height);
 	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $controlOpts);
-	$result .= cgmp_draw_map_marker($id, $showmarker, $animation);
-	$result .= cgmp_draw_marker_infobubble($id, $infobubblecontent);
-	$result .= cgmp_draw_map_address($id, $addresscontent);
+	$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
+	$result .= cgmp_draw_panoramio($id, $showpanoramio);
 	$result .= cgmp_draw_kml($id, $kml);
 	$result .= cgmp_end_map_init();
+
+
 	return $result;
 }
 endif;

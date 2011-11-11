@@ -1,10 +1,10 @@
 === Comprehensive Google Map Plugin ===
 Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
-Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes, cross browser, google maps v3, google
+Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes, cross browser, google maps v3, google, multiple markers
 Requires at least: 3.0.1
 Tested up to: 3.2.1
-Stable tag: 1.0.1
+Stable tag: 2.0
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -12,14 +12,15 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
-* Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options.
+* Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers
 * Help tooltips enabled, which makes your configuration hassle free
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
-* Shortcode builder available, which integrated with post/page editor. In other words, you dont need
-manually to type the shortcode in the editor.
-* The plugin auto generates unique ID for each map. In other words - unlimited maps! You dont need to specify and maintain unique map
+* Short-code builder available, which integrated with post/page editor. In other words, you do not need
+manually to type the short-code in the editor (But you can if you want to).
+* The plugin auto generates unique ID for each map. In other words - unlimited maps! You do not need to specify and maintain unique map
 IDs explicitly when dealing with multiple maps on the same post/page.
-* The plugin offers extensive configuration options for Google map marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more!
+* The plugin offers extensive configuration options for Google map marker, controls, size, KML files, location by latitude/longitude, location by address, info windows, traffic/bike lanes and more!
+* Support for custom overlays: Panoramio photos on the map (http://www.panoramio.com/), bicycle lanes and traffic info.
 * Widget enabled.
 * Cross browser compatible
 * Loads geographic markup from a KML, KMZ or GeoRSS file hosted remotely.
@@ -41,7 +42,11 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 
 == Frequently Asked Questions ==
 
-To be added later
+1. Where can I find send to editor button?
+- Send to editor button is located at the bottom of the short code builder
+
+2. Where can I find the short code builder?
+- You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
 
 == Screenshots ==
 
@@ -52,15 +57,23 @@ To be added later
 5. Send shortcode to editor button
 6. Generated short code in the editor
 7. Sliders
+8. Facebook style interactive interface for managing multiple map markers
 
 == Changelog ==
 
-= 1.0.1 =
-* Enhancement: removed from slider input fields obsolete attribute 'type'
+= 2.0 =
+* Bug: Latitude range was starting from zero instead of from -90
+* Enhancement: latitude/longitude now accept decimal values
+* Enhancement: Added management section for multiple map markers (Facebook style tokens)
+* Enhancement: Added support for Panoramio images (http://www.panoramio.com/)
+* Enhancement: User interface flow revisited
+* Enhancement: Documentation updated
+* Enhancement: When clicking on the map once, the map view is centered back to the original location. Useful when user dragged the map view away   
+* Change: Disabled auto-panning when marker is clicked 
 
 = 1.0 =
 * Initial release
 
 == Upgrade Notice ==
 
-Remove the old version of the plugin and install the most recent one. No additional configuration is required.
+N/A

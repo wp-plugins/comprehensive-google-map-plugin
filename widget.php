@@ -27,7 +27,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 	function ComprehensiveGoogleMap_Widget() {
 		$widget_ops = array('classname' => 'comprehensivegooglemap_widget', 'description' => __( $this->maindesc, 'kalisto') );
-		$cops = array('width' => 480);
+		$cops = array('width' => 500);
 		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
 
 		if ( is_active_widget(false, false, $this->id_base) ){
@@ -50,17 +50,19 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$width = empty($instance['width']) ? 250 : $instance['width'];
 		$height = empty($instance['height']) ? 250 : $instance['height'];
-		$zoom = empty($instance['zoom']) ? 5 : $instance['zoom'];
-		$latitude = empty($instance['latitude']) ? 40 : $instance['latitude'];
-		$longitude = empty($instance['longitude']) ? -73 : $instance['longitude'];
+		$zoom = empty($instance['zoom']) ? 10 : $instance['zoom'];
+		$latitude = empty($instance['latitude']) ? '' : $instance['latitude'];
+		$longitude = empty($instance['longitude']) ? '' : $instance['longitude'];
 		$maptype = empty($instance['maptype']) ? 'ROADMAP' : $instance['maptype'];
 		$showmarker = empty($instance['showmarker']) ? "true" : $instance['showmarker'];
 		$animation = empty($instance['animation']) ? 'DROP' : $instance['animation'];
 		$infobubblecontent = empty($instance['infobubblecontent']) ? '' : $instance['infobubblecontent'];
 		$addresscontent = empty($instance['addresscontent']) ? '' : $instance['addresscontent'];
-		$showbike = empty($instance['showbike']) ? '' : $instance['showbike'];
-		$showtraffic = empty($instance['showtraffic']) ? '' : $instance['showtraffic'];
+		$showbike = empty($instance['showbike']) ? 'false' : $instance['showbike'];
+		$showtraffic = empty($instance['showtraffic']) ? 'false' : $instance['showtraffic'];
+		$showpanoramio = empty($instance['showpanoramio']) ? 'false' : $instance['showpanoramio'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
+		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
 
 
 		$controlOpts = array();
@@ -81,11 +83,10 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height);
 		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $controlOpts);
-		$result .= cgmp_draw_map_marker($id, $showmarker, $animation);
-		$result .= cgmp_draw_marker_infobubble($id, $infobubblecontent);
-		$result .= cgmp_draw_map_address($id, $addresscontent);
-		$result .= cgmp_draw_map_bikepath($id, $showbikepath);
+		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers);
+		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
+		$result .= cgmp_draw_panoramio($id, $showpanoramio);
 		$result .= cgmp_draw_kml($id, $kml);
 		$result .= cgmp_end_map_init();
 		echo $result;
@@ -96,7 +97,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-         
+
+
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['width'] = strip_tags($new_instance['width']);
 		$instance['height'] = strip_tags($new_instance['height']);
@@ -116,6 +118,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['showbike'] = strip_tags($new_instance['showbike']);
 		$instance['showtraffic'] = strip_tags($new_instance['showtraffic']);
 		$instance['kml'] = strip_tags($new_instance['kml']);
+		$instance['showpanoramio'] = strip_tags($new_instance['showpanoramio']);
+		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
 
 
 		return $instance;
@@ -130,9 +134,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$title = isset($instance['title']) ? esc_attr($instance['title']) : 'Google Map';
 		$width = isset($instance['width']) ? esc_attr($instance['width']) : '250';
 		$height = isset($instance['height']) ? esc_attr($instance['height']) : '250';
-		$zoom = isset($instance['zoom']) ? esc_attr($instance['zoom']) : '5';
-		$latitude = isset($instance['latitude']) ? esc_attr($instance['latitude']) : '40';
-		$longitude = isset($instance['longitude']) ? esc_attr($instance['longitude']) : '-73';
+		$zoom = isset($instance['zoom']) ? esc_attr($instance['zoom']) : '10';
+		$latitude = isset($instance['latitude']) ? esc_attr($instance['latitude']) : '';
+		$longitude = isset($instance['longitude']) ? esc_attr($instance['longitude']) : '';
         $maptype = isset($instance['maptype']) ? esc_attr($instance['maptype']) : 'ROADMAP';
 		$showmarker = isset($instance['showmarker']) ? esc_attr($instance['showmarker']) : "true";
 		$animation = isset($instance['animation']) ? esc_attr($instance['animation']) : 'DROP';
@@ -147,7 +151,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$streetviewcontrol = !empty($instance['streetviewcontrol']) ? esc_attr($instance['streetviewcontrol']) : 'true';
 		$showbike = !empty($instance['showbike']) ? esc_attr($instance['showbike']) : 'false';
 		$showtraffic = !empty($instance['showtraffic']) ? esc_attr($instance['showtraffic']) : 'false';
+		$showpanoramio = !empty($instance['showpanoramio']) ? esc_attr($instance['showpanoramio']) : 'false';
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
+		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
@@ -188,7 +194,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 
 		$v = "showmarker";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Marker")); 
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Primary Marker")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showmarker, "options" => $bools)); 
 
 		
@@ -222,12 +228,12 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$v = "infobubblecontent";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Content Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $infobubblecontent, "class" => "widefat", "style" => "width: 100% !important;"));
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $infobubblecontent, "class" => "widefat", "style" => "width: 90% !important;"));
 
 
 		$v = "addresscontent";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Address Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $addresscontent, "class" => "widefat", "style" => "width: 100% !important;"));
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $addresscontent, "class" => "widefat", "style" => "width: 90% !important;"));
 
 
 		$v = "showbike";
@@ -238,10 +244,37 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Traffic Info")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showtraffic, "options" => $bools)); 
 
-		$v = "kml";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "URL")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $kml, "class" => "widefat", "style" => "width: 100% !important;"));
+		$v = "showpanoramio";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Panoramio")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showpanoramio, "options" => $bools)); 
 
+
+		$v = "kml";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "KML/GeoRSS")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $kml, "class" => "widefat", "style" => "width: 90% !important;"));
+
+		$m = "addmarker";
+		$settings[] = array("type" => "button", "token" => $m, "attr"=> array("id" => $this->get_field_id($m), "name" => $this->get_field_name($m), "value" => "Add Marker", "class" => "button-primary add-additonal-location", "style" => ""));
+
+
+		$v = $m."input";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Extra Markers")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => '', "class" => "widefat", "style" => "width: 90% !important;"));
+
+		$v = $m."list";
+		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "token-input-list", "style" => ""));
+
+		$v = $v."hidden";
+		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "", "value" => $hiddenmarkers, "style" => ""));
+
+
+		/*
+			$id = $attr['id'];
+		$name = $attr['name'];
+		$value = $attr['value'];
+		$class = $attr['class'];
+		$style = $attr['style'];
+		*/
 
 		$template_values = cgmp_build_template_values($settings);
 

@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more. 
-Version: 1.0.1
+Version: 2.0
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -29,8 +29,8 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?sensor=false');
-define('CGMP_VERSION', '1.0.1');
+define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
+define('CGMP_VERSION', '2.0');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
 define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
@@ -41,12 +41,12 @@ define('CGMP_PLUGIN_HTML', CGMP_PLUGIN_DIR . '/assets/html');
 
 define('CGMP_FIELDSETNAME_WIDGETTITLE', 'Widget Title');
 define('CGMP_FIELDSETNAME_BASICSETTINGS', 'Basic Settings');
-define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Marker Configuration');
+define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Map Markers');
 define('CGMP_FIELDSETNAME_MARKER_INFOBUBBLE', 'Marker Info Bubble Configuration');
-define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Destination Address Information');
-define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Bike Paths and Traffic Information');
-define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Control Handle Configuration');
-define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS Configuration');
+define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Map Primary Location');
+define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Custom Overlays');
+define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Map Controls');
+define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS');
 
 $global_fieldset_names = array();
 $global_fieldset_names["LEGEND_BASIC_SETTINGS"] = CGMP_FIELDSETNAME_BASICSETTINGS;
@@ -60,9 +60,9 @@ $global_fieldset_names["LEGEND_KML"] = CGMP_FIELDSETNAME_KML;
 
 $doc_url = get_option('siteurl')."/wp-admin/admin.php?page=menu.php";
 $global_fieldset_names["DOC_URL"] = $doc_url;
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
+
+$notices = '<span style="font-size: 9px;"><a href="'.$doc_url.'">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8">Support</a></span>';
+$global_fieldset_names["FOOTER_NOTICES"] = $notices;
 
 require_once (CGMP_PLUGIN_DIR . '/functions.php');
 require_once (CGMP_PLUGIN_DIR . '/widget.php');

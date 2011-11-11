@@ -41,6 +41,12 @@ function buildShortcode(id) {
 				}
 
 				if (role != null && role != "" && val != null && val != "") {
+
+					if (role.indexOf("_") > 0) {
+						role = role.replace(/_/g,"");
+					} if (role.indexOf("hidden") > 0) {
+						role = role.replace(/hidden/g,"");
+					}		
 					code += role + "=" + "\"" + val + "\" ";
 				}
 	});
@@ -72,27 +78,129 @@ function configureSlider(min, max, step, elem) {
 		change: function(event, ui) {
 			var sibling = jQuery(this).siblings("input[role=" + elem + "]");
 			var siblingId = jQuery(sibling).attr("id");
-			jQuery("input#" + siblingId).attr("value", ui.value);
+			var value =  ui.value;
+			if (!isNumber(step)) {
+				value =  ui.value.toFixed(2);
+			}
+			jQuery("input#" + siblingId).attr("value", value);
 		},
 
 	 	slide: function(event, ui) {
 			var sibling = jQuery(this).siblings("input[role=" + elem + "]");
 			var siblingId = jQuery(sibling).attr("id");
-			jQuery("input#" + siblingId).attr("value", ui.value);
+			var value =  ui.value;
+			if (!isNumber(step)) {
+				value =  ui.value.toFixed(2);
+			}
+			jQuery("input#" + siblingId).attr("value", value);
 	}});
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 function initSliders() {
 	configureSlider(0, 20, 1, "zoom");
-   	configureSlider(0, 90, 1, "latitude");
-	configureSlider(-180, 180, 1, "longitude");
+   	configureSlider(-90, 90, 0.01, "latitude");
+	configureSlider(-180, 180, 0.01, "longitude");
 	configureSlider(60, 990, 5, "width");
 	configureSlider(60, 990, 5, "height");
 }
 
+function addMarker(id) {
+	alert(id);
+}
+
+jQuery.TokenListHolder = function (classPath) {
+    jQuery.extend(this, jQuery.TokenListHolder.defaultOptions);
+
+	var lists = [];
+	jQuery.map(jQuery(classPath), function(element) {
+		var id = jQuery(element).attr("id");
+		lists.push({id : id, obj: jQuery(element).tokenInput({holderId: id})});
+	});
+
+	this.printLists = function() {
+		console.log(lists);
+	}
+
+	this.getLists = function() {
+		return lists;
+	}
+
+
+	this.getListIds = function() {
+		var found = [];
+		jQuery.map(jQuery(lists), function(element) {
+			found.push(element.id);
+		});
+		return found;
+	}
+
+
+	this.getList = function(listId) {
+		var found = {};
+		jQuery.map(jQuery(lists), function(element) {
+			if (element.id == listId) {
+				found = element.obj;
+			}
+		});
+		return found;
+	}
+}
+
+function initTokenHoldersAndEvent()  {
+	var holder = new jQuery.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
+	var initLists = holder.getLists();
+
+	console.log(initLists);
+
+	jQuery.map(jQuery(initLists), function(element) {
+			var hiddenInput = "#" + element.id + "hidden";
+			var csv = jQuery(hiddenInput).val();
+
+			if (csv != null && csv != "") {
+				var holderList = element.obj;
+				var locations = csv.split("|");
+				jQuery.map(locations, function (element) {
+        			holderList.add(element);
+				});
+			}
+	});
+
+	jQuery("input.add-additonal-location").click(function () {
+				
+				var listId = jQuery(this).attr("id") + "list";
+				var tokenList = holder.getList(listId);
+				var targetInput = "#" + jQuery(this).attr("id") + "input";
+			
+				if (jQuery(targetInput).val() != null && jQuery(targetInput).val() != "") {
+					var target = jQuery(targetInput).val().replace(/^\s+|\s+$/g, '');
+//http://stackoverflow.com/questions/1997616/regex-for-password-that-requires-one-numeric-or-one-non-alphanumeric-character
+					var chars = /^(?=.*(\d|[a-zA-Z])).{5,}$/;
+					var hasValidChars = chars.test(target);
+					if (hasValidChars) {
+						tokenList.add(target);
+					} else {
+						jQuery(targetInput).fadeIn("slow", function() {
+								jQuery(this).addClass("errorToken");
+						});
+					}
+				}
+            	
+            	jQuery(targetInput).val("");
+            	jQuery(targetInput).focus().fadeOut(function() {
+						jQuery(this).removeClass("errorToken");
+						jQuery(this).fadeIn("slow");
+				});
+                return false;
+    });
+}
+
 jQuery(document).ready(function() {
 
-	
+	initTokenHoldersAndEvent();
 	initSliders(); 
 
 	jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
@@ -111,8 +219,8 @@ jQuery(document).ajaxSuccess(
 				var indexOf = o.data.indexOf('id_base=comprehensivegooglemap');
 
 				if (indexOf > 0) {
+					initTokenHoldersAndEvent();
 					initSliders();
-					
 					//console.log(jQuery("div#widgets-right .widget-google-map-container"));
 					jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
 					jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
