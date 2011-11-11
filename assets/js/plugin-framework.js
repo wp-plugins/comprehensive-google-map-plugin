@@ -360,7 +360,15 @@ jQuery.MarkerBuilder = function (map, initLocation) {
             	originalMapCenter = addressPoint;
 			}
 
-			element.address = results[0].formatted_address;
+			var lat = addressPoint.lat();
+			lat = parseFloat(lat);
+			lat = lat.toFixed(3);
+
+			var lng = addressPoint.lng();
+			lng = parseFloat(lng);
+			lng = lng.toFixed(3);
+
+			element.address = results[0].formatted_address + " (" + lat + ", " + lng + ")";
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {

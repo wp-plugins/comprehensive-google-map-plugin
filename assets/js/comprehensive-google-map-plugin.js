@@ -80,7 +80,7 @@ function configureSlider(min, max, step, elem) {
 			var siblingId = jQuery(sibling).attr("id");
 			var value =  ui.value;
 			if (!isNumber(step)) {
-				value =  ui.value.toFixed(2);
+				value =  ui.value.toFixed(3);
 			}
 			jQuery("input#" + siblingId).attr("value", value);
 		},
@@ -90,7 +90,7 @@ function configureSlider(min, max, step, elem) {
 			var siblingId = jQuery(sibling).attr("id");
 			var value =  ui.value;
 			if (!isNumber(step)) {
-				value =  ui.value.toFixed(2);
+				value =  ui.value.toFixed(3);
 			}
 			jQuery("input#" + siblingId).attr("value", value);
 	}});
@@ -102,8 +102,8 @@ function isNumber(n) {
 
 function initSliders() {
 	configureSlider(0, 20, 1, "zoom");
-   	configureSlider(-90, 90, 0.01, "latitude");
-	configureSlider(-180, 180, 0.01, "longitude");
+   	configureSlider(-90, 90, 0.001, "latitude");
+	configureSlider(-180, 180, 0.001, "longitude");
 	configureSlider(60, 990, 5, "width");
 	configureSlider(60, 990, 5, "height");
 }
