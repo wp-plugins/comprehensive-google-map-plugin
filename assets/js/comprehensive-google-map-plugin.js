@@ -216,14 +216,18 @@ jQuery(document).ajaxSuccess(
 	function (e, x, o) {
     	jQuery(document).ready(
     		function ($) {
-				var indexOf = o.data.indexOf('id_base=comprehensivegooglemap');
+				
+				if (o.data != null)	{
+				
+					var indexOf = o.data.indexOf('id_base=comprehensivegooglemap');
 
-				if (indexOf > 0) {
-					initTokenHoldersAndEvent();
-					initSliders();
-					//console.log(jQuery("div#widgets-right .widget-google-map-container"));
-					jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
-					jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
+					if (indexOf > 0) {
+						initTokenHoldersAndEvent();
+						initSliders();
+						//console.log(jQuery("div#widgets-right .widget-google-map-container"));
+						jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
+						jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
+					}
 				}
 			}
 		);
