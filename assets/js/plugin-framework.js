@@ -3,7 +3,7 @@
 jQuery.GoogleMapOrchestrator = function (map, options) {
 	
 	if (typeof google == "undefined" || !google) {
-    	console.log("We do not have reference to Google API. Aborting..");
+    	log("We do not have reference to Google API. Aborting..");
     	return false;
 	}
 	 
@@ -32,10 +32,10 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		if (builder.getOriginalExtendedBounds() != null) {
-			console.log("GoogleMapOrchestrator :: Panning map back to its original bounds center: " + builder.getOriginalExtendedBounds().getCenter());
+			log("GoogleMapOrchestrator :: Panning map back to its original bounds center: " + builder.getOriginalExtendedBounds().getCenter());
     		googleMap.setCenter(builder.getOriginalExtendedBounds().getCenter());
 		} else 	if (builder.getOriginalMapCenter() != null) {
-			console.log("GoogleMapOrchestrator :: Panning map back to its original center: " + builder.getOriginalMapCenter());
+			log("GoogleMapOrchestrator :: Panning map back to its original center: " + builder.getOriginalMapCenter());
     		googleMap.setCenter(builder.getOriginalMapCenter());
 		} 
 	});
@@ -43,7 +43,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 
     function sanityCheck() {
     	if (typeof googleMap == "undefined" || !googleMap || googleMap == null ) {
-        	console.log("We do not have instance of the Google API object. Aborting..");
+        	log("We do not have instance of the Google API object. Aborting..");
         	return false;
         }
     	return true;
@@ -55,19 +55,19 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 
 
     this.buildInitLocationMarker = function () {
-    	console.log("GoogleMapOrchestrator::buildInitLocationMarker");
+    	log("GoogleMapOrchestrator::buildInitLocationMarker");
     	if (!sanityCheck()) {
     		return false;
-    		console.log("No Google API");
+    		log("No Google API");
     	}
     	builder.buildInitLocationMarker();
     }
     
     this.updateInitLocationMarker = function(newInitLocation, animation) {
-    	console.log("GoogleMapOrchestrator::updateInitLocationMarker");
+    	log("GoogleMapOrchestrator::updateInitLocationMarker");
     	if (!sanityCheck()) {
     		return false;
-    		console.log("No Google API");
+    		log("No Google API");
     	}
 		var animationType = google.maps.Animation.DROP;
 		if (animation != null) {
@@ -78,7 +78,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     			break;
 			}
     	}
-		console.log(animationType);
+		log(animationType);
     	builder.updateInitLocationMarker(newInitLocation, animationType);
     }
     
@@ -108,14 +108,14 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     		
     		case jQuery.GoogleMapOrchestrator.LayerType.KML:
     			if (kml == null || kml == "") {
-    	        	console.log("KML URL must be passed for the KML Layer. Aborting..");
+    	        	log("KML URL must be passed for the KML Layer. Aborting..");
     	        	return false;
     	        }
     			layerBuilder.buildKmlLayer(kml);
     		break;
     		
     		default:
-    			console.log("Unknown layer type: " + type);
+    			log("Unknown layer type: " + type);
     	}
     }
     
@@ -147,8 +147,18 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 			break;
 			
 		    default:
-    			console.log("Unknown map control type: " + mapControlType);
+    			log("Unknown map control type: " + mapControlType);
     	}
+    }
+    
+    function log(message) {
+    	if ( jQuery.browser.msie ) {
+    	    //Die... die... die.... why dont you just, die???
+    	 } else {
+    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		    console.log(message);
+    		  }
+    	 }
     }
 }
 
@@ -184,7 +194,7 @@ jQuery.LayerBuilder = function (map) {
     
     this.buildPanoramioLayer = function () {
     	if (typeof google.maps.panoramio == "undefined" || !google.maps.panoramio || google.maps.panoramio == null ) {
-        	console.log("We cannot access Panoramio library. Aborting..");
+        	log("We cannot access Panoramio library. Aborting..");
         	return false;
         }
     	var panoramioLayer = new google.maps.panoramio.PanoramioLayer();
@@ -193,11 +203,21 @@ jQuery.LayerBuilder = function (map) {
     
     this.buildKmlLayer = function (url) {
     	if (url.toLowerCase().indexOf("http") < 0) {
-        	console.log("KML URL must start with HTTP(S). Aborting..");
+        	log("KML URL must start with HTTP(S). Aborting..");
         	return false;
         }
     	var kmlLayer = new google.maps.KmlLayer(url);
     	kmlLayer.setMap(googleMap);
+    }
+    
+    function log(message) {
+    	if ( jQuery.browser.msie ) {
+    	    //Die... die... die.... why dont you just, die???
+    	 } else {
+    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		    console.log(message);
+    		  }
+    	 }
     }
 }
 
@@ -242,7 +262,7 @@ jQuery.MarkerBuilder = function (map, initLocation) {
             if (target != null && target != "") {
 				target = target.replace(/^\s+|\s+$/g, '');
 				if (target == "") {
-					console.log("Warning :: Given extra marker address is empty");
+					log("Warning :: Given extra marker address is empty");
 					continue;
 				}
             	pushGeoDestination(target, (i + 1));
@@ -256,16 +276,16 @@ jQuery.MarkerBuilder = function (map, initLocation) {
          } else if (utils.isAlphaNumeric(target)) {
              storeAddress(target, index);
          } else {
-             console.log("Unknown type of geo destination: " + target);
+             log("Unknown type of geo destination: " + target);
          }
     }
 
     function storeAddress(address, zIndex) {
 			
 			if (zIndex != 0 && initLocation == address) {
-				console.log("Warning :: Primary and given extra marker have the same address: " + address);
+				log("Warning :: Primary and given extra marker have the same address: " + address);
 			} else {
-				console.log("Info :: Storing marker address: " + address);
+				log("Info :: Storing marker address: " + address);
 				storedAddresses.push({
             		address: address,
 					animation: primaryAnimation,
@@ -301,13 +321,13 @@ jQuery.MarkerBuilder = function (map, initLocation) {
 
 
     this.updateInitLocationMarker = function(newInitLocation, primAnimation) {
-    	console.log("MarkerBuilder::updateInitLocationMarker");
+    	log("MarkerBuilder::updateInitLocationMarker");
     	initLocation = newInitLocation;
 		primaryAnimation = primAnimation;
     }
 
     this.buildInitLocationMarker = function () {
-    	console.log("MarkerBuilder::buildInitLocationMarker");
+    	log("MarkerBuilder::buildInitLocationMarker");
     	pushGeoDestination(initLocation, 0);
         queryGeocoderService();
     }
@@ -372,15 +392,25 @@ jQuery.MarkerBuilder = function (map, initLocation) {
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-        	//console.log("OVER_QUERY_LIMIT for " + element.address + " while having: " + markers.length + " markers");
+        	//log("OVER_QUERY_LIMIT for " + element.address + " while having: " + markers.length + " markers");
         	setBounds();
         	storedAddresses.push(element);   	
         	timeout = setTimeout(function() { queryGeocoderService(); }, 3000);
         } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-        	console.log("Warning :: Got ZERO results for " + element.address + " while having " + markers.length + " extra markers");
+        	log("Warning :: Got ZERO results for " + element.address + " while having " + markers.length + " extra markers");
        		alert("Got ZERO results for " + element.address);
 	   	}
 
+    }
+    
+    function log(message) {
+    	if ( jQuery.browser.msie ) {
+    	    //Die... die... die.... why dont you just, die???
+    	 } else {
+    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		    console.log(message);
+    		  }
+    	 }
     }
 
     function instrumentMarker(point, element) {
