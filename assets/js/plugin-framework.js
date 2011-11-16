@@ -382,13 +382,13 @@ jQuery.MarkerBuilder = function (map, initLocation) {
 
 			var lat = addressPoint.lat();
 			lat = parseFloat(lat);
-			lat = lat.toFixed(3);
+			lat = lat.toFixed(5);
 
 			var lng = addressPoint.lng();
 			lng = parseFloat(lng);
-			lng = lng.toFixed(3);
+			lng = lng.toFixed(5);
 
-			element.address = results[0].formatted_address + " (" + lat + ", " + lng + ")";
+			element.address = results[0].formatted_address + "<br />Coordinates: (" + lat + ", " + lng + ")";
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {

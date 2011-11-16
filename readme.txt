@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.2.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -42,10 +42,10 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 
 == Frequently Asked Questions ==
 
-1. Where can I find send to editor button?
+* Where can I find send to editor button?
 - Send to editor button is located at the bottom of the short code builder
 
-2. Where can I find the short code builder?
+* Where can I find the short code builder?
 - You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
 
 == Screenshots ==
@@ -60,6 +60,10 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 8. Facebook style interactive interface for managing multiple map markers
 
 == Changelog ==
+
+= 2.0.4 =
+* Enhancement: Allowing 5 decimal points for latitude and longitude
+* Enhancement: Info bubble content is more descriptive now
 
 = 2.0.3 =
 * Bug: Added check for Firefox when using console logging
