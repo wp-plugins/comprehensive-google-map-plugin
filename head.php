@@ -38,17 +38,12 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
 	}
 endif;
 
-if ( !function_exists('cgmp_google_mp_head_scripts') ):
-	function cgmp_google_map_head_scripts() {	
-			$css = CGMP_PLUGIN_CSS;
-			$api = CGMP_GOOGLE_API_URL;
-			$js = CGMP_PLUGIN_JS;
-			$version = CGMP_VERSION;
-echo <<<HTML
-		<link rel='stylesheet' id='google-map-override-css'  href='{$css}/override.css' type='text/css' media='screen' />
-		<script type='text/javascript' src='{$api}'></script>
-		<script type='text/javascript' src='{$js}/plugin-framework.js?ver={$version}'></script>
-HTML;
-	}
+if ( !function_exists('cgmp_google_map_init_scripts') ):
+		function cgmp_google_map_init_scripts()  {
+			wp_enqueue_style('cgmp-google-map-override', CGMP_PLUGIN_CSS . '/override.css', false, CGMP_VERSION, "screen");
+			wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
+			wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/plugin-framework.js', array('jquery'), CGMP_VERSION);
+		}
 endif;
+
 ?>
