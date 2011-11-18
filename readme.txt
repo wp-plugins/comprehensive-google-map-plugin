@@ -41,7 +41,7 @@ To use the widget, simply drag the 'AZ :: Google Map' widget into a sidebar. Ple
 Do you have a question or a feature request? Sure, drop me a line here: http://initbinder.com/comprehensive-google-map-plugin
 
 == Frequently Asked Questions ==
-
+  
 * Where can I find send to editor button?
 - Send to editor button is located at the bottom of the short code builder
 
