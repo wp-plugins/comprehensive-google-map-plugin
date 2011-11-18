@@ -152,11 +152,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ul.tools-tabs-nav {
 	margin-bottom: -1px;
-	padding-left: 3.5em;
+	padding-left: 4.2em;
 	/*overflow: hidden;*/
 	white-space: nowrap;
 	padding-right: 3.5em;
-	padding-top: 3.0em;
+	padding-top: 3.1em;
 }
 
 input.slider-output {

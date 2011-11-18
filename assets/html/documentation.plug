@@ -1,4 +1,7 @@
 <h2>Comprehensive Google Map by Alexander Zagniotov</h2>
+<div style="border: 1px solid #FFCC99; width: 70%; padding: 5px 15px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;">
+<p>Please check my other plugins at <a href="http://initbinder.com/plugins" target="_blank">InitBinder.com</a>. Alternatively, you can write on your own blog about the plugin, like it on Facebook, spread the word about it on Twitter or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donate</a>, thanks!</p>
+</div>
 <div class="tools-tabs">
 	<ul class="tools-tabs-nav hide-if-no-js">
 		<li class="">
@@ -36,6 +39,7 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;animation="<span class="italic">DROP <span class="sep">|</span> BOUNCE</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;addmarkerlist="<span class="italic">one or more full geo address strings or latitude/longitude seperated by comma. When providing multiple locations, they must be seperated by the  <span class="sep">|</span>  sign</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;showbike="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;bubbleautopan="<span class="italic">true <span class="sep">|</span> false. The "true" - disables(!) auto-pan, while "false" - enables(!) auto-pan</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;showtraffic="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;showpanoramio="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;maptypecontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
@@ -50,7 +54,7 @@
 		<div class="tools-tab-content">
 			<h3 class="hide-if-js">Contribute</h3>
 			<h4>Supporting This Plugin</h4>
-			<p>If you’ve found some value in the features which Comprehensive Google Map provides for enhancing your site, and you'd like to say thanks, a direct contribution toward the development effort via PayPal is always welcome. Alternatively, you can write on your own blog about the plugin, thanks!</p>
+			<p>If you’ve found some value in the features which Comprehensive Google Map provides for enhancing your site, and you'd like to say thanks, a direct contribution toward the development effort via PayPal is always welcome. Alternatively, you can write on your own blog about the plugin, like it on Facebook and/or spread the word about it on Twitter, thanks!</p>
 			<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8"><img src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online." /></a>
 		</div>
 	</div>

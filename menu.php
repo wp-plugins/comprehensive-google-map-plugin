@@ -81,6 +81,11 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 		$template_values["LABEL_SHOWPANORAMIO"] = "<b>Panoramio</b>";
 		$template_values["SELECT_SHOWPANORAMIO"] = "Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Earth and Google Maps, with new photos being added at the end of every month. The site's goal is to allow Google Earth users to learn more about a given area by viewing the photos that other users have taken at that place.";
 
+
+		$template_values["LABEL_BUBBLEAUTOPAN"] = "<b>Bubble&nbsp;Auto-Pan</b>";
+		$template_values["SELECT_BUBBLEAUTOPAN"] = "Enables bubble auto-pan on marker click. By default, the info bubble will pan the map so that it is fully visible when it opens.";
+
+
 		$template_values["FOOTER_NOTICES"] = "";
 
 	global $global_fieldset_names;

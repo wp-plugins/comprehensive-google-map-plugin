@@ -61,6 +61,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showbike = empty($instance['showbike']) ? 'false' : $instance['showbike'];
 		$showtraffic = empty($instance['showtraffic']) ? 'false' : $instance['showtraffic'];
 		$showpanoramio = empty($instance['showpanoramio']) ? 'false' : $instance['showpanoramio'];
+		$bubbleautopan = empty($instance['bubbleautopan']) ? 'false' : $instance['bubbleautopan'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
 
@@ -82,7 +83,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height);
-		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $controlOpts);
+		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts);
 		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers);
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
@@ -120,6 +121,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['kml'] = strip_tags($new_instance['kml']);
 		$instance['showpanoramio'] = strip_tags($new_instance['showpanoramio']);
 		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
+		$instance['bubbleautopan'] = strip_tags($new_instance['bubbleautopan']);
 
 
 		return $instance;
@@ -128,6 +130,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 	function form( $instance ) {
 
 		$bools = array("Show" => "true", "Hide" => "false");
+		$bools2 = array("Enable" => "false", "Disable" => "true");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 	
@@ -154,6 +157,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showpanoramio = !empty($instance['showpanoramio']) ? esc_attr($instance['showpanoramio']) : 'false';
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
+		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'false';
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
@@ -247,6 +251,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$v = "showpanoramio";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Panoramio")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showpanoramio, "options" => $bools)); 
+
+
+		$v = "bubbleautopan";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Bubble Auto-Pan")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $bubbleautopan, "options" => $bools2)); 
 
 
 		$v = "kml";

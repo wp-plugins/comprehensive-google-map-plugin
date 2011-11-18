@@ -17,6 +17,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     var zoom = options.zoom || 16;
     var mapType = options.mapType || google.maps.MapTypeId.ROADMAP;
     var initLocation = options.initLocation || new google.maps.LatLng(-33.92, 151.25); 
+	var bubbleAutoPan = options.bubbleAutoPan || "false";
 
     var googleMap = map;
     googleMap.setOptions({
@@ -28,7 +29,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 
     
     var layerBuilder = new jQuery.LayerBuilder(googleMap);
-    var builder = new jQuery.MarkerBuilder(googleMap, initLocation);
+    var builder = new jQuery.MarkerBuilder(googleMap, initLocation, bubbleAutoPan);
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		if (builder.getOriginalExtendedBounds() != null) {
@@ -221,7 +222,7 @@ jQuery.LayerBuilder = function (map) {
     }
 }
 
-jQuery.MarkerBuilder = function (map, initLocation) {
+jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
     jQuery.extend(this, jQuery.MarkerBuilder.defaultOptions);
 
     var markers = [];
@@ -231,6 +232,7 @@ jQuery.MarkerBuilder = function (map, initLocation) {
     var googleMap = map;
     var csvString = null;
     var initLocation = initLocation;
+	var bubbleAutoPan = bubbleAutoPan;
 	var primaryAnimation = google.maps.Animation.DROP;
 	var originalExtendedBounds = null;
 	var originalMapCenter = null;
@@ -241,14 +243,16 @@ jQuery.MarkerBuilder = function (map, initLocation) {
     var infowindow = new google.maps.InfoWindow();
 
     function attachEventlistener(marker) {
-        google.maps.event.addListener(marker, 'click', function () {
+		/*
+        google.maps.event.addListener(marker, 'mouseover', function () {
             infowindow.setContent(this.content);
             infowindow.open(map, this);
         });
+		*/
 
-		google.maps.event.addListener(marker, 'mouseover', function () {
+		google.maps.event.addListener(marker, 'click', function () {
             infowindow.setContent(this.content);
-			infowindow.setOptions({disableAutoPan: true});
+			infowindow.setOptions({disableAutoPan: bubbleAutoPan == "true" ? true : false });
             infowindow.open(map, this);
         });
     }

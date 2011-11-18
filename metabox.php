@@ -33,6 +33,7 @@ if ( !function_exists('cgmp_render_shortcode_builder_form') ):
 function cgmp_render_shortcode_builder_form() {
 
 		$bools = array("Show" => "true", "Hide" => "false");
+		$bools2 = array("Enable" => "false", "Disable" => "true");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 
@@ -114,6 +115,11 @@ function cgmp_render_shortcode_builder_form() {
 		$v = "showtraffic";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Traffic Info")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+		$v = "bubbleautopan";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bubble Auto-Pan")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools2)); 
+
 
 		$v = "kml";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "KML/GeoRSS URL")); 
