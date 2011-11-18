@@ -41,12 +41,28 @@ To use the widget, simply drag the 'AZ :: Google Map' widget into a sidebar. Ple
 Do you have a question or a feature request? Sure, drop me a line here: http://initbinder.com/comprehensive-google-map-plugin
 
 == Frequently Asked Questions ==
-  
-* Where can I find send to editor button?
-- Send to editor button is located at the bottom of the short code builder
 
-* Where can I find the short code builder?
-- You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
+1. Where can I find send to editor button?
+Send to editor button is located at the bottom of the short code builder
+
+2. Where can I find the short code builder?
+You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
+
+3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?
+Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
+
+4. When I activate the plugin, some other plugin's admin menu or plugin itself does not load/work , why?
+Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
+
+5. How do I fix the one of the problems above?
+I need to have a look at your site and the page where the intended map is or/and log into your WP admin (I understand that the latter is not something that most of the people can be comfortable with, but I already helped two people this way).
+
+6. When I activate the plugin and build the map, there is only gray box on the page. Why?
+One of the reasons is that a bad address or wrong lat/long were given. Try to check it using Google map on the web first.
+
+7. How fast can you have a look at my bug?
+Well, I always check emails on the go, so my response times are amazingly short and fast. I always try to reply. Having said that, not always I can dive into the code. It can take me up to a few hours when I reach my laptop and Internet connection :)
+
 
 == Screenshots ==
 
