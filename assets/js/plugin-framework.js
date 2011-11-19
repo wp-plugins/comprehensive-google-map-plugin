@@ -269,22 +269,22 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 					log("Warning :: Given extra marker address is empty");
 					continue;
 				}
-            	pushGeoDestination(target, (i + 1));
+            	pushGeoDestination(target, (i + 1), true);
             }
         }
     }
     
-    function pushGeoDestination(target, index) {
+    function pushGeoDestination(target, index, isExtraMarker) {
     	 if (utils.isNumeric(target)) {
-    		 addGeoPoint(target, index);
+    		 addGeoPoint(target, index, isExtraMarker);
          } else if (utils.isAlphaNumeric(target)) {
-             storeAddress(target, index);
+             storeAddress(target, index, isExtraMarker);
          } else {
              log("Unknown type of geo destination: " + target);
          }
     }
 
-    function storeAddress(address, zIndex) {
+    function storeAddress(address, zIndex, isExtraMarker) {
 			
 			if (zIndex != 0 && initLocation == address) {
 				log("Warning :: Primary and given extra marker have the same address: " + address);
@@ -293,12 +293,13 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 				storedAddresses.push({
             		address: address,
 					animation: primaryAnimation,
-            		zIndex: zIndex
+            		zIndex: zIndex,
+					extra: isExtraMarker
         		});
 			}
 		}
     
-    function addGeoPoint(point, zIndex) {
+    function addGeoPoint(point, zIndex, isExtraMarker) {
     	if (point == null || !point) {
     		return false;
     	}
@@ -311,7 +312,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 	            latLng = new google.maps.LatLng(lat, lng);
         	}
         }
-        storeAddress(latLng, zIndex);
+        storeAddress(latLng, zIndex, isExtraMarker);
     }
     
 	this.getOriginalExtendedBounds = function()  {
@@ -420,12 +421,23 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
     function instrumentMarker(point, element) {
         var marker = new google.maps.Marker({
             position: point,
+			title: element.address.replace("<br />", " :: "),
             content: element.address,
             zIndex: element.zIndex,
 			/*animation: google.maps.Animation.BOUNCE,*/
             map: googleMap
         });
         if (marker) {
+
+			if (element.extra) {
+				marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+				var shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
+      				new google.maps.Size(59, 32),
+      				new google.maps.Point(0,0),
+      				new google.maps.Point(16, 32));
+				marker.setShadow(shadow);
+			}
+
 			if (element.zIndex == 0 && element.animation == google.maps.Animation.BOUNCE) {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
