@@ -403,7 +403,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
         	timeout = setTimeout(function() { queryGeocoderService(); }, 3000);
         } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
         	log("Warning :: Got ZERO results for " + element.address + " while having " + markers.length + " extra markers");
-       		alert("Got ZERO results for " + element.address);
+       		//alert("Got ZERO results for " + element.address);
 	   	}
 
     }

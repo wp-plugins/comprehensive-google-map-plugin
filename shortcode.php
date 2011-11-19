@@ -83,7 +83,7 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height);
 	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts);
-	$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist);
+	$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
 	$result .= cgmp_draw_panoramio($id, $showpanoramio);
