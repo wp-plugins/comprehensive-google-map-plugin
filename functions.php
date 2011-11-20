@@ -17,9 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 if ( !function_exists('cgmp_draw_map_placeholder') ):
-	function cgmp_draw_map_placeholder($id, $width, $height) {
+	function cgmp_draw_map_placeholder($id, $width, $height, $directions) {
 	$result = '<div class="google-map-placeholder" id="' .$id . '" style="width:' . 
-                $width . 'px;height:' . $height . 'px; border:1px solid #333333;"></div><div class="fix"></div>';
+			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"></div>';
+
+	if (isset($directions) && $directions == "true") {
+		$result .=  '<div class="google-map-directions-panel" id="directions-placeholder-' .$id . '" style="margin-top: 8px !important; text-align: center; padding: 10px 12px !important; overflow: auto;"></div>';
+	}
+
         return $result;
  	}
 endif;
@@ -30,7 +35,7 @@ if ( !function_exists('cgmp_begin_map_init') ):
 		$result =  '<script type="text/javascript">'.PHP_EOL;
 		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
 		$result .= '    var orc = new jQuery.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", initLocation: "'.$lat.','.$long.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
-
+		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc});'.PHP_EOL;
 		$result .= '    orc.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQuery.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
         $result .= '    orc.switchMapControl('.$controlOpts['pancontrol'].', jQuery.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
         $result .= '    orc.switchMapControl('.$controlOpts['z_oomcontrol'].', jQuery.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;

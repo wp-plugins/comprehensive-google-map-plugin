@@ -33,11 +33,13 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		if (builder.getOriginalExtendedBounds() != null) {
-			log("GoogleMapOrchestrator :: Panning map back to its original bounds center: " + builder.getOriginalExtendedBounds().getCenter());
+			log("GoogleMapOrchestrator :: Panning map back to its original bounds center: " + builder.getOriginalExtendedBounds().getCenter() + " and updated zoom: " + builder.getUpdatedZoom());
     		googleMap.setCenter(builder.getOriginalExtendedBounds().getCenter());
+			googleMap.setZoom(builder.getUpdatedZoom());
 		} else 	if (builder.getOriginalMapCenter() != null) {
-			log("GoogleMapOrchestrator :: Panning map back to its original center: " + builder.getOriginalMapCenter());
+			log("GoogleMapOrchestrator :: Panning map back to its original center: " + builder.getOriginalMapCenter()  + " and updated zoom: " + builder.getUpdatedZoom());
     		googleMap.setCenter(builder.getOriginalMapCenter());
+			googleMap.setZoom(builder.getUpdatedZoom());
 		} 
 	});
 
@@ -52,6 +54,18 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
    
 	this.getOption = function (option) {
     	return options[option];
+	}
+
+	this.routeDirections = function(lat, lng, userOrigin) {
+		if (!sanityCheck()) {
+    		return false;
+    		log("No Google API");
+    	}
+		builder.routeDirections(lat, lng, userOrigin);
+	}
+
+	this.removeDirections = function() {
+		builder.removeDirections();
 	}
 
 
@@ -236,11 +250,88 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 	var primaryAnimation = google.maps.Animation.DROP;
 	var originalExtendedBounds = null;
 	var originalMapCenter = null;
+	var updatedZoom = 5;
 
     var utils = new jQuery.Utils();
     var geocoder = new google.maps.Geocoder();
     var bounds = new google.maps.LatLngBounds();
     var infowindow = new google.maps.InfoWindow();
+
+	//var directionMarker = null;
+
+	var rendererOptions = {
+    	draggable: true
+  	};
+	var directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
+	directionsRenderer.setPanel(document.getElementById('directions-placeholder-' + googleMap.getDiv().id));
+	var directionsService = new google.maps.DirectionsService();
+
+	log("Directions placeholder ID: " + "directions-placeholder-" + googleMap.getDiv().id);
+
+	this.removeDirections = function() {
+		directionsRenderer.setMap(null);
+		//directionMarker.setMap(null);
+		var elem = jQuery("div#directions-placeholder-" + googleMap.getDiv().id);
+		elem.html("");
+		elem.css("border", "");
+		elem.css("width", 0);
+		elem.css("height", 0);
+
+		jQuery("a#remove-" + googleMap.getDiv().id).remove();
+
+	}
+
+	this.routeDirections = function(lat, lng, userOrigin) {
+		var request = {
+  			origin: userOrigin, 
+  			destination: new google.maps.LatLng(lat, lng),
+  			travelMode: google.maps.DirectionsTravelMode.DRIVING,
+  			unitSystem: google.maps.DirectionsUnitSystem.METRIC,
+  			provideRouteAlternatives: true
+		};
+		directionsService.route(request, function(response, status) {
+  		var elem = jQuery("div#directions-placeholder-" + googleMap.getDiv().id);
+
+		if (status == google.maps.DirectionsStatus.OK) {
+			var mapDiv = googleMap.getDiv();
+			mapDiv = jQuery(mapDiv);
+			elem.html("");
+			elem.css("border", "1px solid #333333");
+			elem.css("width", mapDiv.width() - 25);
+			elem.css("height", 100);
+			elem.before("<div align='center' style='margin-top: 5px; margin-bottom: 5px'><a href='javascript:void(0)' id='remove-" + googleMap.getDiv().id + "' onclick='return removeDirections(\"" +  googleMap.getDiv().id + "\");'>Remove Directions</a></div>");
+    		directionsRenderer.setMap(googleMap);
+			directionsRenderer.setDirections(response);
+			/*var leg = response.routes[ 0 ].legs[ 0 ];
+			var endMarker = new google.maps.Marker(
+					{
+					position: leg.start_location,
+  					map: googleMap,
+  					title: leg.start_address
+ 				});
+			if (endMarker) {
+
+				endMarker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+				var shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
+      				new google.maps.Size(59, 32),
+      				new google.maps.Point(0,0),
+      				new google.maps.Point(16, 32));
+					endMarker.setShadow(shadow);
+					google.maps.event.addListener(endMarker, 'click', function () {
+            			var infow = new google.maps.InfoWindow();
+						infow.setContent(leg.start_address);
+						infow.setOptions({disableAutoPan: false });
+            			infow.open(googleMap, this);
+        		});
+
+				directionMarker = endMarker;
+			}*/
+  		} else {
+			elem.html("<span style='font-size: 13px; font-weight: bold; color: red'>Could not route directions from '" + userOrigin + "', got result from Google: " + status + "</span>");
+    		log('Error :: Could not route directions from : ' + userOrigin + ', got status: ' + status);
+  			}
+		});
+	}
 
     function attachEventlistener(marker) {
 		/*
@@ -250,11 +341,23 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
         });
 		*/
 
+		var bubbleContent = "";
+		bubbleContent += "<div id='bubble-content' style='min-height: 120px !important; height: 120px !important'>";
+		bubbleContent += "<div style='margin-bottom: 10px;'>" + marker.content + "<br /><input style='margin-top: 5px;' class='directions-btn' type='button'";
+		bubbleContent += " onclick='jQuery(\"div#directions-input-wrapper-" + googleMap.getDiv().id + "\").fadeIn(); jQuery(\"input#user-origin-" + googleMap.getDiv().id + "\").focus(); jQuery(\"a#directions-wrapper-cancel-" + googleMap.getDiv().id + "\").fadeIn();' value='Get Directions Here' />&nbsp;<a id='directions-wrapper-cancel-" + googleMap.getDiv().id  + "' href='javascript:void(0);' onclick='jQuery(\"div#directions-input-wrapper-" + googleMap.getDiv().id + "\").hide(); jQuery(this).hide();' style='display: none' class='directions-cancel'>Cancel</a></div>";
+		bubbleContent += "<div id='directions-input-wrapper-" + googleMap.getDiv().id + "' style='display: none'>";
+		bubbleContent += "<input type='text' id='user-origin-" + googleMap.getDiv().id + "' class='directions' />&nbsp;<a href='javascript:void(0)'";
+		bubbleContent += "	onclick='return routeDirections(" + marker.position.lat() + 
+															", " + marker.position.lng() +
+															", jQuery(\"input#user-origin-" + googleMap.getDiv().id + "\").val(), \"" +  googleMap.getDiv().id + "\");'><input type='image' class='directions-trigger' value='' /></a>";
+		bubbleContent += "</div>";
+		bubbleContent += "</div>";
+
 		google.maps.event.addListener(marker, 'click', function () {
-            infowindow.setContent(this.content);
+            infowindow.setContent(bubbleContent);
 			infowindow.setOptions({disableAutoPan: bubbleAutoPan == "true" ? true : false });
             infowindow.open(map, this);
-        });
+        }); 
     }
 
     function parseCsv() {
@@ -319,6 +422,10 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 		return originalExtendedBounds;
 	}
 
+	this.getUpdatedZoom = function()  {
+		return updatedZoom;
+	}
+
 	 
 	this.getOriginalMapCenter = function()  {
 		return originalMapCenter;
@@ -371,8 +478,10 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
             });
             originalExtendedBounds = bounds;
             googleMap.fitBounds(bounds);
+			updatedZoom = googleMap.getZoom();
         } else if (markers.length == 1) {
             googleMap.setCenter(markers[0].position);
+			updatedZoom = googleMap.getZoom();
         }
     }
 
@@ -393,7 +502,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 			lng = parseFloat(lng);
 			lng = lng.toFixed(5);
 
-			element.address = results[0].formatted_address + "<br />Coordinates: (" + lat + ", " + lng + ")";
+			element.address = results[0].formatted_address + "<br />Lat/Long: " + lat + ", " + lng + "";
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -423,7 +532,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
             position: point,
 			title: element.address.replace("<br />", " :: "),
             content: element.address,
-            zIndex: element.zIndex,
+            zIndex: (element.zIndex + 1000),
 			/*animation: google.maps.Animation.BOUNCE,*/
             map: googleMap
         });
@@ -446,3 +555,75 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
         }
     }
 }
+
+jQuery.OrchestratorHub = function () {
+    jQuery.extend(this, jQuery.OrchestratorHub.defaultOptions);
+
+	var orcs = [];
+	
+	this.getOrcs = function() {
+		return orcs;
+	}
+
+	this.push = function(orcData) {
+		log("Info :: Pushed into OrchestratorHub: ");
+		log(orcData);
+		orcs.push(orcData);
+	}
+
+	this.getOrc = function(mapId) {
+		var found = {};
+		jQuery.map(jQuery(orcs), function(element) {
+			if (element.mapId == mapId) {
+				found = element.orchestrator;
+			}
+		});
+		return found;
+	}
+
+	 function log(message) {
+    	if ( jQuery.browser.msie ) {
+    	    //Die... die... die.... why dont you just, die???
+    	 } else {
+    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		    console.log(message);
+    		  }
+    	 }
+    }
+
+}
+
+var orcHolder = new jQuery.OrchestratorHub();
+
+	function routeDirections(lat, lng, userOrigin, mapId)  {
+		var orc = orcHolder.getOrc(mapId);
+		if (orc == null || !orc) {
+			jQuery("div#directions-placeholder-" + mapId).html("<span style='font-size: 13px; font-weight: bold; color: red'>Cannot route directions</span>");
+			return false;
+		}
+
+		jQuery("div#directions-placeholder-" + mapId).html("<span style='font-size: 13px; font-weight: bold;'>Please wait, routing..</span>");
+		orc.routeDirections(lat, lng, userOrigin);
+
+	}
+
+
+	function removeDirections(mapId)  {
+		var orc = orcHolder.getOrc(mapId);
+		if (orc == null || !orc) {
+			return false;
+		}
+		orc.removeDirections();
+	}
+
+
+ 	function log(message) {
+    	if ( jQuery.browser.msie ) {
+    	    //Die... die... die.... why dont you just, die???
+    	 } else {
+    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		    console.log(message);
+    		  }
+    	 }
+	}
+

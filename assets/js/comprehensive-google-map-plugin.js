@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+
 function generateWidgetShortcode(container_id) {
 	var id = '#' + container_id;
 	var code = buildShortcode(id);
@@ -54,6 +56,30 @@ function buildShortcode(id) {
 	code += "]";
 	return code;
 }
+
+
+function routeDirections(markerLocation, userOrigin, directionsRenderer) {
+		log("Info :: Routing directions from: " + userOrigin + " to: " + markerLocation);
+		var request = {
+  			origin: userOrigin, 
+  			destination: markerLocation,
+  			travelMode: google.maps.DirectionsTravelMode.DRIVING,
+  			unitSystem: google.maps.DirectionsUnitSystem.METRIC,
+  			provideTripAlternatives: true
+		};
+
+		var directionsService = new google.maps.DirectionsService();
+		directionsService.route(request, function(response, status) {
+  			if (status == google.maps.DirectionsStatus.OK) {
+				directionsRenderer.setDirections(response);
+  			} else {
+    			log('Error :: Got status [' + status + '] when routing directions');
+  			}
+		});
+}
+
+
+
 
 function configureSlider(min, max, step, elem) {
 
@@ -111,6 +137,7 @@ function initSliders() {
 function addMarker(id) {
 	alert(id);
 }
+
 
 jQuery.TokenListHolder = function (classPath) {
     jQuery.extend(this, jQuery.TokenListHolder.defaultOptions);
@@ -198,6 +225,7 @@ function initTokenHoldersAndEvent()  {
     });
 }
 
+
 jQuery(document).ready(function() {
 
 	initTokenHoldersAndEvent();
@@ -224,15 +252,14 @@ jQuery(document).ajaxSuccess(
 					if (indexOf > 0) {
 						initTokenHoldersAndEvent();
 						initSliders();
-						//console.log(jQuery("div#widgets-right .widget-google-map-container"));
 						jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
 						jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
+						
 					}
 				}
 			}
 		);
 	}
 );
-
 
 

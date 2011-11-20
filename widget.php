@@ -23,7 +23,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
-	var $maindesc = "A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more.";
+	var $maindesc = "A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more.";
 
 	function ComprehensiveGoogleMap_Widget() {
 		$widget_ops = array('classname' => 'comprehensivegooglemap_widget', 'description' => __( $this->maindesc, 'kalisto') );
@@ -62,6 +62,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showtraffic = empty($instance['showtraffic']) ? 'false' : $instance['showtraffic'];
 		$showpanoramio = empty($instance['showpanoramio']) ? 'false' : $instance['showpanoramio'];
 		$bubbleautopan = empty($instance['bubbleautopan']) ? 'false' : $instance['bubbleautopan'];
+		$markerdirections = empty($instance['markerdirections']) ? 'true' : $instance['markerdirections'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
 
@@ -82,8 +83,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$id = md5(time().' '.rand());
 
 		$result = '';
-		$result .= cgmp_draw_map_placeholder($id, $width, $height);
-		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts);
+		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections);
+		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
 		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers, $kml);
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
@@ -122,7 +123,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['showpanoramio'] = strip_tags($new_instance['showpanoramio']);
 		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
 		$instance['bubbleautopan'] = strip_tags($new_instance['bubbleautopan']);
-
+		$instance['markerdirections'] = strip_tags($new_instance['markerdirections']);
 
 		return $instance;
 	}
@@ -131,6 +132,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$bools = array("Show" => "true", "Hide" => "false");
 		$bools2 = array("Enable" => "false", "Disable" => "true");
+		$bools3 = array("Enable" => "true", "Disable" => "false");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 	
@@ -158,6 +160,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
 		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'false';
+		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
@@ -257,6 +260,10 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Bubble Auto-Pan")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $bubbleautopan, "options" => $bools2)); 
 
+
+		$v = "markerdirections";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Marker Directions")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $markerdirections, "options" => $bools3)); 
 
 		$v = "kml";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "KML/GeoRSS")); 

@@ -42,6 +42,7 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;bubbleautopan="<span class="italic">true <span class="sep">|</span> false. The "true" - disables(!) auto-pan, while "false" - enables(!) auto-pan</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;showtraffic="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;showpanoramio="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;markerdirections="<span class="italic">true <span class="sep">|</span> false</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;maptypecontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;pancontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;zoomcontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  

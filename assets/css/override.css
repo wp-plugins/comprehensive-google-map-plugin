@@ -1,1 +1,35 @@
 .google-map-placeholder img {max-width: none !important;}
+
+input.directions, input.directions-btn {
+    background-color: #EEEEEE  !important;
+    border: 1px solid #444444  !important;
+    -webkit-border-radius: 3px  !important;
+    -moz-border-radius: 3px  !important;
+    border-radius: 3px  !important;
+    font-size: 11px  !important;
+    margin-bottom: 5px !important;
+    padding: 3px !important;
+    color: #111 !important;
+    text-shadow: none !important;
+}
+
+input.directions {
+    width: 70% !important;
+}
+
+input.directions-trigger {
+    background-image: url("images/map_24x24.png")  !important;
+    background-repeat: no-repeat  !important;
+    width: 24px  !important;     
+    height: 24px  !important;
+    margin: 0 2px  !important;
+    border: medium none !important;
+    padding: 5px 12px !important;
+}
+
+div#bubble-content a.directions-cancel, 
+div#bubble-content a.directions-cancel:active, 
+div#bubble-content a.directions-cancel:visited {
+    color: #990000;
+    text-decoration: underline !important;
+}

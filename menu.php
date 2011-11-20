@@ -18,8 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 if ( !function_exists('cgmp_google_map_plugin_menu') ):
       function cgmp_google_map_plugin_menu() {
-            add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', basename(__FILE__), 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
-      }
+      $hook = add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', CGMP_HOOK, 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
+	  add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+	  }
 endif;
 
 if ( !function_exists('cgmp_parse_menu_html') ):
@@ -84,6 +85,12 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 
 		$template_values["LABEL_BUBBLEAUTOPAN"] = "<b>Bubble&nbsp;Auto-Pan</b>";
 		$template_values["SELECT_BUBBLEAUTOPAN"] = "Enables bubble auto-pan on marker click. By default, the info bubble will pan the map so that it is fully visible when it opens.";
+
+		$template_values["LABEL_MARKERDIRECTIONS"] = "<b>Marker&nbsp;Directions</b>";
+		$template_values["SELECT_MARKERDIRECTIONS"] = "The Google Directions API is a service that calculates directions between locations. Directions may specify origins and destinations as text strings (e.g. 'Chicago, IL' or 'Darwin, NT, Australia') or as latitude/longitude coordinates. The Directions API can return multi-part directions.
+
+This service is generally designed for calculating directions for static (known in advance) addresses for placement of application content on a map; this service is not designed to respond in real time to user input, for example.";
+
 
 
 		$template_values["FOOTER_NOTICES"] = "";

@@ -118,8 +118,8 @@
 				<tr>
 					<td><a href="javascript:void(0);" title="Enables or disables info bubble auto-panning (the map view centers on the info bubble) when marker is clicked">[?]</a>&nbsp;LABEL_BUBBLEAUTOPAN</td>
 					<td>SELECT_BUBBLEAUTOPAN</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
+					<td><a href="javascript:void(0);" title="Enables or disables user to ask for direction from provided location to the clicked marker's location">[?]</a>&nbsp;LABEL_MARKERDIRECTIONS</td>
+					<td>SELECT_MARKERDIRECTIONS</td>
 				</tr>
 			</tbody>
 		</table>

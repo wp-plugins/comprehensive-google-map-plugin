@@ -1,10 +1,10 @@
 === Comprehensive Google Map Plugin ===
 Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
-Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
+Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.2.1
-Stable tag: 2.0.8
+Stable tag: 3.0.0
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -21,11 +21,12 @@ manually to type the short-code in the editor (But you can if you want to).
 IDs explicitly when dealing with multiple maps on the same post/page.
 * The plugin offers extensive configuration options for Google map marker, controls, size, KML files, location by latitude/longitude, location by address, info windows, traffic/bike lanes and more!
 * Support for custom overlays: Panoramio photos on the map (http://www.panoramio.com/), bicycle lanes and traffic info.
+* User can get directions to the locations on the map (markers)
 * Widget enabled.
 * Cross browser compatible
 * Loads geographic markup from a KML, KMZ or GeoRSS file hosted remotely.
 
-Support for Google Fusion tables and fusion table queries, distance matrix are to be added in the next version, stay tuned!
+Support for Google Fusion tables and fusion table queries, distance matrix are to be added soon, stay tuned!
 
 
 Please note: 
@@ -42,33 +43,29 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 
 == Frequently Asked Questions ==
 
-1. Where can I find send to editor button?
-
+1. Where can I find send to editor button?<br />
 Send to editor button is located at the bottom of the short code builder
 
-2. Where can I find the short code builder?
-
+2. Where can I find the short code builder?<br />
 You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
 
-3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?
-
+3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?<br />
 Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
 
-4. When I activate the plugin, some other plugin's admin menu or plugin itself does not load/work , why?
-
+4. When I activate the plugin, some other plugin's admin menu or plugin itself does not load/work , why?<br />
 Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
 
-5. How do I fix the one of the problems above?
-
+5. How do I fix the one of the problems above?<br />
 I need to have a look at your site and the page where the intended map is or/and log into your WP admin (I understand that the latter is not something that most of the people can be comfortable with, but I already helped two people this way).
 
-6. When I activate the plugin and build the map, there is only gray box on the page. Why?
-
+6. When I activate the plugin and build the map, there is only gray box on the page. Why?<br />
 One of the reasons is that a bad address or wrong lat/long were given. Try to check it using Google map on the web first.
 
-7. How fast can you have a look at my bug?
-
+7. How fast can you have a look at my bug?<br />
 Well, I always check emails on the go, so my response times are amazingly short and fast. I always try to reply. Having said that, not always I can dive into the code. It can take me up to a few hours when I reach my laptop and Internet connection :)
+
+8. I have dragged/scrolled/pulled my map to a direction, messed up my zoom view, how can I get get all my markers in view again with the original zoom?<br />
+Just click once somewhere on the map
 
 
 == Screenshots ==
@@ -81,8 +78,14 @@ Well, I always check emails on the go, so my response times are amazingly short 
 6. Generated short code in the editor
 7. Sliders
 8. Facebook style interactive interface for managing multiple map markers
+9. Get directions to marker's location from user's origin
 
 == Changelog ==
+
+= 3.0.0 =
+* Bug: Removed clash between plugin and the Suffusion theme
+* Enhancement: Added support for getting directions by car to marker's location (both for primary and additional markers)
+* Enhancement: When clicking on the map once, the map view is centered back to the original location with its original zoom. Useful when user dragged the map view away  
 
 = 2.0.8 =
 * Bug: Trying to display primary location when KML is used.
@@ -129,4 +132,4 @@ Well, I always check emails on the go, so my response times are amazingly short 
 
 == Upgrade Notice ==
 
-N/A
+Remove the old version of the plugin and install the most recent one. No additional configuration is required.

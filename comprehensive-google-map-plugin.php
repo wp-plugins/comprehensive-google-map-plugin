@@ -2,8 +2,8 @@
 /*
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
-Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more. 
-Version: 2.0.8
+Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
+Version: 3.0.0
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,7 +31,8 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '2.0.8');
+define('CGMP_VERSION', '3.0.0');
+define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
 define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
@@ -73,9 +74,9 @@ require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
 add_action('init', 'cgmp_google_map_init_scripts');
-
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
 add_action('admin_init', 'cgmp_google_map_admin_add_script');
+
 add_action('admin_menu', 'cgmp_google_map_meta_boxes');
 add_action('admin_menu', 'cgmp_google_map_plugin_menu');
 add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
