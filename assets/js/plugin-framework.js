@@ -18,6 +18,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     var mapType = options.mapType || google.maps.MapTypeId.ROADMAP;
     var initLocation = options.initLocation || new google.maps.LatLng(-33.92, 151.25); 
 	var bubbleAutoPan = options.bubbleAutoPan || "false";
+	var markerdirections = options.markerdirections || "true";
 
     var googleMap = map;
     googleMap.setOptions({
@@ -29,7 +30,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 
     
     var layerBuilder = new jQuery.LayerBuilder(googleMap);
-    var builder = new jQuery.MarkerBuilder(googleMap, initLocation, bubbleAutoPan);
+    var builder = new jQuery.MarkerBuilder(googleMap, initLocation, bubbleAutoPan, markerdirections);
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		if (builder.getOriginalExtendedBounds() != null) {
@@ -236,7 +237,7 @@ jQuery.LayerBuilder = function (map) {
     }
 }
 
-jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
+jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirections) {
     jQuery.extend(this, jQuery.MarkerBuilder.defaultOptions);
 
     var markers = [];
@@ -247,6 +248,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
     var csvString = null;
     var initLocation = initLocation;
 	var bubbleAutoPan = bubbleAutoPan;
+	var markerdirections = markerdirections;
 	var primaryAnimation = google.maps.Animation.DROP;
 	var originalExtendedBounds = null;
 	var originalMapCenter = null;
@@ -342,16 +344,25 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan) {
 		*/
 
 		var bubbleContent = "";
-		bubbleContent += "<div id='bubble-content' style='min-height: 120px !important; height: 120px !important'>";
-		bubbleContent += "<div style='margin-bottom: 10px;'>" + marker.content + "<br /><input style='margin-top: 5px;' class='directions-btn' type='button'";
-		bubbleContent += " onclick='jQuery(\"div#directions-input-wrapper-" + googleMap.getDiv().id + "\").fadeIn(); jQuery(\"input#user-origin-" + googleMap.getDiv().id + "\").focus(); jQuery(\"a#directions-wrapper-cancel-" + googleMap.getDiv().id + "\").fadeIn();' value='Get Directions Here' />&nbsp;<a id='directions-wrapper-cancel-" + googleMap.getDiv().id  + "' href='javascript:void(0);' onclick='jQuery(\"div#directions-input-wrapper-" + googleMap.getDiv().id + "\").hide(); jQuery(this).hide();' style='display: none' class='directions-cancel'>Cancel</a></div>";
-		bubbleContent += "<div id='directions-input-wrapper-" + googleMap.getDiv().id + "' style='display: none'>";
-		bubbleContent += "<input type='text' id='user-origin-" + googleMap.getDiv().id + "' class='directions' />&nbsp;<a href='javascript:void(0)'";
-		bubbleContent += "	onclick='return routeDirections(" + marker.position.lat() + 
-															", " + marker.position.lng() +
-															", jQuery(\"input#user-origin-" + googleMap.getDiv().id + "\").val(), \"" +  googleMap.getDiv().id + "\");'><input type='image' class='directions-trigger' value='' /></a>";
-		bubbleContent += "</div>";
-		bubbleContent += "</div>";
+
+		if (markerdirections == "true") {
+
+			var mapId = googleMap.getDiv().id;
+
+			bubbleContent += "<div id='bubble-content' style='min-height: 120px !important; height: 120px !important'>";
+			bubbleContent += "<div style='margin-bottom: 10px;'>" + marker.content + "<br /><input style='margin-top: 5px;' class='directions-btn' type='button'";
+			bubbleContent += " onclick='jQuery(\"div#directions-input-wrapper-" + mapId + "\").fadeIn(); jQuery(\"input#user-origin-" + mapId + "\").focus(); jQuery(\"a#directions-wrapper-cancel-" + mapId + "\").fadeIn();' value='Get Directions Here' />&nbsp;<a id='directions-wrapper-cancel-" + mapId + "' href='javascript:void(0);' onclick='jQuery(\"div#directions-input-wrapper-" + mapId + "\").hide(); jQuery(this).hide();' style='display: none' class='directions-cancel'>Cancel</a></div>";
+			bubbleContent += "<div id='directions-input-wrapper-" + mapId + "' style='display: none'>";
+			bubbleContent += "<input type='text' id='user-origin-" + mapId + "' class='directions' />&nbsp;<a href='javascript:void(0)'";
+			bubbleContent += "	onclick='return routeDirections(" + marker.position.lat() + 
+												", " + marker.position.lng() + ", jQuery(\"input#user-origin-" + 
+												mapId + "\").val(), \"" + mapId + "\");'><input type='image' class='directions-trigger' value='' /></a>";
+			bubbleContent += "</div>";
+			bubbleContent += "</div>";
+
+		} else if (markerdirections == "false") {
+			bubbleContent += marker.content;
+		}
 
 		google.maps.event.addListener(marker, 'click', function () {
             infowindow.setContent(bubbleContent);

@@ -17,21 +17,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Slider
 ----------------------------------*/
+
+.ui-corner-all { 
+-moz-border-radius: 5px; 
+-webkit-border-radius: 5px; 
+border-radius: 5px;}
+
 .ui-slider { position: relative; text-align: left; }
 .ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
-.ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; }
 
 .ui-slider-horizontal { height: .8em; }
-.ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.6em; }
-.ui-slider-horizontal .ui-slider-range { top: 0; height: 100%; }
-.ui-slider-horizontal .ui-slider-range-min { left: 0; }
-.ui-slider-horizontal .ui-slider-range-max { right: 0; }
+.ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.5em; }
 
-.ui-slider-vertical { width: .8em; height: 100px; }
-.ui-slider-vertical .ui-slider-handle { left: -.3em; margin-left: 0; margin-bottom: -.6em; }
-.ui-slider-vertical .ui-slider-range { left: 0; width: 100%; }
-.ui-slider-vertical .ui-slider-range-min { bottom: 0; }
-.ui-slider-vertical .ui-slider-range-max { top: 0; }
+.ui-slider {
+    position: absolute !important;
+}
+
+.ui-slider-horizontal {
+    height: 0.5em !important;
+    background:#ECECEC url(images/h30.png) repeat-x 0 0 !important; 
+    border: 1px solid #888888;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    background:#fff url(images/h30.png) repeat-x 0 0 !important; 
+	height:18px !important;
+	width:10px !important;
+	top:-7px !important;
+	/*position:absolute !important; 
+	display:block !important; 
+	margin-top:1px !important; */
+	border:1px solid #000 !important;
+	cursor:move !important;
+	-moz-box-shadow:0 0 2px #000 !important;
+	-webkit-box-shadow:0 0 6px #000 !important;
+	-moz-border-radius:14px !important;
+	-webkit-border-radius:14px !important; 
+}
+
 
 #shortcode-placeholder {
 	padding: 7px;
@@ -204,32 +227,6 @@ span.sep {
     margin-left: 7px;
     margin-top: 7px;
     width: 60px;
-}
-
-a.ui-slider-handle {
-    background:#fff url(images/h30.png) repeat-x 0 0 !important; 
-	height:18px !important;
-	width:10px !important;
-	top:-7px !important;
-	/*position:absolute !important; 
-	display:block !important; 
-	margin-top:1px !important; */
-	border:1px solid #000 !important;
-	cursor:move !important;
-	-moz-box-shadow:0 0 2px #000 !important;
-	-webkit-box-shadow:0 0 6px #000 !important;
-	-moz-border-radius:14px !important;
-	-webkit-border-radius:14px !important; 
-}
-
-.ui-slider-horizontal {
-    height: 0.5em !important;
-    background:#ECECEC url(images/h30.png) repeat-x 0 0 !important; 
-    border: 1px solid #888888;
-}
-
-.ui-slider {
-    position: absolute !important;
 }
 
 ul.tools-tabs-nav li {
