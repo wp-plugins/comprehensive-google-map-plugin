@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 if ( !function_exists('cgmp_draw_map_placeholder') ):
 	function cgmp_draw_map_placeholder($id, $width, $height, $directions) {
-	$result = '<div class="google-map-placeholder" id="' .$id . '" style="width:' . 
-			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"></div>';
+	$result = '<div align="center"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
+			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"></div></div>';
 
 	if (isset($directions) && $directions == "true") {
 		$result .=  '<div class="google-map-directions-panel" id="directions-placeholder-' .$id . '" style="margin-top: 8px !important; text-align: center; padding: 10px 12px !important; overflow: auto;"></div>';
