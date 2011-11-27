@@ -65,6 +65,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$markerdirections = empty($instance['markerdirections']) ? 'true' : $instance['markerdirections'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
+		$mapalign = empty($instance['mapalign']) ? 'center' : $instance['mapalign'];
+		$panoramiouid = empty($instance['panoramiouid']) ? '' : $instance['panoramiouid'];
 
 
 		$controlOpts = array();
@@ -83,12 +85,12 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$id = md5(time().' '.rand());
 
 		$result = '';
-		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections);
+		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
 		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
 		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers, $kml);
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
-		$result .= cgmp_draw_panoramio($id, $showpanoramio);
+		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
 		$result .= cgmp_draw_kml($id, $kml);
 		$result .= cgmp_end_map_init();
 		echo $result;
@@ -124,6 +126,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
 		$instance['bubbleautopan'] = strip_tags($new_instance['bubbleautopan']);
 		$instance['markerdirections'] = strip_tags($new_instance['markerdirections']);
+		$instance['mapalign'] = strip_tags($new_instance['mapalign']);
+		$instance['panoramiouid'] = strip_tags($new_instance['panoramiouid']);
 
 		return $instance;
 	}
@@ -135,7 +139,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$bools3 = array("Enable" => "true", "Disable" => "false");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
-	
+		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
+
+
 		$title = isset($instance['title']) ? esc_attr($instance['title']) : 'Google Map';
 		$width = isset($instance['width']) ? esc_attr($instance['width']) : '250';
 		$height = isset($instance['height']) ? esc_attr($instance['height']) : '250';
@@ -161,6 +167,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
 		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'false';
 		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
+		$mapalign = !empty($instance['mapalign']) ? esc_attr($instance['mapalign']) : 'center';
+		$panoramiouid = !empty($instance['panoramiouid']) ? esc_attr($instance['panoramiouid']) : '';
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
@@ -282,6 +290,15 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$v = $v."hidden";
 		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "", "value" => $hiddenmarkers, "style" => ""));
+
+		$v = "mapalign";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Alignment")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $mapalign, "options" => $aligns)); 
+
+		$v = "panoramiouid";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "User ID (Opt.)")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $panoramiouid, "class" => "widefat", "style" => "width: 85px !important;"));
+
 
 
 		/*

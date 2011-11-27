@@ -89,9 +89,11 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 		$template_values["LABEL_MARKERDIRECTIONS"] = "<b>Marker&nbsp;Directions</b>";
 		$template_values["SELECT_MARKERDIRECTIONS"] = "The Google Directions API is a service that calculates directions between locations. Directions may specify origins and destinations as text strings (e.g. 'Chicago, IL' or 'Darwin, NT, Australia') or as latitude/longitude coordinates. The Directions API can return multi-part directions.
 
-This service is generally designed for calculating directions for static (known in advance) addresses for placement of application content on a map; this service is not designed to respond in real time to user input, for example.";
-
-
+				This service is generally designed for calculating directions for static (known in advance) addresses for placement of application content on a map; this service is not designed to respond in real time to user input, for example.";
+		$template_values["LABEL_MAPALIGN"] = "<b>Alignment</b>";
+		$template_values["SELECT_MAPALIGN"] = "Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER. Whats actually aligned is the placeholder DIV HTML element which wraps the generated map.";
+		$template_values["LABEL_PANORAMIOUID"] = "<b>User&nbsp;ID&nbsp;(Opt.)</b>";
+		$template_values["INPUT_PANORAMIOUID"] = "If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID";
 
 		$template_values["FOOTER_NOTICES"] = "";
 

@@ -14,6 +14,12 @@
 					<td><a href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
 					<td>SELECT_MAPTYPE</td>
 				</tr>
+				<tr>
+					<td><a href="javascript:void(0);" title="Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER">[?]</a>&nbsp;LABEL_MAPALIGN</td>
+					<td>SELECT_MAPALIGN</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
 			</tbody>
 		</table>
 	</fieldset>
@@ -136,13 +142,21 @@
 					<td><a href="javascript:void(0);" title="A layer showing vehicle traffic as overlay on a Google Map">[?]</a>&nbsp;LABEL_SHOWTRAFFIC</td>
 					<td>SELECT_SHOWTRAFFIC</td>
 				</tr>
-				<tr>
-					<td><a href="javascript:void(0);" title="Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Maps">[?]</a>&nbsp;LABEL_SHOWPANORAMIO</td>
-					<td>SELECT_SHOWPANORAMIO</td>
-					<td><p style="width: 90px">&nbsp;</p></td>
-					<td><p style="width: 90px">&nbsp;</p></td>
-				</tr>
+			</tbody>
+		</table>
+	</fieldset>
 
+
+	<fieldset>
+		<legend>LEGEND_PANORAMIO</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td><a href="javascript:void(0);" title="Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Maps. In other words, each photo will be placed on the map like a marker.">[?]</a>&nbsp;LABEL_SHOWPANORAMIO</td>
+					<td>SELECT_SHOWPANORAMIO</td>
+					<td><a href="javascript:void(0);" title="If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID">[?]</a>&nbsp;LABEL_PANORAMIOUID</td>
+					<td>INPUT_PANORAMIOUID</td>
+				</tr>
 			</tbody>
 		</table>
 	</fieldset>

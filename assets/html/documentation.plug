@@ -42,11 +42,13 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;bubbleautopan="<span class="italic">true <span class="sep">|</span> false. The "true" - disables(!) auto-pan, while "false" - enables(!) auto-pan</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;showtraffic="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;showpanoramio="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;panoramiouid="<span class="italic">Any valid Panoramio user ID (Optional. If specified, the photos will be filtered based on the specified user ID)</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;markerdirections="<span class="italic">true <span class="sep">|</span> false</span>"<br /> 
 	&nbsp;&nbsp;&nbsp;&nbsp;maptypecontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;pancontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;zoomcontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;scalecontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;scalecontrol="<span class="italic">true <span class="sep">|</span> false</span>"<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;mapalign="<span class="italic">left <span class="sep">|</span> center <span class="sep">|</span> right</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;streetviewcontrol="<span class="italic">true <span class="sep">|</span> false</span>"]
 			</p>
 		</div>

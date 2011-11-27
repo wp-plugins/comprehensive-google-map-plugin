@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.2.1
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -81,6 +81,11 @@ Just click once somewhere on the map
 9. Get directions to marker's location from user's origin
 
 == Changelog ==
+
+= 3.0.3 =
+* Enhancement: overriding background-image CSS property of the IMG tag to prevent some themes to mess up the map view. Thank you Eugene R. (http://kharkiv.vonvolt.com)
+* Enhancement: Added a setting option to specify map alignment on the page
+* Enhancement: When using Panoramio layer, added option to specify Panoramio user ID in order to filter photos displayed 
 
 = 3.0.2 =
 * Made the map to be centered by default. Will make an option for this setting in the future.

@@ -1,4 +1,7 @@
-.google-map-placeholder img {max-width: none !important;}
+.google-map-placeholder img {
+    max-width: none !important;
+    background-color: none !important;
+}
 
 input.directions, input.directions-btn {
     background-color: #EEEEEE  !important;

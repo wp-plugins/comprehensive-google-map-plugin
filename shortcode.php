@@ -47,7 +47,9 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 		'showpanoramio' => 'false',
 		'addmarkerlist' => '',
 		'kml' => '',
-		'markerdirections' => 'true'
+		'markerdirections' => 'true',
+		'mapalign' => 'center',
+		'panoramiouid' => ''
 	), $attr));
 	
 	$id = md5(time().' '.rand()); 
@@ -82,12 +84,12 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
 
 	$result = '';
-	$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections);
+	$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
 	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
 	$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
-	$result .= cgmp_draw_panoramio($id, $showpanoramio);
+	$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
 	$result .= cgmp_draw_kml($id, $kml);
 	$result .= cgmp_end_map_init();
 

@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 3.0.2
+Version: 3.0.3
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,7 +31,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '3.0.1');
+define('CGMP_VERSION', '3.0.3');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
@@ -49,6 +49,8 @@ define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Map Primary Location');
 define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Custom Overlays');
 define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Map Controls');
 define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS');
+define('CGMP_FIELDSETNAME_PANORAMIO', 'Panoramio Library');
+
 
 $global_fieldset_names = array();
 $global_fieldset_names["LEGEND_BASIC_SETTINGS"] = CGMP_FIELDSETNAME_BASICSETTINGS;
@@ -59,6 +61,7 @@ $global_fieldset_names["LEGEND_ADDRESS"] = CGMP_FIELDSETNAME_DESTINATION_ADDR_IN
 $global_fieldset_names["LEGEND_WIDGETTITLE"] = CGMP_FIELDSETNAME_WIDGETTITLE;
 $global_fieldset_names["LEGEND_BIKE_AND_TRAFFIC"] = CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH;
 $global_fieldset_names["LEGEND_KML"] = CGMP_FIELDSETNAME_KML;
+$global_fieldset_names["LEGEND_PANORAMIO"] = CGMP_FIELDSETNAME_PANORAMIO;
 
 $doc_url = get_option('siteurl')."/wp-admin/admin.php?page=menu.php";
 $global_fieldset_names["DOC_URL"] = $doc_url;

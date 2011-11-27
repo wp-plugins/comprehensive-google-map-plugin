@@ -105,7 +105,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     	builder.buildAddressMarkers(additionalMarkerLocations);
     }
     
-    this.buildLayer = function (type, kml) {
+    this.buildLayer = function (type, kml, panoramiouid) {
     	if (!sanityCheck()) {
     		return false;
     	}
@@ -119,7 +119,12 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     		break;
     		
     		case jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO:
-    			layerBuilder.buildPanoramioLayer();
+				if (panoramiouid != null && panoramiouid != "") {
+    	        	log("Going to filter Panoramio images by " + panoramiouid);
+					layerBuilder.buildPanoramioLayer(panoramiouid);
+    	        } else {
+    				layerBuilder.buildPanoramioLayer();
+				}
     		break;
     		
     		case jQuery.GoogleMapOrchestrator.LayerType.KML:
@@ -208,13 +213,20 @@ jQuery.LayerBuilder = function (map) {
     	bikeLayer.setMap(googleMap);
     }
     
-    this.buildPanoramioLayer = function () {
+    this.buildPanoramioLayer = function (userId) {
     	if (typeof google.maps.panoramio == "undefined" || !google.maps.panoramio || google.maps.panoramio == null ) {
         	log("We cannot access Panoramio library. Aborting..");
         	return false;
         }
     	var panoramioLayer = new google.maps.panoramio.PanoramioLayer();
-    	panoramioLayer.setMap(googleMap);
+		if (panoramioLayer) {
+			if (userId != null && userId != "") {
+				panoramioLayer.setUserId(userId);
+			}
+    		panoramioLayer.setMap(googleMap);
+		} else {
+			log("Could not instantiate Panoramio object. Aborting..");
+		}
     }
     
     this.buildKmlLayer = function (url) {

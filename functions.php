@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 if ( !function_exists('cgmp_draw_map_placeholder') ):
-	function cgmp_draw_map_placeholder($id, $width, $height, $directions) {
-	$result = '<div align="center"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
+	function cgmp_draw_map_placeholder($id, $width, $height, $directions, $align) {
+	$result = '<div align="'.$align.'"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
 			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"></div></div>';
 
 	if (isset($directions) && $directions == "true") {
@@ -160,10 +160,10 @@ endif;
 
 
 if ( !function_exists('cgmp_draw_panoramio') ):
-	function cgmp_draw_panoramio($id, $showpanoramio) {
+	function cgmp_draw_panoramio($id, $showpanoramio, $userId) {
 		$result = '';
 		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
-			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO);'.PHP_EOL;
+			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
 		}
 		return $result;
 	}

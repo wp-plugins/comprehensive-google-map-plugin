@@ -37,6 +37,7 @@ function cgmp_render_shortcode_builder_form() {
 		$bools3 = array("Enable" => "true", "Disable" => "false");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
+		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
 
 		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
 
@@ -148,6 +149,15 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = $v."hidden";
 		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "shortcodeitem", "value" => "", "style" => ""));
+
+
+		$v = "mapalign";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Alignment")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $aligns)); 
+
+		$v = "panoramiouid";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "User ID (Opt.)")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => ""));
 
 	
 		$template_values = cgmp_build_template_values($settings);
