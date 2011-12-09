@@ -70,13 +70,13 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 	}
 
 
-    this.buildInitLocationMarker = function () {
+    this.buildInitLocationMarker = function (showPrimaryMarker) {
     	log("GoogleMapOrchestrator::buildInitLocationMarker");
     	if (!sanityCheck()) {
     		return false;
     		log("No Google API");
     	}
-    	builder.buildInitLocationMarker();
+    	builder.buildInitLocationMarker(showPrimaryMarker);
     }
     
     this.updateInitLocationMarker = function(newInitLocation, animation) {
@@ -412,7 +412,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 
     function storeAddress(address, zIndex, isExtraMarker) {
 			
-			if (zIndex != 0 && initLocation == address) {
+			if (zIndex > 0 && initLocation == address) {
 				log("Warning :: Primary and given extra marker have the same address: " + address);
 			} else {
 				log("Info :: Storing marker address: " + address);
@@ -461,10 +461,17 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 		primaryAnimation = primAnimation;
     }
 
-    this.buildInitLocationMarker = function () {
+    this.buildInitLocationMarker = function (showPrimaryMarker) {
     	log("MarkerBuilder::buildInitLocationMarker");
-    	pushGeoDestination(initLocation, 0);
-        queryGeocoderService();
+
+		if (showPrimaryMarker)  {
+    		pushGeoDestination(initLocation, 0);
+		} else {
+			log("Will not display the primary marker ..");
+			pushGeoDestination(initLocation, -1);
+		}
+
+		queryGeocoderService();
     }
     
     this.buildAddressMarkers = function (additionalMarkerLocations) {
@@ -513,7 +520,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 			
             var addressPoint = results[0].geometry.location;
 
-			if (element.zIndex == 0) {
+			if (element.zIndex < 1) {
             	originalMapCenter = addressPoint;
 			}
 
@@ -560,6 +567,11 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
             map: googleMap
         });
         if (marker) {
+
+			if (element.zIndex == -1) {
+				marker.setVisible(false);
+				log("Primary marker was denied from being visible..");
+			}
 
 			if (element.extra) {
 				marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");

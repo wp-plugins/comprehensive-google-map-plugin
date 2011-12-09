@@ -9,7 +9,7 @@
 					<td>INPUT_HEIGHT</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view.">[?]</a>&nbsp;LABEL_ZOOM</td>
+					<td><a href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view. Please note: when using KML, the KML zoom needs to be set within the KML file. Zoom config option does not affect zoom of the map generated from KML.">[?]</a>&nbsp;LABEL_ZOOM</td>
 					<td>INPUT_ZOOM</td>
 					<td><a href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
 					<td>SELECT_MAPTYPE</td>

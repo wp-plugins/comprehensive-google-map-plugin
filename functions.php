@@ -58,8 +58,8 @@ if ( !function_exists('cgmp_draw_map_marker') ):
 			$result .= '    orc.updateInitLocationMarker(orc.getOption("initLocation"), jQuery.GoogleMapOrchestrator.AnimationType.'.$animation.');'.PHP_EOL;
 		}
 
-		if ((!isset($kml) || $kml == "") && isset($showmarker) && strtolower(trim($showmarker)) == 'true') {
-			$result .= '    orc.buildInitLocationMarker();'.PHP_EOL;
+		if ((!isset($kml) || $kml == "") /*&& isset($showmarker) && strtolower(trim($showmarker)) == 'true'*/) {
+			$result .= '    orc.buildInitLocationMarker('.$showmarker.');'.PHP_EOL;
 		}
 
 		if (isset($extramarkers) && $extramarkers != '') {
