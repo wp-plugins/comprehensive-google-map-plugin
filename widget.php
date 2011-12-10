@@ -87,7 +87,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
 		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
-		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers, $kml);
+		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers, $kml, $latitude, $longitude);
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
 		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);

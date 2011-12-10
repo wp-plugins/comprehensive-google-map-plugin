@@ -48,7 +48,7 @@ endif;
 
 
 if ( !function_exists('cgmp_draw_map_marker') ):
-	function cgmp_draw_map_marker($id, $showmarker, $animation, $address, $extramarkers, $kml) {
+	function cgmp_draw_map_marker($id, $showmarker, $animation, $address, $extramarkers, $kml, $lat, $long) {
 		
 		$result = "";
 
@@ -59,8 +59,12 @@ if ( !function_exists('cgmp_draw_map_marker') ):
 		}
 
 		if ((!isset($kml) || $kml == "") /*&& isset($showmarker) && strtolower(trim($showmarker)) == 'true'*/) {
-			$result .= '    orc.buildInitLocationMarker('.$showmarker.');'.PHP_EOL;
-		}
+
+				if (((isset($lat) && ($lat > 0 || $lat < 0)) || (isset($long) && ($long > 0 || $long < 0))) || (isset($address) && $address != '')) {
+
+						$result .= '    orc.buildInitLocationMarker('.$showmarker.');'.PHP_EOL;
+					}
+			}
 
 		if (isset($extramarkers) && $extramarkers != '') {
 			$result .= '    orc.buildAddressMarkers("'.$extramarkers.'");'.PHP_EOL;
