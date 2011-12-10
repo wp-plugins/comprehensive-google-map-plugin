@@ -484,15 +484,15 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
       	timeout = null;
         if (storedAddresses.length > 0) {
             var element = storedAddresses.shift();
-            var geocoderRequest = {"address": element.address};
-            
+
             if (element.address instanceof google.maps.LatLng) {
-            	geocoderRequest = {"location": element.address};
-            }
-     
-            geocoder.geocode(geocoderRequest, function (results, status) {
-                geocoderCallback(results, status, element);
-            });
+            	buildLocationFromCoords(element);
+			} else {
+				var geocoderRequest = {"address": element.address};
+				geocoder.geocode(geocoderRequest, function (results, status) {
+                	geocoderCallback(results, status, element);
+            	});
+			}
         } else {
             setBounds();
         }
@@ -515,24 +515,36 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
         }
     }
 
+	function buildLocationFromCoords(element)  {
+		var addressPoint = element.address;
+
+		element.address = buildBubbleContent(element, addressPoint);
+		instrumentMarker(addressPoint, element);
+       	timeout = setTimeout(function() { queryGeocoderService(); }, 330);
+	}
+
+	function buildBubbleContent(element, addressPoint)  {
+		if (element.zIndex < 1) {
+           	originalMapCenter = addressPoint;
+		}
+
+		var lat = addressPoint.lat();
+		lat = parseFloat(lat);
+		lat = lat.toFixed(5);
+
+		var lng = addressPoint.lng();
+		lng = parseFloat(lng);
+		lng = lng.toFixed(5);
+
+		return "Lat/Long: " + lat + ", " + lng;
+	}
+
     function geocoderCallback(results, status, element) {
         if (status == google.maps.GeocoderStatus.OK) {
-			
+
             var addressPoint = results[0].geometry.location;
-
-			if (element.zIndex < 1) {
-            	originalMapCenter = addressPoint;
-			}
-
-			var lat = addressPoint.lat();
-			lat = parseFloat(lat);
-			lat = lat.toFixed(5);
-
-			var lng = addressPoint.lng();
-			lng = parseFloat(lng);
-			lng = lng.toFixed(5);
-
-			element.address = results[0].formatted_address + "<br />Lat/Long: " + lat + ", " + lng + "";
+			
+			element.address = results[0].formatted_address + "<br />" + buildBubbleContent(element, addressPoint);
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -570,7 +582,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 
 			if (element.zIndex == -1) {
 				marker.setVisible(false);
-				log("Primary marker was denied from being visible..");
+				log("Primary marker with address [" + element.address + "] was denied from being visible..");
 			}
 
 			if (element.extra) {

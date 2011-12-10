@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.2.1
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -81,6 +81,9 @@ Just click once somewhere on the map
 9. Get directions to marker's location from user's origin
 
 == Changelog ==
+
+= 3.0.5 =
+* Enhancement: Now using Geo service only when geo address is provided. When lat/long are provided, the service is not used which does not cause the lost of location precision when generating the marker on the map.
 
 = 3.0.4 =
 * Bug: When primary marker is set to be hidden, the map was not generated 
