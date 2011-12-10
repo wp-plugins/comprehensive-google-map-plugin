@@ -427,12 +427,34 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
     
     function addGeoPoint(point, zIndex, isExtraMarker) {
     	if (point == null || !point) {
+			log("Warning :: Given point containing Lat/Long is NULL");
     		return false;
     	}
+		log("Point given to the addGeoPoint():");
+		log(point);
         var latLng = point;
         if (!(latLng instanceof google.maps.LatLng)) {
         	if (point.indexOf(",") != -1) {
         		var latlngStr = point.split(",",4);
+
+				if (latlngStr == null || latlngStr.length != 2) {
+					log("Warning :: Exploded lat/long array is NULL or does not have length of two");
+					return false;
+				}
+
+				if (latlngStr[0] == null || latlngStr[1] == null) {
+					log("Warning :: Lat or Long are NULL");
+					return false;
+				}
+
+				latlngStr[0] = latlngStr[0].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+				latlngStr[1] = latlngStr[1].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+
+				if (latlngStr[0] == '' || latlngStr[1] == '') {
+					log("Warning :: Lat or Long are empty string");
+					return false;
+				}
+
         	    var lat = parseFloat(latlngStr[0]);
         	    var lng = parseFloat(latlngStr[1]);
 	            latLng = new google.maps.LatLng(lat, lng);
