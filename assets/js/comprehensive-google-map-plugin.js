@@ -145,11 +145,14 @@ jQuery.TokenListHolder = function (classPath) {
 	var lists = [];
 	jQuery.map(jQuery(classPath), function(element) {
 		var id = jQuery(element).attr("id");
-		lists.push({id : id, obj: jQuery(element).tokenInput({holderId: id})});
+
+		if (id != null) {
+			lists.push({id : id, obj: jQuery(element).tokenInput({holderId: id})});
+		}
 	});
 
 	this.printLists = function() {
-		console.log(lists);
+		//console.log(lists);
 	}
 
 	this.getLists = function() {
@@ -181,9 +184,9 @@ function initTokenHoldersAndEvent()  {
 	var holder = new jQuery.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
 	var initLists = holder.getLists();
 
-	console.log(initLists);
+	//console.log(initLists);
 
-	jQuery.map(jQuery(initLists), function(element) {
+		jQuery.map(jQuery(initLists), function(element) {
 			var hiddenInput = "#" + element.id + "hidden";
 			var csv = jQuery(hiddenInput).val();
 
@@ -194,7 +197,7 @@ function initTokenHoldersAndEvent()  {
         			holderList.add(element);
 				});
 			}
-	});
+		});
 
 	jQuery("input.add-additonal-location").click(function () {
 				
