@@ -1,6 +1,10 @@
 .google-map-placeholder img {
     max-width: none !important;
-    background-color: none !important;
+    max-height: none !important;
+    background-color: transparent !important;
+	padding: 0px !important;
+	margin: 0px !important;
+    visibility: inherit !important;
 }
 
 input.directions, input.directions-btn {

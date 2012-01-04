@@ -173,7 +173,7 @@ border-radius: 5px;}
     border-color: #B8B8B8;
 }
 
-.tooltip {
+.google-map-tooltip {
 	display:none;
 	/*background:transparent url("images/black_arrow.png");*/
     border: 5px solid #777777;

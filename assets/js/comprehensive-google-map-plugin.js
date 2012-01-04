@@ -134,6 +134,11 @@ function initSliders() {
 	configureSlider(60, 990, 5, "height");
 }
 
+function initTooltips()  {
+	jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8, tipClass : "google-map-tooltip"});
+	jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8, tipClass : "google-map-tooltip"});
+}
+
 function addMarker(id) {
 	alert(id);
 }
@@ -233,9 +238,7 @@ jQuery(document).ready(function() {
 
 	initTokenHoldersAndEvent();
 	initSliders(); 
-
-	jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
-	jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
+	initTooltips();
 
 	jQuery("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
         tabs: 'li',
@@ -255,9 +258,7 @@ jQuery(document).ajaxSuccess(
 					if (indexOf > 0) {
 						initTokenHoldersAndEvent();
 						initSliders();
-						jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8});
-						jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8});
-						
+						initTooltips();
 					}
 				}
 			}
