@@ -135,8 +135,56 @@ function initSliders() {
 }
 
 function initTooltips()  {
-	jQuery("div#widgets-right .widget-google-map-container a[title]").tooltip({effect : "fade", opacity: 0.8, tipClass : "google-map-tooltip"});
-	jQuery("#google-map-container-metabox a[title]").tooltip({effect : "fade", opacity: 0.8, tipClass : "google-map-tooltip"});
+
+/*
+	jQuery('a.google-map-tooltip-marker').mouseover(function(e) {
+
+		var tooltip_marker_id = jQuery(this).attr('id');
+        var tip = jQuery(this).attr('title');
+
+        jQuery(this).attr('title',''); 
+        var div = jQuery('<div id="tooltip-container" class="google-map-tooltip">' + tip + '</div>');
+		jQuery(this).append(div);
+
+        jQuery('div#tooltip-container').css('top', e.pageY);
+        //jQuery('div#tooltip-container').css('left', e.pageX + 20 );
+		jQuery('div#tooltip-container').css('z-index', 9999999999999);
+		jQuery('div#tooltip-container').css('position', "absolute");
+
+        jQuery('div#tooltip-container').fadeTo('10', 0.8).fadeIn();
+
+		return false;
+    }).mousemove(function(e) {
+        //jQuery('div#tooltip').css('top', e.pageY + 10 );
+        //jQuery('div#tooltip').css('left', e.pageX + 20 );
+
+    }).mouseout(function() {
+        jQuery(this).attr('title', jQuery('div#tooltip-container').html());
+        jQuery(this).children('div#tooltip-container').remove();
+		return false;
+    });
+	*/
+
+	jQuery('a.google-map-tooltip-marker').hover(function() {
+
+		var tooltip_marker_id = jQuery(this).attr('id');
+
+		jQuery("a#" + tooltip_marker_id + "[title]").tooltip({
+			effect: 'slide',
+			opacity: 0.8,
+			tipClass : "google-map-tooltip",
+			offset: [-5, 0],
+			events: {
+  				def: "click, mouseleave"
+			}
+		});
+
+		jQuery("a#" + tooltip_marker_id).mouseout(function(event) {
+			if (jQuery(this).data('tooltip')) {
+  				jQuery(this).data('tooltip').hide();
+			}
+		});
+	});
 }
 
 function addMarker(id) {
