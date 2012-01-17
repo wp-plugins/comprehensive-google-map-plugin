@@ -58,28 +58,6 @@ function buildShortcode(id) {
 }
 
 
-function routeDirections(markerLocation, userOrigin, directionsRenderer) {
-		log("Info :: Routing directions from: " + userOrigin + " to: " + markerLocation);
-		var request = {
-  			origin: userOrigin, 
-  			destination: markerLocation,
-  			travelMode: google.maps.DirectionsTravelMode.DRIVING,
-  			unitSystem: google.maps.DirectionsUnitSystem.METRIC,
-  			provideTripAlternatives: true
-		};
-
-		var directionsService = new google.maps.DirectionsService();
-		directionsService.route(request, function(response, status) {
-  			if (status == google.maps.DirectionsStatus.OK) {
-				directionsRenderer.setDirections(response);
-  			} else {
-    			log('Error :: Got status [' + status + '] when routing directions');
-  			}
-		});
-}
-
-
-
 
 function configureSlider(min, max, step, elem) {
 
@@ -185,10 +163,6 @@ function initTooltips()  {
 			}
 		});
 	});
-}
-
-function addMarker(id) {
-	alert(id);
 }
 
 
