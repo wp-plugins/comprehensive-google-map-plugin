@@ -319,7 +319,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
             infowindow.open(map, this);
         });
 
-		streetViewService.getPanoramaByLocation(marker.position, 10, function (streetViewPanoramaData, status) {
+		streetViewService.getPanoramaByLocation(marker.position, 50, function (streetViewPanoramaData, status) {
     		if (status === google.maps.StreetViewStatus.OK) {
         		// ok
 					jQuery('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function() {
@@ -380,7 +380,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				});
     		} else {
         		// no street view available in this range, or some error occurred
-				log("Warning :: There is not street view available for this marker location: " + marker.position);
+				log("Warning :: There is not street view available for this marker location: " + marker.position + " status: " + status);
 				jQuery('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
 					e.preventDefault();
 				});
