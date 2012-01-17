@@ -52,42 +52,34 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 				<div id="dir_wp_0" class="dir-wp">
 					<div class="dir-wp-hl">
 						<div id="dir_m_0" class="dir-m" style="cursor: -moz-grab;">
-							<div
-								style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img style="position: absolute; left: 0px; top: -141px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;"
-									src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
+							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
+								<img style="position: absolute; left: 0px; top: -141px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
 							</div>
 						</div>
 						<div class="dir-input">
 							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value=""
-									name="a_address" id="a_address" title="Start address"
-									class="wp kd-input-text" autocomplete="off" autocorrect="off">
+								<input type="text" maxlength="2048" tabindex="4" value="" name="a_address" id="a_address" title="Start address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="dir-rev-wrapper">
 					<div id="dir_rev" title="Get reverse directions">
-						<a id="reverse-btn" href="javascript:void(0)" class="kd-button"> <img
-							class="dir-reverse" src="'.CGMP_PLUGIN_IMAGES.'/transparent.png"> </a>
+						<a id="reverse-btn" href="javascript:void(0)" class="kd-button"> 
+							<img class="dir-reverse" src="'.CGMP_PLUGIN_IMAGES.'/transparent.png"> 
+						</a>
 					</div>
 				</div>
 				<div id="dir_wp_1" class="dir-wp">
 					<div class="dir-wp-hl">
 						<div id="dir_m_1" class="dir-m" style="cursor: -moz-grab;">
-							<div
-								style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img
-									style="position: absolute; left: 0px; top: -72px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;"
-									src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
+							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
+								<img style="position: absolute; left: 0px; top: -72px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
 							</div>
 						</div>
 						<div class="dir-input">
 							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value=""
-									name="b_address" id="b_address" title="End address"
-									class="wp kd-input-text" autocomplete="off" autocorrect="off">
+								<input type="text" maxlength="2048" tabindex="4" value="" name="b_address" id="b_address" title="End address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
 							</div>
 						</div>
 					</div>
@@ -111,11 +103,8 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 					<label for="radio_miles">Miles</label>
 				</div>
 				<div class="dir-sub-cntn">
-					<button tabindex="6" name="btnG" type="submit" id="d_sub"
-					class="kd-button kd-button-submit">Get Directions</button>
-					<button tabindex="6" name="btnG" type="button" style="display: none;" id="print_sub"
-						class="kd-button kd-button-submit">Print Directions</button>
-
+					<button tabindex="6" name="btnG" type="submit" id="d_sub" class="kd-button kd-button-submit">Get Directions</button>
+					<button tabindex="6" name="btnG" type="button" style="display: none;" id="print_sub" class="kd-button kd-button-submit">Print Directions</button>
 				</div>
 			</div>
 		</div>
