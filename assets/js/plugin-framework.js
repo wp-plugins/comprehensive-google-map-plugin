@@ -642,7 +642,8 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
          } else if (utils.isAlphaNumeric(target)) {
              storeAddress(target, index, isExtraMarker);
          } else {
-             log("Unknown type of geo destination: " + target);
+			 storeAddress(target, index, isExtraMarker);
+             log("Unknown type of geo destination in regexp: " + target + ", tried to store it as an address");
          }
     }
 
