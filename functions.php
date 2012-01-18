@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+  
 if ( !function_exists('cgmp_draw_map_placeholder') ):
 		function cgmp_draw_map_placeholder($id, $width, $height, $directions, $align) {
 

@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.3.1
-Stable tag: 4.0.4
-     
+Stable tag: 4.0.5
+
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
@@ -29,7 +29,7 @@ IDs explicitly when dealing with multiple maps on the same post/page.
 * Loads geographic markup from a KML, KMZ or GeoRSS file hosted remotely.
 
 Support for Google Fusion tables and fusion table queries, distance matrix are to be added soon, stay tuned!
-
+ 
 
 Please note: 
 Although I try my best to release a bug-free code, one or two may slip through. It would be so cool and I would really appreciate it if you would report any bugs to me first at http://initbinder.com/comprehensive-google-map-plugin, before reporting the plugin to be broken. I am quick to respond. 
@@ -85,6 +85,9 @@ Just click once somewhere on the map
 11. Street view in the marker's infer window
 
 == Changelog ==
+
+= 4.0.5 =
+* Bug: JS error
 
 = 4.0.4 =
 * Enhancement: Documentation refinement
