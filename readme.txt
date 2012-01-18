@@ -5,7 +5,7 @@ Tags: google map, google map widget, google map short code, google map short cod
 Requires at least: 3.0.1
 Tested up to: 3.3.1
 Stable tag: 4.0.4
-
+     
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
