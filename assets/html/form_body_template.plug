@@ -3,99 +3,112 @@
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
 				<tr>
-					<td><a href="javascript:void(0);" title="Width of map placeholder DIV">[?]</a>&nbsp;LABEL_WIDTH</td>
+					<td><a id="tooltip-marker-width" class="google-map-tooltip-marker" href="javascript:;" title="Width of map placeholder DIV">[?]</a>&nbsp;LABEL_WIDTH</td>
 					<td>INPUT_WIDTH</td>
-					<td><a href="javascript:void(0);" title="Height of map placeholder DIV">[?]</a>&nbsp;LABEL_HEIGHT</td>
+					<td><a id="tooltip-marker-height" class="google-map-tooltip-marker" href="javascript:void(0);" title="Height of map placeholder DIV">[?]</a>&nbsp;LABEL_HEIGHT</td>
 					<td>INPUT_HEIGHT</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="Latitude in degrees. Part of geographic coordinate, used together with longitude">[?]</a>&nbsp;LABEL_LATITUDE</td>
-					<td>INPUT_LATITUDE</td>
-					<td><a href="javascript:void(0);" title="Longitude in degrees. Part of geographic coordinate, used together with latitude">[?]</a>&nbsp;LABEL_LONGITUDE</td>
-					<td>INPUT_LONGITUDE</td>
+					<td><a id="tooltip-marker-zoom" class="google-map-tooltip-marker" href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view. Please note: when using KML, the KML zoom needs to be set within the KML file. Zoom config option does not affect zoom of the map generated from KML.">[?]</a>&nbsp;LABEL_ZOOM</td>
+					<td>INPUT_ZOOM</td>
+					<td><a id="tooltip-marker-maptype" class="google-map-tooltip-marker" href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
+					<td>SELECT_MAPTYPE</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view.">[?]</a>&nbsp;LABEL_ZOOM</td>
-					<td>INPUT_ZOOM</td>
-					<td><a href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
-					<td>SELECT_MAPTYPE</td>
+					<td><a id="tooltip-marker-mapalign" class="google-map-tooltip-marker" href="javascript:void(0);" title="Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER">[?]</a>&nbsp;LABEL_MAPALIGN</td>
+					<td>SELECT_MAPALIGN</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 				</tr>
 			</tbody>
 		</table>
 	</fieldset>
+
+	<fieldset>
+		<legend>LEGEND_ADDRESS</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td><a id="tooltip-marker-lat" class="google-map-tooltip-marker" href="javascript:void(0);" title="Latitude in degrees. Part of geographic coordinate, used together with longitude">[?]</a>&nbsp;LABEL_LATITUDE</td>
+					<td>INPUT_LATITUDE</td>
+					<td><a id="tooltip-marker-long" class="google-map-tooltip-marker" href="javascript:void(0);" title="Longitude in degrees. Part of geographic coordinate, used together with latitude">[?]</a>&nbsp;LABEL_LONGITUDE</td>
+					<td>INPUT_LONGITUDE</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="text-align: center;" height="35px">
+					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
+				</tr>
+				<tr>	
+					<td><a id="tooltip-marker-addrcontent" class="google-map-tooltip-marker" href="javascript:void(0);" title="Destination address string. Combined from street number, city (possibly post or zip code) and a country name. Please note: address *supersedes* latitude/longitude settings">[?]</a>&nbsp;LABEL_ADDRESSCONTENT</td>
+					<td colspan="3">INPUT_ADDRESSCONTENT</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="text-align: center;" height="35px">
+					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
+				</tr>
+				<tr>	
+					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify URL here, thats starts with http(s). Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
+					<td colspan="3">INPUT_KML</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</fieldset>
+
 
 	<fieldset>
 		<legend>LEGEND_MARKER</legend>
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
 				<tr>
-					<td><a href="javascript:void(0);" title="Show/hide map location marker">[?]</a>&nbsp;LABEL_SHOWMARKER</td>
+					<td><a id="tooltip-marker-showmarker" class="google-map-tooltip-marker"  href="javascript:void(0);" title="Show/hide primary location marker on the map">[?]</a>&nbsp;LABEL_SHOWMARKER</td>
 					<td>SELECT_SHOWMARKER</td>
-					<td><a href="javascript:void(0);" title="Determines what dynamic movement marker exhibits when displayed on the map">[?]</a>&nbsp;LABEL_ANIMATION</td>
+					<td><a id="tooltip-marker-animation" class="google-map-tooltip-marker" href="javascript:void(0);" title="Determines what dynamic movement primary marker exhibits when displayed on the map">[?]</a>&nbsp;LABEL_ANIMATION</td>
 					<td>SELECT_ANIMATION</td>
 				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>LEGEND_INFOBUBBLE</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="The info bubble content text">[?]</a>&nbsp;LABEL_INFOBUBBLECONTENT</td>
-					<td colspan="3">INPUT_INFOBUBBLECONTENT</td>
-				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-
-
-	<fieldset>
-		<legend>LEGEND_ADDRESS</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="Destination address string. Combined from street number, city (possibly post or zip code) and a country name. Please note: address *supersedes* latitude/longitude settings">[?]</a>&nbsp;LABEL_ADDRESSCONTENT</td>
-					<td colspan="3">INPUT_ADDRESSCONTENT</td>
-				</tr>
-			</tbody>
-		</table>
-	</fieldset>
-
-	<fieldset>
-		<legend>LEGEND_BIKE_AND_TRAFFIC</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
 				<tr>
-					<td><a href="javascript:void(0);" title="A layer showing bike lanes and paths as overlays on a Google Map">[?]</a>&nbsp;LABEL_SHOWBIKE</td>
-					<td>SELECT_SHOWBIKE</td>
-					<td><a href="javascript:void(0);" title="A layer showing vehicle traffic as overlay on a Google Map">[?]</a>&nbsp;LABEL_SHOWTRAFFIC</td>
-					<td>SELECT_SHOWTRAFFIC</td>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td>
+						<a id="tooltip-marker-addmarkerinput" class="google-map-tooltip-marker" href="javascript:void(0);" title="Apart from specifying primary marker for the map, you can specify additional markers. You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content">[?]</a>&nbsp;LABEL_ADDMARKERINPUT
+					</td>
+					<td colspan="2">
+						INPUT_ADDMARKERINPUT
+					</td>
+					<td>
+						BUTTON_ADDMARKER
+					</td>
+				</tr>
+				<tr>
+					<!-- <td>&nbsp;</td> -->
+					<td colspan="4">
+						LIST_ADDMARKERLIST
+						HIDDEN_ADDMARKERLISTHIDDEN
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</fieldset>
-
 
 	<fieldset>
 		<legend>LEGEND_CONTROL</legend>
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
 				<tr>
-					<td><a href="javascript:void(0);" title="The MapType control lets the user toggle between map types (such as ROADMAP and SATELLITE). This control appears by default in the top right corner of the map">[?]</a>&nbsp;LABEL_M_APTYPECONTROL</td>
+					<td><a id="tooltip-marker-maptypecontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The MapType control lets the user toggle between map types (such as ROADMAP and SATELLITE). This control appears by default in the top right corner of the map">[?]</a>&nbsp;LABEL_M_APTYPECONTROL</td>
 					<td>SELECT_M_APTYPECONTROL</td>
-					<td><a href="javascript:void(0);" title="The Pan control displays buttons for panning the map. This control appears by default in the top left corner of the map on non-touch devices. The Pan control also allows you to rotate 45° imagery, if available">[?]</a>&nbsp;LABEL_PANCONTROL</td>
+					<td><a id="tooltip-marker-pancontrol" class="google-map-tooltip-marker"  href="javascript:void(0);" title="The Pan control displays buttons for panning the map. This control appears by default in the top left corner of the map on non-touch devices. The Pan control also allows you to rotate 45° imagery, if available">[?]</a>&nbsp;LABEL_PANCONTROL</td>
 					<td>SELECT_PANCONTROL</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="The Zoom control displays a slider (for large maps) or small '+/-' buttons (for small maps) to control the zoom level of the map. This control appears by default in the top left corner of the map on non-touch devices or in the bottom left corner on touch devices">[?]</a>&nbsp;LABEL_Z_OOMCONTROL</td>
+					<td><a id="tooltip-marker-zoomcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Zoom control displays a slider (for large maps) or small '+/-' buttons (for small maps) to control the zoom level of the map. This control appears by default in the top left corner of the map on non-touch devices or in the bottom left corner on touch devices">[?]</a>&nbsp;LABEL_Z_OOMCONTROL</td>
 					<td>SELECT_Z_OOMCONTROL</td>
-					<td><a href="javascript:void(0);" title="The Scale control displays a map scale element. This control is not enabled by default">[?]</a>&nbsp;LABEL_SCALECONTROL</td>
+					<td><a id="tooltip-marker-scalecontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Scale control displays a map scale element. This control is not enabled by default">[?]</a>&nbsp;LABEL_SCALECONTROL</td>
 					<td>SELECT_SCALECONTROL</td>
 				</tr>
 				<tr>
-					<td><a href="javascript:void(0);" title="The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map">[?]</a>&nbsp;LABEL_STREETVIEWCONTROL</td>
+					<td><a id="tooltip-marker-streetviewcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map">[?]</a>&nbsp;LABEL_STREETVIEWCONTROL</td>
 					<td>SELECT_STREETVIEWCONTROL</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
@@ -105,14 +118,48 @@
 	</fieldset>
 
 	<fieldset>
-		<legend>LEGEND_KML</legend>
+		<legend>LEGEND_INFOBUBBLE</legend>
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
-				<tr>	
-					<td><a href="javascript:void(0);" title="KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
-					<td colspan="3">INPUT_KML</td>
+				<tr>
+					<td><a id="tooltip-marker-bubbleautopan" class="google-map-tooltip-marker" href="javascript:void(0);" title="Enables or disables info bubble auto-panning (the map view centers on the info bubble) when marker is clicked">[?]</a>&nbsp;LABEL_BUBBLEAUTOPAN</td>
+					<td>SELECT_BUBBLEAUTOPAN</td>
+					<td><a id="tooltip-marker-makedirs" class="google-map-tooltip-marker" href="javascript:void(0);" title="Enables or disables user to ask for direction from provided location to the clicked marker's location">[?]</a>&nbsp;LABEL_MARKERDIRECTIONS</td>
+					<td>SELECT_MARKERDIRECTIONS</td>
 				</tr>
 			</tbody>
 		</table>
 	</fieldset>
-    <div align="right"><span style="font-size: 9px;"><a href="DOC_URL">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8">Support</a></span></div>
+
+
+	<fieldset>
+		<legend>LEGEND_BIKE_AND_TRAFFIC</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td><a id="tooltip-marker-showbike" class="google-map-tooltip-marker" href="javascript:void(0);" title="A layer showing bike lanes and paths as overlays on a Google Map">[?]</a>&nbsp;LABEL_SHOWBIKE</td>
+					<td>SELECT_SHOWBIKE</td>
+					<td><a id="tooltip-marker-showtraffic" class="google-map-tooltip-marker" href="javascript:void(0);" title="A layer showing vehicle traffic as overlay on a Google Map">[?]</a>&nbsp;LABEL_SHOWTRAFFIC</td>
+					<td>SELECT_SHOWTRAFFIC</td>
+				</tr>
+			</tbody>
+		</table>
+	</fieldset>
+
+
+	<fieldset>
+		<legend>LEGEND_PANORAMIO</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td><a id="tooltip-marker-panoramio" class="google-map-tooltip-marker" href="javascript:void(0);" title="Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Maps. In other words, each photo will be placed on the map like a marker.">[?]</a>&nbsp;LABEL_SHOWPANORAMIO</td>
+					<td>SELECT_SHOWPANORAMIO</td>
+					<td><a id="tooltip-marker-panoramiouid" class="google-map-tooltip-marker" href="javascript:void(0);" title="If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID">[?]</a>&nbsp;LABEL_PANORAMIOUID</td>
+					<td>INPUT_PANORAMIOUID</td>
+				</tr>
+			</tbody>
+		</table>
+	</fieldset>
+
+
+    <div align="right">FOOTER_NOTICES</div>
