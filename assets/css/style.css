@@ -1,0 +1,309 @@
+/*
+Copyright (C) 2011  Alexander Zagniotov
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* Slider
+----------------------------------*/
+ 
+.ui-corner-all { 
+-moz-border-radius: 5px; 
+-webkit-border-radius: 5px; 
+border-radius: 5px;}
+
+.ui-slider { position: relative; text-align: left; }
+.ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
+
+.ui-slider-horizontal { height: .8em; }
+.ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.5em; }
+
+.ui-slider {
+    position: absolute !important;
+}
+
+.ui-slider-horizontal {
+    height: 0.5em !important;
+    background:#ECECEC url(images/h30.png) repeat-x 0 0 !important; 
+    border: 1px solid #888888;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    background:#fff url(images/h30.png) repeat-x 0 0 !important; 
+	height:18px !important;
+	width:10px !important;
+	top:-7px !important;
+	/*position:absolute !important; 
+	display:block !important; 
+	margin-top:1px !important; */
+	border:1px solid #000 !important;
+	cursor:move !important;
+	-moz-box-shadow:0 0 2px #000 !important;
+	-webkit-box-shadow:0 0 6px #000 !important;
+	-moz-border-radius:14px !important;
+	-webkit-border-radius:14px !important; 
+}
+
+
+#shortcode-placeholder {
+	padding: 7px;
+	display: none;
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	background-color: white;
+	border: 1px solid #D1D1D1;
+	text-align: left;
+	width: 445px;
+}
+
+.tools-tabs .documentation fieldset,
+#google_map_shortcode_builder fieldset,
+.widget-google-map-container fieldset {
+        border-top: 1px solid #D1D1D1;
+        border-left: 1px solid #D1D1D1;
+		border-right: 1px solid #D1D1D1;
+		border-bottom: 1px solid #c1c1c1;
+		-webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        background-color: #F1F1F1;
+		background-image: -moz-linear-gradient(center top , #F8F8F8, #F1F1F1);
+}
+
+.widget-google-map-container table {
+		width: 554px !important;
+        /*border: 1px solid black;*/
+}
+
+#google_map_shortcode_builder table td ,
+.widget-google-map-container table td {
+		text-align: right;
+        padding-right: 5px;
+        /*border: 1px solid black;*/
+}
+
+.tools-tabs .documentation table td {
+        vertical-align: top;
+		text-align: justify;
+        padding: 10px;
+}
+
+.widget-google-map-container table td {
+		width: 95px !important; /* 4*95 + 4*5(padding) == 460px */
+}
+
+#google_map_shortcode_builder fieldset table {
+		width: 602px !important;
+}
+
+#google_map_shortcode_builder table td {
+		width: 145px !important; /* 4*145 + 4*5(padding) == 660px */
+}
+
+.tools-tabs .documentation fieldset table {
+        width: 99% !important;
+}
+
+.tools-tabs .documentation fieldset label,
+#google_map_shortcode_builder fieldset label,
+.widget-google-map-container fieldset label {
+        color: #333333;
+}    
+
+.tools-tabs .documentation legend,        
+#google_map_shortcode_builder legend,
+.widget-google-map-container legend {
+		padding: 0.2em;
+		color:gray;
+		font-size: 100%;
+		text-align:right;
+}
+
+.tools-tabs .documentation input,
+#google_map_shortcode_builder input,
+.widget-google-map-container input {
+		margin-bottom: 3px;
+}
+
+.widget-google-map-container input[type="text"] {
+		width: 120px;
+}
+
+
+.widget-google-map-container select {
+    width: 85px;
+}
+
+#google_map_shortcode_builder select,
+#google_map_shortcode_builder input[type="text"] {
+		width: 180px;
+}
+
+#google_map_shortcode_builder select {
+    width: 115px;
+}
+
+#google_map_shortcode_builder select,
+.widget-google-map-container select {
+		height: 1.8em !important;
+        padding: none !important;
+}
+
+#google_map_shortcode_builder select,
+#google_map_shortcode_builder input[type="text"],
+.widget-google-map-container select,
+.widget-google-map-container input[type="text"] {
+    border-color: #B8B8B8;
+}
+
+.google-map-tooltip {
+	display:none;
+	/*background:transparent url("images/black_arrow.png");*/
+    border: 5px solid #777777;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+	/*height:70px; */
+	width:175px;
+    background-color: #000;
+	padding:15px;
+    text-align: left;
+	color:#fff;	
+    font-size: 11px;
+    font-family: verdana;
+    z-index: 9999999999;
+}
+
+ul.tools-tabs-nav {
+	margin-bottom: -1px;
+	padding-left: 4.2em;
+	/*overflow: hidden;*/
+	white-space: nowrap;
+	padding-right: 3.5em;
+	padding-top: 3.1em;
+}
+
+input.slider-output {
+    width: 60px;
+    border: 1px solid #999999;
+}
+
+span.italic {
+    font-style: normal;
+    color: green;
+}
+
+span.sep {
+    font-style: normal;
+    color: red;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.widget-google-map-container div.slider {
+    margin-left: 5px;
+    margin-top: 7px;
+    width: 50px;
+}
+
+#google_map_shortcode_builder div.slider {
+    margin-left: 7px;
+    margin-top: 7px;
+    width: 60px;
+}
+
+ul.tools-tabs-nav li {
+	display: inline-block;
+	margin: 0 0.2em 0 0;
+	border: 1px solid #DFDFDF;
+	background: none repeat scroll 0 0 #F8F8F8;
+	
+	border-top-right-radius: 6px;
+	border-top-left-radius: 6px;
+	
+	-moz-border-radius-topright: 6px;
+	-moz-border-radius-topleft: 6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-top-left-radius: 6px;
+	
+	font-weight: bold;
+	text-shadow: 0 1px 0 #FFFFFF;
+	max-width: 20%;
+	overflow: hidden;
+	text-align: center;
+}
+
+
+ul.tools-tabs-nav li.current {
+	background: white;
+	color: black;
+	border-bottom-color: white;
+	-moz-box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.06);
+	-webkit-box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.06);
+	box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.06);
+}
+
+ul.tools-tabs-nav li a {
+	display: inline-block;
+	text-decoration: none;
+	color: #C1C1C1;
+	padding: 0.6em 1em;
+}
+
+ul.tools-tabs-nav li.current a {
+	color: black;
+}
+
+.tools-tabs .tools-tab-body {
+	border: 1px solid #DFDFDF;
+	border-top-width: 1px;
+	padding-bottom: 1em;
+	background: white;
+	margin-top: -70px;
+	padding: 63px 20px 25px 50px;
+	min-height: 300px;
+    width: 70%;
+	
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	
+	-moz-border-radius-topright: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	
+	-webkit-border-top-right-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+}
+
+.tools-tabs .tools-tab-content {
+	padding-top: 25px;
+	border-top: 1px solid #DFDFDF;
+}
+
+.tools-tabs .documentation a {
+	display: none !important;
+}
