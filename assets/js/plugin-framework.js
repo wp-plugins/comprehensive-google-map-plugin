@@ -463,8 +463,8 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				jQuery(dirDivId + ' div#d_options').hide();
 				jQuery(dirDivId + ' input#avoid_hway').removeAttr("checked");
 				jQuery(dirDivId + ' input#avoid_tolls').removeAttr("checked");
-				jQuery(dirDivId + ' input#radio_miles').removeAttr("checked");
-				jQuery(dirDivId + ' input#radio_km').attr("checked", "checked");
+				jQuery(dirDivId + ' input#radio_km').removeAttr("checked");
+				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
 				return false;
 		});
 //

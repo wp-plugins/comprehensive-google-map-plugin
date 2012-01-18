@@ -88,18 +88,19 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 			<div id="dir_controls">
 				<div class="d_links">
 					<span id="d_options_toggle">
-						<a id="d_options_show" class="no-wrap" href="javascript:void(0)">Show options</a> 
-						<a id="d_options_hide" class="no-wrap" href="javascript:void(0)" style="display: none !important;">Hide options</a> 
+						<a id="d_options_show" class="no-wrap" href="javascript:void(0)" style="display: none !important;">Show options</a> 
+						<a id="d_options_hide" class="no-wrap" href="javascript:void(0)" style="display: none !important;">Hide options</a>
+					   	<b><span style="color: blue">Additional options</span></b>
 					</span>
 				</div>
-				<div id="d_options" style="background-color: #ddd; margin-bottom: 3px; text-align: left; padding: 3px; display: none">
+				<div id="d_options" style="background-color: #ddd; margin-bottom: 3px; text-align: left; padding: 3px;">
 					<input type="checkbox" tabindex="5" name="avoid_hway" id="avoid_hway" />
 					<label for="avoid_hway">Avoid highways</label>
 					<input type="checkbox" tabindex="5" name="avoid_tolls" id="avoid_tolls" />
 					<label for="avoid_tolls">Avoid tolls</label>
-					<input type="radio" name="travel_mode" id="radio_km" checked="checked" />
+					<input type="radio" name="travel_mode" id="radio_km" />
 					<label for="radio_km">KM</label>
-					<input type="radio" name="travel_mode" id="radio_miles" />
+					<input type="radio" name="travel_mode" id="radio_miles" checked="checked" />
 					<label for="radio_miles">Miles</label>
 				</div>
 				<div class="dir-sub-cntn">
