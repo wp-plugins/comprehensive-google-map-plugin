@@ -18,8 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 if ( !function_exists('cgmp_google_map_plugin_menu') ):
       function cgmp_google_map_plugin_menu() {
-            add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', basename(__FILE__), 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
-      }
+      $hook = add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', CGMP_HOOK, 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
+	  add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+	  }
 endif;
 
 if ( !function_exists('cgmp_parse_menu_html') ):
@@ -41,15 +42,15 @@ function cgmp_parse_menu_html() {
         $template_values["LABEL_LONGITUDE"] = "<b>Longitude</b>:";
         $template_values["INPUT_LONGITUDE"] =  "Together with Latitude, makes a geographic coordinate of a location displayed on the Google map. The longitude coordinate value is measured in degrees";
         $template_values["LABEL_ZOOM"] = "<b>Zoom</b>:";
-        $template_values["INPUT_ZOOM"] = "Each map also contains a zoom level, which defines the resolution of the current view. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 19 (the highest zoom level, down to individual buildings) are possible within the normal maps view. Zoom levels vary depending on where in the world you're looking, as data in some parts of the globe is more defined than in others. Zoom levels up to 20 are possible within satellite view.";
-        $template_values["LABEL_MAPTYPE"] = "<b>Map type</b>:";
+        $template_values["INPUT_ZOOM"] = "Each map also contains a zoom level, which defines the resolution of the current view. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 19 (the highest zoom level, down to individual buildings) are possible within the normal maps view. Zoom levels vary depending on where in the world you're looking, as data in some parts of the globe is more defined than in others. Zoom levels up to 20 are possible within satellite view. Please note: when using KML, the KML zoom needs to be set within the KML file. Zoom config option does not affect zoom of the map generated from KML.";
+        $template_values["LABEL_MAPTYPE"] = "<b>Map&nbsp;type</b>:";
         $template_values["SELECT_MAPTYPE"] = "There are many types of maps available within the Google Maps. In addition to the familiar 'painted' road map tiles, the Google Maps API also supports other maps types. The following map types are available in the Google Maps API:
 ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information.";
         
-        $template_values["LABEL_SHOWMARKER"] = "<b>Marker</b>";
+        $template_values["LABEL_SHOWMARKER"] = "<b>Primary&nbsp;Marker</b>";
         $template_values["SELECT_SHOWMARKER"] = "If a map is specified, the marker is added to the map upon construction. Note that the position must be set for the marker to display."; 
         $template_values["LABEL_ANIMATION"] = "<b>Animation</b>";
-        $template_values["SELECT_ANIMATION"]    = "Animations can be played on a marker. Currently two types of animations supported: BOUNCE makes marker to bounce until animation is stopped, DROP makes marker to fall from the top of the map ending with a small bounce.";
+        $template_values["SELECT_ANIMATION"]    = "Animations can be played on a primary marker. Currently two types of animations supported: BOUNCE makes marker to bounce until animation is stopped, DROP makes primary marker to fall from the top of the map ending with a small bounce.";
         $template_values["LABEL_M_APTYPECONTROL"] = "<b>MapType</b>";
         $template_values["SELECT_M_APTYPECONTROL"] = "The MapType control lets the user toggle between map types (such as ROADMAP and SATELLITE). This control appears by default in the top right corner of the map";
 	$template_values["LABEL_PANCONTROL"] = "<b>Pan</b>";
@@ -61,18 +62,36 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
         $template_values["LABEL_STREETVIEWCONTROL"] = "<b>StreetView</b>";
         $template_values["SELECT_STREETVIEWCONTROL"] = "The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map";
 
-        $template_values["LABEL_INFOBUBBLECONTENT"] = "<b>Content Text</b>"; 
+        $template_values["LABEL_INFOBUBBLECONTENT"] = "<b>Content&nbsp;Text</b>"; 
         $template_values["INPUT_INFOBUBBLECONTENT"] = "Text to be displayed inside info bubble (info window).";
 
-        $template_values["LABEL_ADDRESSCONTENT"] = "<b>Address Text</b>"; 
+        $template_values["LABEL_ADDRESSCONTENT"] = "<b>Address&nbsp;Text</b>"; 
         $template_values["INPUT_ADDRESSCONTENT"] = "Geographical gestination address string. The address supersedes longitude and latitude configuration. If the address provided cannot be parsed (eg: invalid address) by Google, the map will display error message in the info bubble over default location (New York, USA). Please note, address configuration *supersedes* latitude/longitude settings";
 
-        $template_values["LABEL_SHOWBIKE"] = "<b>Bike Paths</b>";
+        $template_values["LABEL_SHOWBIKE"] = "<b>Bike&nbsp;Paths</b>";
         $template_values["SELECT_SHOWBIKE"] = "A layer showing bike lanes and paths as overlays on a Google Map.";
-        $template_values["LABEL_SHOWTRAFFIC"] = "<b>Traffic Info</b>";
+        $template_values["LABEL_SHOWTRAFFIC"] = "<b>Traffic&nbsp;Info</b>";
         $template_values["SELECT_SHOWTRAFFIC"] = "A layer showing vehicle traffic as overlay on a Google Map.";
-        $template_values["LABEL_KML"] = "<b>KML/GeoRSS URL</b>";
-        $template_values["INPUT_KML"] = "KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. A KML file is processed in much the same way that HTML (and XML) files are processed by web browsers. Like HTML, KML has a tag-based structure with names and attributes used for specific display purposes. Thus, Google Earth and Maps act as browsers for KML files. Please note, KML configuration *supersedes* address and latitude/longitude settings";
+        $template_values["LABEL_KML"] = "<b>KML/GeoRSS&nbsp;URL</b>";
+		$template_values["INPUT_KML"] = "KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. A KML file is processed in much the same way that HTML (and XML) files are processed by web browsers. Like HTML, KML has a tag-based structure with names and attributes used for specific display purposes. Thus, Google Earth and Maps act as browsers for KML files. Please note, KML configuration *supersedes* address and latitude/longitude settings";
+		$template_values["LABEL_ADDMARKERINPUT"] = "<b>Extra&nbsp;Markers</b>";
+		$template_values["INPUT_ADDMARKERINPUT"] = "Apart from specifying primary marker for the map, you can specify additional markers. You can eneter either latitude and longitude, comma seperated or a full geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content. If latitude/longitude was provided as a marker location, the bubble content will contain location geographical address instead of the latitude/longitude. Please note that additional markers do not support animation at the moment.";
+		$template_values["BUTTON_ADDMARKER"] = "";
+		$template_values["LIST_ADDMARKERLIST"] = "";
+		$template_values["HIDDEN_ADDMARKERLISTHIDDEN"] = "";
+		$template_values["LABEL_SHOWPANORAMIO"] = "<b>Panoramio</b>";
+		$template_values["SELECT_SHOWPANORAMIO"] = "Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Earth and Google Maps, with new photos being added at the end of every month. The site's goal is to allow Google Earth users to learn more about a given area by viewing the photos that other users have taken at that place.";
+
+
+		$template_values["LABEL_BUBBLEAUTOPAN"] = "<b>Bubble&nbsp;Auto-Pan</b>";
+		$template_values["SELECT_BUBBLEAUTOPAN"] = "Enables bubble auto-pan on marker click. By default, the info bubble will pan the map so that it is fully visible when it opens.";
+
+		$template_values["LABEL_MAPALIGN"] = "<b>Alignment</b>";
+		$template_values["SELECT_MAPALIGN"] = "Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER. Whats actually aligned is the placeholder DIV HTML element which wraps the generated map.";
+		$template_values["LABEL_PANORAMIOUID"] = "<b>User&nbsp;ID&nbsp;(Opt.)</b>";
+		$template_values["INPUT_PANORAMIOUID"] = "If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID";
+
+		$template_values["FOOTER_NOTICES"] = "";
 
 	global $global_fieldset_names;
         $template_content = cgmp_replace_template_tokens($global_fieldset_names, $template_content);
