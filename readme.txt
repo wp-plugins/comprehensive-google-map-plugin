@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.3.1
-Stable tag: 4.0.6
-
+Stable tag: 4.0.7
+   
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
@@ -85,6 +85,11 @@ Just click once somewhere on the map
 11. Street view in the marker's infer window
 
 == Changelog ==
+
+= 4.0.7 =
+* Enhancement: Experimenting with the load time of the Google API.
+* Enhancement: Simplified logic of the 'bubbleautopan' option in the short code
+* Enhancement: Removed 'Marker Direction' from the widget
 
 = 4.0.6 =
 * Enhancement: address parsing

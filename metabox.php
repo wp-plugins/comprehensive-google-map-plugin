@@ -123,11 +123,6 @@ function cgmp_render_shortcode_builder_form() {
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools2)); 
 
 
-		$v = "markerdirections";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Marker Directions")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "true", "options" => $bools3)); 
-
-
 		$v = "kml";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "KML/GeoRSS URL")); 
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));

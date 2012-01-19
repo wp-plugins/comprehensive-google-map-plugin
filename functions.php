@@ -120,6 +120,7 @@ endif;
 if ( !function_exists('cgmp_begin_map_init') ):
 	function cgmp_begin_map_init($id, $lat, $long, $zoom, $type, $bubbleAutoPan, $controlOpts, $markerdirections) {
 		$result =  '<script type="text/javascript">'.PHP_EOL;
+		$result .= '    jQuery(document).ready(function() {'.PHP_EOL;
 		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
 		$result .= '    var orc = new jQuery.GoogleMapOrchestrator(map_'.$id.', {markerdirections: "'.$markerdirections.'", bubbleAutoPan: "'.$bubbleAutoPan.'", initLocation: "'.$lat.','.$long.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
 		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc});'.PHP_EOL;
@@ -264,7 +265,7 @@ endif;
 
 if ( !function_exists('cgmp_end_map_init') ):
 	function cgmp_end_map_init() {
-		$result =  '</script>';
+		$result =  '});</script>';
 		return 	$result;
 	}
 endif;

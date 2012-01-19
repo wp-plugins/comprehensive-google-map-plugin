@@ -42,7 +42,7 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 		'streetviewcontrol' => 'true',
 		'addresscontent' => '',
 		'showbike' => 'false',
-		'bubbleautopan' => 'false',
+		'bubbleautopan' => 'nada',
 		'showtraffic' => 'false',
 		'showpanoramio' => 'false',
 		'addmarkerlist' => '',
@@ -54,6 +54,16 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	
 	$id = md5(time().' '.rand()); 
 
+	if ($bubbleautopan == 'nada') {
+		$bubbleautopan = 'false';
+	} 
+
+	
+	if ($bubbleautopan == 'true') {
+		$bubbleautopan = 'false';
+	} else if ($bubbleautopan == 'false') {
+		$bubbleautopan = 'true';
+	}
 
 	$controlOpts = array();
 
