@@ -48,8 +48,8 @@ if ( !function_exists('cgmp_google_map_init_scripts') ):
                 function cgmp_google_map_init_scripts()  {
 						wp_enqueue_style('cgmp-google-map-override', CGMP_PLUGIN_CSS . '/override.css', false, CGMP_VERSION, "screen");
 						wp_enqueue_style('cgmp-google-map-directions', CGMP_PLUGIN_CSS . '/directions.css', false, CGMP_VERSION, "screen");
-                        //wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
-                        wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/plugin-framework.js', array('jquery'), CGMP_VERSION, true);
+                        wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
+                        wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/plugin-framework.js', array('jquery'), CGMP_VERSION, false);
                 }
 endif;
 ?>

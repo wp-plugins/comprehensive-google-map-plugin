@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 4.0.7
+Version: 4.0.8
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,7 +31,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '4.0.7');
+define('CGMP_VERSION', '4.0.8');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
@@ -86,7 +86,7 @@ add_action('widgets_init', create_function('', 'return register_widget("Comprehe
 add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
 
 add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
-add_action('wp_head', 'cgmp_google_map_add_google_api', 500);
+//add_action('wp_head', 'cgmp_google_map_add_google_api', 500);
 
 function cgmp_google_map_deregister_scripts() {
 	$handle = '';
@@ -95,24 +95,26 @@ function cgmp_google_map_deregister_scripts() {
 		foreach ( $wp_scripts->registered as $script) {
 
 			if (strpos($script->src, 'http://maps.googleapis.com/maps/api/js') !== false && $script->handle != 'cgmp-google-map-api') {
-      			if (!isset($script->handle) || $script->handle == '') {
+
+				if (!isset($script->handle) || $script->handle == '') {
 					$script->handle = 'remove-google-map-duplicate';
 				}
+
 				unset($script->src);
 				$handle = $script->handle;
-			}
 
-			if ($handle != '') {
-				$wp_scripts->remove( $handle );
-				$handle = '';
+				if ($handle != '') {
+					$wp_scripts->remove( $handle );
+					$handle = '';
+					break;
+				}
 			}
-
 		}
 	}
 
-function cgmp_google_map_add_google_api() {
-		wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), true);
-}
+//function cgmp_google_map_add_google_api() {
+//		wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), true);
+//}
 
 
 ?>
