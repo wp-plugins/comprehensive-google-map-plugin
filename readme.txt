@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos
 Requires at least: 3.0.1
 Tested up to: 3.3.1
-Stable tag: 4.0.8
+Stable tag: 4.0.9
    
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -14,7 +14,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers
 * Help tooltips enabled, which makes your configuration hassle free
-* Google-like directions: driving and walking direction, miles and KM, print functionality
+* Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
 * Short-code builder available, which integrated with post/page editor. In other words, you do not need
@@ -23,7 +23,6 @@ manually to type the short-code in the editor (But you can if you want to).
 IDs explicitly when dealing with multiple maps on the same post/page.
 * The plugin offers extensive configuration options for Google map marker, controls, size, KML files, location by latitude/longitude, location by address, info windows, traffic/bike lanes and more!
 * Support for custom overlays: Panoramio photos on the map (http://www.panoramio.com/), bicycle lanes and traffic info.
-* User can get directions to the locations on the map (markers)
 * Widget enabled.
 * Cross browser compatible
 * Loads geographic markup from a KML, KMZ or GeoRSS file hosted remotely.
@@ -85,6 +84,9 @@ Just click once somewhere on the map
 11. Street view in the marker's infer window
 
 == Changelog ==
+
+= 4.0.9 =
+* Enhancement: Directions CSS
 
 = 4.0.8 =
 * Bug: Inconsistency when loading Google map API, in other words - the experiment has been reverted. Sorry :)

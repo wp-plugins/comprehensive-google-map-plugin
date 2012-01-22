@@ -38,11 +38,38 @@
     margin: 0 !important;
 }
 
+.google-map-placeholder .bubble-content p {
+    font-family: Arial,Tahoma,Verdana !important;
+    font-size: 13px !important;
+    line-height: 160% !important;
+}
+
+.google-map-placeholder hr {
+    background-color: #CCCCCC !important;
+    border: 0 none !important;
+    height: 1px !important;
+}
+
 .direction-controls-placeholder,
 .direction-controls-placeholder input {
     font-family: Arial,Tahoma,Verdana !important;
     font-size: 12px !important;
     line-height: 160% !important;
+}
+
+.direction-controls-placeholder #d_options input {
+    width: 5% !important;
+}
+
+.bubble-content a {
+    color: #1982D1 !important;
+    text-decoration: none !important;
+}
+
+.bubble-content a:focus,
+.bubble-content a:active,
+.bubble-content a:hover {
+    text-decoration: underline !important;
 }
 
 .direction-controls-placeholder  input[type="text"] {
