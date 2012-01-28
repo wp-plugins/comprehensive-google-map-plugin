@@ -74,9 +74,10 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
         $template_values["SELECT_SHOWTRAFFIC"] = "A layer showing vehicle traffic as overlay on a Google Map.";
         $template_values["LABEL_KML"] = "<b>KML/GeoRSS&nbsp;URL</b>";
 		$template_values["INPUT_KML"] = "KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. A KML file is processed in much the same way that HTML (and XML) files are processed by web browsers. Like HTML, KML has a tag-based structure with names and attributes used for specific display purposes. Thus, Google Earth and Maps act as browsers for KML files. Please note, KML configuration *supersedes* address and latitude/longitude settings";
-		$template_values["LABEL_ADDMARKERINPUT"] = "<b>Extra&nbsp;Markers</b>";
-		$template_values["INPUT_ADDMARKERINPUT"] = "Apart from specifying primary marker for the map, you can specify additional markers. You can eneter either latitude and longitude, comma seperated or a full geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content. If latitude/longitude was provided as a marker location, the bubble content will contain location geographical address instead of the latitude/longitude. Please note that additional markers do not support animation at the moment.";
+		$template_values["LABEL_ADDMARKERINPUT"] = "<b>Location</b>";
+		$template_values["INPUT_ADDMARKERINPUT"] = "You can eneter either latitude and longitude, comma seperated or a full geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content. If latitude/longitude was provided as a marker location, the bubble content will contain location geographical address instead of the latitude/longitude. You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. You can also select a custom icon for your marker. If none is selected, default Google marker icon is used - the red pin with black dot. Please note that markers do not support animation at the moment.";
 		$template_values["BUTTON_ADDMARKER"] = "";
+		$template_values["CUSTOM_ADDMARKERICONS"] = "";
 		$template_values["LIST_ADDMARKERLIST"] = "";
 		$template_values["HIDDEN_ADDMARKERLISTHIDDEN"] = "";
 		$template_values["LABEL_SHOWPANORAMIO"] = "<b>Panoramio</b>";

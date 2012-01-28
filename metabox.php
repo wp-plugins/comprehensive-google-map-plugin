@@ -120,7 +120,7 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = "bubbleautopan";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bubble Auto-Pan")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools2)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
 
 
 		$v = "kml";
@@ -136,9 +136,14 @@ function cgmp_render_shortcode_builder_form() {
 
 
 		$v = $m."input";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Extra Markers")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat", "style" => "width: 100% !important;"));
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Location")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat widefat marker-location-text default-marker-icon", "style" => "width: 100% !important;"));
 
+		$v = $m."icons";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
+		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
+
+		
 		$v = $m."list";
 		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "token-input-list", "style" => ""));
 

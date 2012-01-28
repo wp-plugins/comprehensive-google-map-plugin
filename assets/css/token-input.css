@@ -35,7 +35,7 @@ ul.token-input-list li input {
 
 li.token-input-token {
     overflow: hidden; 
-    height: 15px !important; 
+    height: 38px !important;
     height: 1%;
     margin: 3px;
     padding: 3px 5px;
@@ -46,13 +46,14 @@ li.token-input-token {
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    font-weight: bold;
+    /* font-weight: bold; */
     cursor: default;
     display: block;
 }
 
 li.token-input-token p {
-    font-size: 11px !important;
+    font-size: 15px !important;
+    padding-top: 10px !important;
 }
 
 div#google_map_shortcode_builder li.token-input-token p {

@@ -33,7 +33,7 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
 				wp_enqueue_script('jquery-ui-slider', CGMP_PLUGIN_JS.'/jquery-ui-slider-1.8.16.min.js', array('jquery', 'jquery-ui-core'), '1.8.16');
               	wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5.a', true);
               	wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/jquery.tokeninput.js', array('jquery'), CGMP_VERSION, true);
-              	wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/comprehensive-google-map-plugin.js', array('jquery', 'jquery-ui-core',  'jquery-ui-tabs'), CGMP_VERSION, true);
+              	wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/comprehensive-google-map-plugin.js', array('jquery', 'jquery-ui-core', 'jquery-ui-slider', 'jquery-ui-tabs'), CGMP_VERSION, true);
 
         }
 endif;
@@ -45,11 +45,12 @@ if ( !function_exists('cgmp_google_map_tab_script') ):
 endif;
 
 if ( !function_exists('cgmp_google_map_init_scripts') ):
-                function cgmp_google_map_init_scripts()  {
+		function cgmp_google_map_init_scripts()  {
 						wp_enqueue_style('cgmp-google-map-override', CGMP_PLUGIN_CSS . '/override.css', false, CGMP_VERSION, "screen");
 						wp_enqueue_style('cgmp-google-map-directions', CGMP_PLUGIN_CSS . '/directions.css', false, CGMP_VERSION, "screen");
-                        wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
-                        wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/plugin-framework.js', array('jquery'), CGMP_VERSION, false);
-                }
+						wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
+						wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/plugin-framework.js', array('jquery'), CGMP_VERSION, false);
+						wp_localize_script('cgmp-google-map-wrapper-framework-final', 'CGMPGlobal', array( 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
+				}
 endif;
 ?>

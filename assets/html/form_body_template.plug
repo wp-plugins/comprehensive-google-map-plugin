@@ -24,54 +24,20 @@
 		</table>
 	</fieldset>
 
-	<fieldset>
-		<legend>LEGEND_ADDRESS</legend>
-		<table cellspacing="0" cellpadding="0" border="0">
-			<tbody>
-				<tr>
-					<td><a id="tooltip-marker-lat" class="google-map-tooltip-marker" href="javascript:void(0);" title="Latitude in degrees. Part of geographic coordinate, used together with longitude">[?]</a>&nbsp;LABEL_LATITUDE</td>
-					<td>INPUT_LATITUDE</td>
-					<td><a id="tooltip-marker-long" class="google-map-tooltip-marker" href="javascript:void(0);" title="Longitude in degrees. Part of geographic coordinate, used together with latitude">[?]</a>&nbsp;LABEL_LONGITUDE</td>
-					<td>INPUT_LONGITUDE</td>
-				</tr>
-				<tr>
-					<td colspan="4" style="text-align: center;" height="35px">
-					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
-				</tr>
-				<tr>	
-					<td><a id="tooltip-marker-addrcontent" class="google-map-tooltip-marker" href="javascript:void(0);" title="Destination address string. Combined from street number, city (possibly post or zip code) and a country name. Please note: address *supersedes* latitude/longitude settings">[?]</a>&nbsp;LABEL_ADDRESSCONTENT</td>
-					<td colspan="3">INPUT_ADDRESSCONTENT</td>
-				</tr>
-				<tr>
-					<td colspan="4" style="text-align: center;" height="35px">
-					<span style="margin-top: 5px; margin-bottom: 5px"><b> ----- OR ----- </b></span></td>
-				</tr>
-				<tr>	
-					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify URL here, thats starts with http(s). Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
-					<td colspan="3">INPUT_KML</td>
-				</tr>
-
-			</tbody>
-		</table>
-	</fieldset>
-
 
 	<fieldset>
 		<legend>LEGEND_MARKER</legend>
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
+
 				<tr>
-					<td><a id="tooltip-marker-showmarker" class="google-map-tooltip-marker"  href="javascript:void(0);" title="Show/hide primary location marker on the map">[?]</a>&nbsp;LABEL_SHOWMARKER</td>
-					<td>SELECT_SHOWMARKER</td>
-					<td><a id="tooltip-marker-animation" class="google-map-tooltip-marker" href="javascript:void(0);" title="Determines what dynamic movement primary marker exhibits when displayed on the map">[?]</a>&nbsp;LABEL_ANIMATION</td>
-					<td>SELECT_ANIMATION</td>
-				</tr>
-				<tr>
-					<td colspan="4">&nbsp;</td>
+					<td colspan="4">
+						CUSTOM_ADDMARKERICONS
+					</td>
 				</tr>
 				<tr>
 					<td>
-						<a id="tooltip-marker-addmarkerinput" class="google-map-tooltip-marker" href="javascript:void(0);" title="Apart from specifying primary marker for the map, you can specify additional markers. You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content">[?]</a>&nbsp;LABEL_ADDMARKERINPUT
+						<a id="tooltip-marker-addmarkerinput" class="google-map-tooltip-marker" href="javascript:void(0);" title="You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. You can also select a custom icon for your marker. If none is selected, default Google marker icon is used - the red pin with black dot">[?]</a>&nbsp;LABEL_ADDMARKERINPUT
 					</td>
 					<td colspan="2">
 						INPUT_ADDMARKERINPUT
@@ -90,6 +56,21 @@
 			</tbody>
 		</table>
 	</fieldset>
+
+	<fieldset>
+		<legend>LEGEND_ADDRESS</legend>
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+
+				<tr>	
+					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify URL here, thats starts with http(s). Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
+					<td colspan="3">INPUT_KML</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</fieldset>
+
 
 	<fieldset>
 		<legend>LEGEND_CONTROL</legend>

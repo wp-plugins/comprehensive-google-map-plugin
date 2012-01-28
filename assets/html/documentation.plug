@@ -1,6 +1,7 @@
 <h2>Comprehensive Google Map by Alexander Zagniotov</h2>
 <div style="border: 1px solid #FFCC99; width: 70%; padding: 5px 15px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;">
-<p>Please check my other plugins at <a href="http://initbinder.com/plugins" target="_blank">InitBinder.com</a>. Alternatively, you can write on your own blog about the plugin, like it on Facebook, spread the word about it on Twitter or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donate</a>, thanks!</p>
+<p>This plugin is continuing to evolve because of contributions from users like you. Thank you. If you found this plugin useful, especially if you use it for commercial purposes, please consider making a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donation</a>. Your support helps me to spend more time on development and provide suberb customer service. Please check my other plugins at <a href="http://initbinder.com/plugins" target="_blank">InitBinder.com</a>.</p> 
+<p>Alternatively, you can write on your own blog about the plugin, like it on Facebook, spread the word about it on Twitter, <a href="http://wordpress.org/extend/plugins/comprehensive-google-map-plugin/" target="_blank">rate it</a> on Wordpress.org or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donate</a>, thanks!</p>
 </div>
 <div class="tools-tabs">
 	<ul class="tools-tabs-nav hide-if-no-js">
@@ -34,9 +35,11 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;height="<span class="italic">any positive numeric character, without decimal points</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;zoom="<span class="italic">any positive numeric character, without decimal points between zero and 20</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;maptype="<span class="italic">ROADMAP <span class="sep">|</span> SATELLITE <span class="sep">|</span> HYBRID <span class="sep">|</span> TERRAIN </span>"<br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>"<br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>"<br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;addresscontent="<span class="italic">full geo address string or latitude/longitude seperated by comma</span>"<br />  
+
+	&nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;addresscontent="<span class="italic">full geo address string or latitude/longitude</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br /> 
+
 	&nbsp;&nbsp;&nbsp;&nbsp;showmarker="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;animation="<span class="italic">DROP <span class="sep">|</span> BOUNCE</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;addmarkerlist="<span class="italic">one or more full geo address strings or latitude/longitude seperated by comma. When providing multiple locations, they must be seperated by the  <span class="sep">|</span>  sign</span>"<br />  

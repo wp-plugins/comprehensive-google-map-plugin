@@ -61,7 +61,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showbike = empty($instance['showbike']) ? 'false' : $instance['showbike'];
 		$showtraffic = empty($instance['showtraffic']) ? 'false' : $instance['showtraffic'];
 		$showpanoramio = empty($instance['showpanoramio']) ? 'false' : $instance['showpanoramio'];
-		$bubbleautopan = empty($instance['bubbleautopan']) ? 'false' : $instance['bubbleautopan'];
+		$bubbleautopan = empty($instance['bubbleautopan']) ? 'true' : $instance['bubbleautopan'];
 		$markerdirections = empty($instance['markerdirections']) ? 'true' : $instance['markerdirections'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
@@ -84,10 +84,16 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$id = md5(time().' '.rand());
 
+
+		$hiddenmarkers = $this->updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers);
+
+
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
 		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
-		$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $hiddenmarkers, $kml, $latitude, $longitude);
+		
+		$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $kml);
+
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
 		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
@@ -132,6 +138,33 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		return $instance;
 	}
 
+	function updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers)  {
+
+		$legacyLoc = isset($addresscontent) ? $addresscontent : "";
+
+		if (isset($latitude) && isset($longitude)) {
+			if ($latitude != "0" && $longitude != "0" && $latitude != 0 && $longitude != 0) {
+				$legacyLoc = $latitude.",".$longitude;
+			}
+		}
+
+		if (isset($hiddenmarkers) && $hiddenmarkers != "") {
+
+			if (strpos($hiddenmarkers, CGMP_SEP) === false) {
+				$hiddenmarkers = explode("|", $hiddenmarkers);
+				$hiddenmarkers = implode(CGMP_SEP."1-default.png|", $hiddenmarkers);
+				$hiddenmarkers = $hiddenmarkers.CGMP_SEP."1-default.png";
+			}
+		}
+
+		if (trim($legacyLoc) != "")  {
+			$hiddenmarkers = $legacyLoc.CGMP_SEP."1-default.png"."|".$hiddenmarkers;
+		}
+
+		return $hiddenmarkers;
+
+	}
+
 	function form( $instance ) {
 
 		$bools = array("Show" => "true", "Hide" => "false");
@@ -165,10 +198,13 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showpanoramio = !empty($instance['showpanoramio']) ? esc_attr($instance['showpanoramio']) : 'false';
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
-		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'false';
+		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'true';
 		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
 		$mapalign = !empty($instance['mapalign']) ? esc_attr($instance['mapalign']) : 'center';
 		$panoramiouid = !empty($instance['panoramiouid']) ? esc_attr($instance['panoramiouid']) : '';
+
+
+		$hiddenmarkers = $this->updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers);
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
@@ -266,7 +302,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$v = "bubbleautopan";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Bubble Auto-Pan")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $bubbleautopan, "options" => $bools2)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $bubbleautopan, "options" => $bools3)); 
 
 
 		$v = "markerdirections";
@@ -282,14 +318,20 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 
 		$v = $m."input";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Extra Markers")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => '', "class" => "widefat", "style" => "width: 90% !important;"));
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Location")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => '', "class" => "widefat marker-location-text default-marker-icon", "style" => ""));
+
+		$v = $m."icons";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "")); 
+		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
 
 		$v = $m."list";
 		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "token-input-list", "style" => ""));
 
+	
 		$v = $v."hidden";
 		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "", "value" => $hiddenmarkers, "style" => ""));
+
 
 		$v = "mapalign";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Alignment")); 
@@ -298,6 +340,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$v = "panoramiouid";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "User ID (Opt.)")); 
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $panoramiouid, "class" => "widefat", "style" => "width: 85px !important;"));
+
+		
 
 
 

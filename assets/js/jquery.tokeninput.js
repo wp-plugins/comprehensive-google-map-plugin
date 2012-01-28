@@ -6,8 +6,8 @@
  * Licensed jointly under the GPL and MIT licenses,
  * choose which one suits your project best!
  * 
- * Please note that this is not the full version script.
- * It was amended and castrated by Alexander Zagniotov for specific task
+ * Please note that this is not the full and original version script.
+ * It was amended and castrated by Alexander Zagniotov for a specific task
  *
  */
 
@@ -18,7 +18,13 @@
 			theme: null,
 			tokenDataId: "id",
 			tokenDataValue: "value",
-			tokenFormatter: function(item) { return "<li><p>" + item[this.tokenDataValue] + "</p></li>" }
+			tokenFormatter: function(item) { 
+					
+					var value = item[this.tokenDataValue] ;
+					var value_arr = value.split(CGMPGlobal.sep);
+					//console.log(value_arr);
+					
+					return "<li><img src='" + CGMPGlobal.customMarkersUri + value_arr[1] + "' border='0' style='float: left; margin-right: 8px;'><p>" + value_arr[0] + "</p></li>" }
 		};
 		var DEFAULT_CLASSES = {
    		    tokenList: "token-input-list",
@@ -164,7 +170,7 @@
 	        	var saved_token_values = $.map(saved_tokens, function (element) {
 		            return element[settings.tokenDataValue];
 	    	   	});
-				console.log("ID of this holder: " + settings.holderId);
+				//console.log("ID of this holder: " + settings.holderId);
 	    		jQuery("#" + settings.holderId + "hidden").val((saved_token_values.join("|")));
 	        }
 		};

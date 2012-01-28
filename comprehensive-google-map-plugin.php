@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 4.0.9
+Version: 5.0.0
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,13 +31,19 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '4.0.9');
+define('CGMP_VERSION', '5.0.0');
+define('CGMP_SEP', '{}');
+define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
+define('CGMP_NONCE_NAME', 'cgmp-marker-db-operation-nonce');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
 define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
+define('CGMP_PLUGIN_ASSETS_DIR', CGMP_PLUGIN_DIR.'/assets');
 define('CGMP_PLUGIN_CSS', CGMP_PLUGIN_ASSETS_URI . '/css');
+define('CGMP_PLUGIN_CSS_DIR', CGMP_PLUGIN_ASSETS_DIR . '/css');
 define('CGMP_PLUGIN_IMAGES', CGMP_PLUGIN_CSS . '/images');
+define('CGMP_PLUGIN_IMAGES_DIR', CGMP_PLUGIN_CSS_DIR . '/images');
 define('CGMP_PLUGIN_JS', CGMP_PLUGIN_ASSETS_URI . '/js');
 define('CGMP_PLUGIN_HTML', CGMP_PLUGIN_DIR . '/assets/html');
 
@@ -45,7 +51,7 @@ define('CGMP_FIELDSETNAME_WIDGETTITLE', 'Widget Title');
 define('CGMP_FIELDSETNAME_BASICSETTINGS', 'Basic Settings');
 define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Map Markers');
 define('CGMP_FIELDSETNAME_MARKER_INFOBUBBLE', 'Map Marker Info Bubbles');
-define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Map Primary Location');
+define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'KML/Geo RSS');
 define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Custom Overlays');
 define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Map Controls');
 define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS');
@@ -86,7 +92,6 @@ add_action('widgets_init', create_function('', 'return register_widget("Comprehe
 add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
 
 add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
-//add_action('wp_head', 'cgmp_google_map_add_google_api', 500);
 
 function cgmp_google_map_deregister_scripts() {
 	$handle = '';
@@ -111,10 +116,4 @@ function cgmp_google_map_deregister_scripts() {
 			}
 		}
 	}
-
-//function cgmp_google_map_add_google_api() {
-//		wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), true);
-//}
-
-
 ?>

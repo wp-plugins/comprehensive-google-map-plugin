@@ -55,6 +55,39 @@ border-radius: 5px;}
 	-webkit-border-radius:14px !important; 
 }
 
+ul.custom-icons-placeholder { 
+    padding-top: 6px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    float: left !important;
+    
+    background-color: #F1F1F1;
+    background-image: -moz-linear-gradient(center top , #F8F8F8, #F1F1F1);
+    border-color: #D1D1D1 #D1D1D1 #C1C1C1;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding-bottom: 8px;
+}
+
+ul.custom-icons-placeholder li {
+    display: inline !important;
+    list-style-type: none !important;
+    padding-right: 0 !important;
+}
+
+ul.custom-icons-placeholder li img {
+    border: 1px solid transparent;
+}
+
+/*
+ul.custom-icons-placeholder li img:hover {
+    border: 1px solid green;
+    border-radius: 3px 3px 3px 3px;
+}*/
+
 
 #shortcode-placeholder {
 	padding: 7px;
@@ -205,6 +238,18 @@ input.slider-output {
     border: 1px solid #999999;
 }
 
+input.marker-location-text {
+    width: 90% !important; 
+    font-size: 16px; 
+    padding: 4px 0px 2px 36px; 
+    height: 32px !important;
+}
+
+
+input.default-marker-icon {
+    background: url('images/markers/1-default.png') no-repeat scroll 0px 0px #F9F9F9 !important
+}
+
 span.italic {
     font-style: normal;
     color: green;
@@ -307,3 +352,4 @@ ul.tools-tabs-nav li.current a {
 .tools-tabs .documentation a {
 	display: none !important;
 }
+

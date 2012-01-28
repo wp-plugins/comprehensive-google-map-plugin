@@ -114,35 +114,6 @@ function initSliders() {
 
 function initTooltips()  {
 
-/*
-	jQuery('a.google-map-tooltip-marker').mouseover(function(e) {
-
-		var tooltip_marker_id = jQuery(this).attr('id');
-        var tip = jQuery(this).attr('title');
-
-        jQuery(this).attr('title',''); 
-        var div = jQuery('<div id="tooltip-container" class="google-map-tooltip">' + tip + '</div>');
-		jQuery(this).append(div);
-
-        jQuery('div#tooltip-container').css('top', e.pageY);
-        //jQuery('div#tooltip-container').css('left', e.pageX + 20 );
-		jQuery('div#tooltip-container').css('z-index', 9999999999999);
-		jQuery('div#tooltip-container').css('position', "absolute");
-
-        jQuery('div#tooltip-container').fadeTo('10', 0.8).fadeIn();
-
-		return false;
-    }).mousemove(function(e) {
-        //jQuery('div#tooltip').css('top', e.pageY + 10 );
-        //jQuery('div#tooltip').css('left', e.pageX + 20 );
-
-    }).mouseout(function() {
-        jQuery(this).attr('title', jQuery('div#tooltip-container').html());
-        jQuery(this).children('div#tooltip-container').remove();
-		return false;
-    });
-	*/
-
 	jQuery('a.google-map-tooltip-marker').hover(function() {
 
 		var tooltip_marker_id = jQuery(this).attr('id');
@@ -207,6 +178,19 @@ jQuery.TokenListHolder = function (classPath) {
 	}
 }
 
+function fadeInOutOnError(targetInput)  {
+
+		jQuery(targetInput).fadeIn("slow", function() {
+			jQuery(this).addClass("errorToken");
+		});
+
+     	jQuery(targetInput).focus().fadeOut(function() {
+			jQuery(this).removeClass("errorToken");
+			jQuery(this).fadeIn("slow");
+		});
+
+}
+
 function initTokenHoldersAndEvent()  {
 	var holder = new jQuery.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
 	var initLists = holder.getLists();
@@ -226,41 +210,111 @@ function initTokenHoldersAndEvent()  {
 			}
 		});
 
-	jQuery("input.add-additonal-location").click(function () {
-				
+	jQuery("input.add-additonal-location").click(function (source) {
+
 				var listId = jQuery(this).attr("id") + "list";
 				var tokenList = holder.getList(listId);
 				var targetInput = "#" + jQuery(this).attr("id") + "input";
-			
+
+				var customIconListId = "#" + jQuery(this).attr("id") + "icons";
+				var selectedIcon = jQuery(customIconListId + " input[name='custom-icons-radio']:checked").val();
+
 				if (jQuery(targetInput).val() != null && jQuery(targetInput).val() != "") {
 					var target = jQuery(targetInput).val().replace(/^\s+|\s+$/g, '');
 //http://stackoverflow.com/questions/1997616/regex-for-password-that-requires-one-numeric-or-one-non-alphanumeric-character
 					var chars = /^(?=.*(\d|[a-zA-Z])).{5,}$/;
 					var hasValidChars = chars.test(target);
 					if (hasValidChars) {
-						tokenList.add(target);
+
+						//console.log(target + CGMPGlobal.sep + selectedIcon);
+						tokenList.add(target + CGMPGlobal.sep + selectedIcon);
+
+						resetPreviousIconSelection(jQuery(customIconListId));
+
+						jQuery(customIconListId + " img#default-marker-icon").attr("style", "cursor: default; ");
+						jQuery(customIconListId + " img#default-marker-icon").addClass('selected-marker-image');
+						jQuery(customIconListId + " input#default-marker-icon-radio").attr('checked', 'checked');
+
+						jQuery(targetInput).attr("style", "");
+						jQuery(targetInput).addClass("default-marker-icon");
+						jQuery(targetInput).val("");
+						jQuery(targetInput).focus();
+
+
 					} else {
-						jQuery(targetInput).fadeIn("slow", function() {
-								jQuery(this).addClass("errorToken");
-						});
+						fadeInOutOnError(targetInput);
 					}
+				} else {
+					fadeInOutOnError(targetInput);
 				}
-            	
-            	jQuery(targetInput).val("");
-            	jQuery(targetInput).focus().fadeOut(function() {
-						jQuery(this).removeClass("errorToken");
-						jQuery(this).fadeIn("slow");
-				});
-                return false;
+
+            	return false;
     });
 }
 
+function resetPreviousIconSelection(parentDiv)  {
+	
+		jQuery.each(parentDiv.children(), function() {
+   			var liImg = jQuery(this).find("img");
+
+			if (liImg != null) {
+				jQuery(liImg).attr("style", "");
+				jQuery(liImg).removeClass('selected-marker-image');
+			}
+		});
+}
+
+function doMarkerIconUpdateOnSelection(parentDiv, img)  {
+
+	jQuery(img).attr("style", "cursor: default; ");
+	jQuery(img).addClass('selected-marker-image');
+
+	var currentSrc = jQuery(img).attr('src');
+	var inputId = jQuery(parentDiv).attr("id").replace("icons", "input");
+	jQuery("#" + inputId).attr("style", "background: url('" + currentSrc + "') no-repeat scroll 0px 0px #F9F9F9 !important");
+	jQuery("#" + inputId).removeClass("default-marker-icon");
+	jQuery("#" + inputId).focus();
+
+}
+
+function initMarkerIconEvents() {
+	//jQuery('img.nomarker').attr("style", "cursor: default; background-color: green; border-radius: 3px 3px 3px 3px;");
+
+	jQuery("div.custom-icons-placeholder a img").click(function () {
+		
+			var currentSrc = jQuery(this).attr('src');
+			if (currentSrc != null) {
+
+					var parentDiv = jQuery(this).closest("div.custom-icons-placeholder");
+					resetPreviousIconSelection(parentDiv);
+
+					jQuery(this).parent("a").siblings('input[name="custom-icons-radio"]').attr("checked", "checked");
+					doMarkerIconUpdateOnSelection(parentDiv, jQuery(this));
+			}
+	});
+
+
+	jQuery("input[name='custom-icons-radio']").click(function () {
+
+			var img = jQuery(this).siblings("a").children('img');
+			var currentSrc = jQuery(img).attr('src');
+			if (currentSrc != null) {
+
+					var parentDiv = jQuery(this).closest("div.custom-icons-placeholder");
+					resetPreviousIconSelection(parentDiv);
+
+					doMarkerIconUpdateOnSelection(parentDiv, img);
+			}
+	});
+
+}
 
 jQuery(document).ready(function() {
 
 	initTokenHoldersAndEvent();
 	initSliders(); 
 	initTooltips();
+	initMarkerIconEvents();
 
 	jQuery("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
         tabs: 'li',
@@ -281,6 +335,7 @@ jQuery(document).ajaxSuccess(
 						initTokenHoldersAndEvent();
 						initSliders();
 						initTooltips();
+						initMarkerIconEvents();
 					}
 				}
 			}

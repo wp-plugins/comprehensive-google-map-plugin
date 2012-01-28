@@ -163,6 +163,24 @@ if ( !function_exists('cgmp_draw_map_marker') ):
 endif;
 
 
+if ( !function_exists('cgmp_draw_map_marker_v2') ):
+	function cgmp_draw_map_marker_v2($id, $extramarkers, $kml) {
+
+		$result = "";
+
+		if ((!isset($kml) || $kml == "")) {
+
+			if (isset($extramarkers) && $extramarkers != '') {
+				$result .= '    orc.buildAddressMarkers("'.$extramarkers.'");'.PHP_EOL;
+			}
+		}
+
+		return $result;
+	}
+endif;
+
+
+
 if ( !function_exists('cgmp_draw_marker_infobubble') ):
 	function cgmp_draw_marker_infobubble($id, $infobubblecontent) {
 		$result = ''.PHP_EOL.PHP_EOL;
@@ -373,6 +391,62 @@ if ( !function_exists('cgmp_create_html_label') ):
 			$for = $attr['for'];
 			$value = $attr['value'];
 		 	return "<label for=".$for.">".$value."</label>";
+	}
+endif;
+
+
+if ( !function_exists('cgmp_create_html_custom') ):
+		function cgmp_create_html_custom($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+				$start =  "<ul class='".$class."' id='".$id."' name='".$name."' style='".$style."'>";
+
+				$markerDir = CGMP_PLUGIN_IMAGES_DIR . "/markers/";
+
+				$items = "<div id='".$id."' class='".$class."' style='margin-bottom: 15px; padding-bottom: 10px; padding-top: 10px; padding-left: 30px; height: 200px; overflow: auto; border-radius: 4px 4px 4px 4px; border: 1px solid #C9C9C9;'>";
+				if (is_readable($markerDir)) {
+
+					if ($dir = opendir($markerDir)) {
+
+						$files = array();
+						while ($files[] = readdir($dir));
+						sort($files);
+						closedir($dir);
+
+						foreach ($files as $file) {
+							//echo "filename: $file : filetype: " . filetype($dir . $file) . "\n";
+							$pos = strrpos($file, ".png");
+
+							if ($pos !== false && $file != "shadow.png") {
+									$class = "";
+									$style = "";
+									$sel = "";
+									$iconId = "";
+									$radioId = "";
+									$src = CGMP_PLUGIN_IMAGES."/markers/".$file;
+									if ($file == "1-default.png") {
+											$class = "selected-marker-image nomarker";
+											$style = "cursor: default; ";
+											$sel = "checked='checked'";
+											$iconId = "default-marker-icon";
+											$radioId = $iconId."-radio";
+									} else if ($file == "2-default.png" || $file == "3-default.png") {
+											$class = "nomarker";
+									}
+
+									//$items .= "<li><a href='javascript:void(0);'><img id='".$iconId."' style='".$style."' class='".$class."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$src."' style='margin-right: 15px' name='custom-icons-radio' /></li>";
+									$items .= "<div style='float: left; text-align: center; margin-right: 8px;'><a href='javascript:void(0);'><img id='".$iconId."' style='".$style."' class='".$class."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$file."' style='' name='custom-icons-radio' /></div>";
+
+							}
+        				}
+					}
+				}
+
+
+			return $items."</div>";
+			//return $start.$items."</ul>";
 	}
 endif;
 

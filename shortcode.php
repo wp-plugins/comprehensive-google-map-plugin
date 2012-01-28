@@ -24,8 +24,8 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 		'width' => 250,
 		'height' => 250,
 		'zoom' => 5,
-		'latitude' => 40.69847032728747,
-		'longitude' => -73.9514422416687,
+		'latitude' => 0,
+		'longitude' => 0,
 		'zoom' => 5,
 		'width' => 400,
 		'height' => 400,
@@ -59,12 +59,6 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	} 
 
 	
-	if ($bubbleautopan == 'true') {
-		$bubbleautopan = 'false';
-	} else if ($bubbleautopan == 'false') {
-		$bubbleautopan = 'true';
-	}
-
 	$controlOpts = array();
 
 	if ($m_aptypecontrol == "true" && $maptypecontrol == "false") {
@@ -93,10 +87,24 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	$controlOpts['scalecontrol'] = $scalecontrol;
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
 
+	$legacyLoc = isset($addresscontent) ? $addresscontent : "";
+
+	if (isset($latitude) && isset($longitude)) {
+		if ($latitude != "0" && $longitude != "0" && $latitude != 0 && $longitude != 0) {
+			$legacyLoc = $latitude.",".$longitude;
+		}
+	}
+
+	if (trim($legacyLoc) != "")  {
+		$addmarkerlist = $legacyLoc.CGMP_SEP."1-default.png"."|".$addmarkerlist;
+	}
+
+
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
 	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
-	$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist, $kml, $latitude, $longitude);
+	//$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist, $kml, $latitude, $longitude);
+	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
 	$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
