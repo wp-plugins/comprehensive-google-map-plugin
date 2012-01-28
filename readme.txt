@@ -80,14 +80,13 @@ Just click once somewhere on the map
 1. Widget editing interface.
 2. Help tooltip in action
 3. Documentation page
-4. Google map short code builder
-5. Send shortcode to editor button
-6. Generated short code in the editor
-7. Sliders
-8. Facebook style interactive interface for managing multiple map markers and custom icons
-9. Direction panel
-10. Markers info window with the direction and street view
-11. Street view in the marker's infer window
+4. Send shortcode to editor button
+5. Generated short code in the editor
+6. Sliders
+7. Facebook style interactive interface for managing multiple map markers and custom icons
+8. Direction panel
+9. Markers info window with the direction and street view
+10. Street view in the marker's infer window
 
 == Changelog ==
 
