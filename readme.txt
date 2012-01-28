@@ -5,7 +5,7 @@ Tags: google map, google map widget, google map short code, google map short cod
 Requires at least: 3.2.1
 Tested up to: 3.3.1
 Stable tag: 5.0.0
-   
+
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
@@ -35,6 +35,10 @@ Support for Google Fusion tables and fusion table queries, distance matrix are t
 Please note: 
 Although I try my best to release a bug-free code, one or two may slip through. It would be so cool and I would really appreciate it if you would report any bugs to me first at http://initbinder.com/comprehensive-google-map-plugin, before reporting the plugin to be broken. I am quick to respond. 
 Thanks!
+
+Licenses:
+The plugin uses wonderful custom marker icons from the <a href="http://mapicons.nicolasmollet.com" target="_blank">Maps Icons Collection</a> <img src="http://mapicons.nicolasmollet.com/wp-content/uploads/2011/03/miclogo-88x31.gif" border="0" /> project by Nicolas Mollet.
+
 
 == Installation ==
 
