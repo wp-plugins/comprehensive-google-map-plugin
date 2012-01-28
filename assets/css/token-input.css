@@ -1,0 +1,187 @@
+/* Example tokeninput style #1: Token vertical list*/
+ul.token-input-list {
+    overflow: hidden; 
+    height: auto !important; 
+    height: 1%;
+    width: 100%;
+    cursor: text;
+    font-size: 12px;
+    font-family: Verdana;
+    z-index: 999;
+    margin: 0;
+    padding: 0;
+    /*
+    background-color: #fff;
+    border: 1px solid #999;
+    */
+    list-style-type: none;
+    clear: left;
+     border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+ul.token-input-list li {
+    list-style-type: none;
+}
+
+ul.token-input-list li input {
+    border: 0;
+    width: 350px;
+    padding: 3px 8px;
+    background-color: white;
+    -webkit-appearance: caret;
+}
+
+li.token-input-token {
+    overflow: hidden; 
+    height: 38px !important;
+    height: 1%;
+    margin: 3px;
+    padding: 3px 5px;
+    background: none repeat scroll 0 0 #E2E6F0;
+    color: #1C2A47;
+    border: 1px solid #9DACCC;
+    font-size: 11px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    /* font-weight: bold; */
+    cursor: default;
+    display: block;
+}
+
+li.token-input-token p {
+    font-size: 15px !important;
+    padding-top: 10px !important;
+}
+
+div#google_map_shortcode_builder li.token-input-token p {
+    margin: -1px 0 0 !important;
+}
+
+li.token-input-highlighted-token {
+    background-color: #D0D6E7;
+    border: 1px solid #8D9EC4;
+     border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+li.token-input-input-token {
+/*
+    display: block;
+    font-weight: bold;
+    height: auto !important;
+    margin: 3px;
+    overflow: hidden;
+    padding: 3px 5px;
+*/
+}
+
+li.token-input-token p {
+    float: left;
+    padding: 0;
+    margin: 0;
+}
+
+li.token-input-token span {
+    float: right;
+    color: #777;
+    cursor: pointer;
+}
+
+li.token-input-token span.token-input-delete-token-highlighted {
+    color: #eee;
+    background-color: #475C8A;
+}
+
+li.token-input-selected-token {
+    background-color: #08844e;
+    color: #fff;
+}
+
+li.token-input-selected-token span {
+    color: #bbb;
+}
+
+.uiCloseButton {
+    background-image: url("images/facebook-axis.png");
+    background-repeat: no-repeat;
+    height: 15px;
+    width: 15px;
+}
+
+.errorToken {
+    border: 1px solid red !important;
+}
+
+.uiCloseButton:hover, .uiCloseButton:focus {
+    background-position: left -32px;
+}
+.uiCloseButton:active {
+    background-position: left -48px;
+}
+
+.uiCloseButtonSmall {
+    background-image: url("ogYrclupeJV.png");
+    height: 11px;
+    margin-top: 2px;
+    width: 11px;
+}
+
+.uiCloseButtonSmall:hover, .uiCloseButtonSmall:focus {
+    background-position: left -24px;
+}
+.uiCloseButtonSmall:active {
+    background-position: left -36px;
+}
+
+div.token-input-dropdown {
+    position: absolute;
+    width: 400px;
+    background-color: #fff;
+    overflow: hidden;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    cursor: default;
+    font-size: 12px;
+    font-family: Verdana;
+    z-index: 1;
+}
+
+div.token-input-dropdown p {
+    margin: 0;
+    padding: 5px;
+    font-weight: bold;
+    color: #777;
+}
+
+div.token-input-dropdown ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.token-input-dropdown ul li {
+    background-color: #fff;
+    padding: 3px;
+    list-style-type: none;
+}
+
+div.token-input-dropdown ul li.token-input-dropdown-item {
+    background-color: #fafafa;
+}
+
+div.token-input-dropdown ul li.token-input-dropdown-item2 {
+    background-color: #fff;
+}
+
+div.token-input-dropdown ul li em {
+    font-weight: bold;
+    font-style: normal;
+}
+
+div.token-input-dropdown ul li.token-input-selected-dropdown-item {
+    background-color: #d0efa0;
+}
