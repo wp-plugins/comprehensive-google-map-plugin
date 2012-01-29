@@ -10,6 +10,8 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 
 == Description ==
 
+
+
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers
@@ -29,7 +31,7 @@ IDs explicitly when dealing with multiple maps on the same post/page.
 * Cross browser compatible
 * Loads geographic markup from a KML, KMZ or GeoRSS file hosted remotely.
 
-Support for Google Fusion tables and fusion table queries, distance matrix are to be added soon, stay tuned!
+If you liked the plugin, you can join the <a href="http://www.facebook.com/pages/Comprehensive-Google-Map-Plugin/180316032076503" target="_blank">Comprehensive Google Map Fan Page</a> on Facebook. 
  
 
 Please note: 
