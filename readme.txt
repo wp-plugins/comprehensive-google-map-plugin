@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 5.0.0
+Stable tag: 5.0.1
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -90,6 +90,10 @@ Just click once somewhere on the map
 
 == Changelog ==
 
+= 5.0.1 =
+* Code refactoring and cleanup
+* When displaying rendered directions, closing any open info bubbles
+
 = 5.0.0 =
 * Enhancement: Adding ability to choose custom marker icons from over 250 icons
 * Enhancement: Fixed inconsistency when setting auto panning for info bubble.
@@ -97,7 +101,6 @@ Just click once somewhere on the map
 * Enhancement: Some CSS tweaks
 * Removed explicit settings for lat/long and address field. These should be set as part of the marker settings. These options are still supported for backwards compatibility.
 * Removed marker animation setting.
-
 
 = 4.0.9 =
 * Enhancement: Directions CSS

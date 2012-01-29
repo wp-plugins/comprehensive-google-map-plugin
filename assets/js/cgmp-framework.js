@@ -1,9 +1,24 @@
+/*
+Copyright (C) 2011  Alexander Zagniotov
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 jQuery.GoogleMapOrchestrator = function (map, options) {
 	
 	if (typeof google == "undefined" || !google) {
-    	log("Fatal :: We do not have reference to Google API. Aborting..");
+    	Logger.fatal("We do not have reference to Google API. Aborting..");
     	return false;
 	}
 	 
@@ -16,82 +31,32 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     var placeHolder = options.placeHolder || "map";
     var zoom = options.zoom || 16;
     var mapType = options.mapType || google.maps.MapTypeId.ROADMAP;
-    var initLocation = options.initLocation || new google.maps.LatLng(-33.92, 151.25); 
 	var bubbleAutoPan = options.bubbleAutoPan || "true";
-	var markerdirections = options.markerdirections || "true";
 
     var googleMap = map;
     googleMap.setOptions({
 	   		zoom: zoom,
-	   		/*center: initLocation,*/
 	      	mapTypeId: mapType,
 	      	mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
     });
 
     
     var layerBuilder = new jQuery.LayerBuilder(googleMap);
-    var builder = new jQuery.MarkerBuilder(googleMap, initLocation, bubbleAutoPan, markerdirections);
+    var builder = new jQuery.MarkerBuilder(googleMap, bubbleAutoPan);
    
    	google.maps.event.addListener(googleMap, 'click', function () {
-		if (builder.getOriginalExtendedBounds() != null) {
-			log("Info :: Panning map back to its original bounds center: " + builder.getOriginalExtendedBounds().getCenter() + " and updated zoom: " + builder.getUpdatedZoom());
-    		googleMap.setCenter(builder.getOriginalExtendedBounds().getCenter());
-			googleMap.setZoom(builder.getUpdatedZoom());
-		} else 	if (builder.getOriginalMapCenter() != null) {
-			log("Info :: Panning map back to its original center: " + builder.getOriginalMapCenter()  + " and updated zoom: " + builder.getUpdatedZoom());
-    		googleMap.setCenter(builder.getOriginalMapCenter());
-			googleMap.setZoom(builder.getUpdatedZoom());
-		} 
+		builder.shiftMapToOriginalZoomAndLocation();
 	});
-
 
     function sanityCheck() {
     	if (typeof googleMap == "undefined" || !googleMap || googleMap == null ) {
-        	log("Fatal :: We do not have instance of the Google API object. Aborting..");
+        	Logger.fatal("We do not have instance of the Google API object. Aborting..");
         	return false;
         }
     	return true;
     }
-   
-	this.getOption = function (option) {
-    	return options[option];
-	}
-
-	this.routeDirections = function(lat, lng, userOrigin) {
-		if (!sanityCheck()) {
-    		return false;
-    	}
-		builder.routeDirections(lat, lng, userOrigin);
-	}
-
-	this.removeDirections = function() {
-		builder.removeDirections();
-	}
-
-
-    this.buildInitLocationMarker = function (showPrimaryMarker) {
-    	if (!sanityCheck()) {
-    		return false;
-    	}
-    	builder.buildInitLocationMarker(showPrimaryMarker);
-    }
-    
-    this.updateInitLocationMarker = function(newInitLocation, animation) {
-    	if (!sanityCheck()) {
-    		return false;
-    	}
-		var animationType = google.maps.Animation.DROP;
-		if (animation != null) {
-		
-			switch (animation) {
-    			case jQuery.GoogleMapOrchestrator.AnimationType.BOUNCE:
-    				animationType = google.maps.Animation.BOUNCE;
-    			break;
-			}
-    	}
-    	builder.updateInitLocationMarker(newInitLocation, animationType);
-	}
-    
+	
+        
     this.buildAddressMarkers = function (additionalMarkerLocations) {
     	if (!sanityCheck()) {
     		return false;
@@ -114,7 +79,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     		
     		case jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO:
 				if (panoramiouid != null && panoramiouid != "") {
-    	        	log("Info :: Going to filter Panoramio images by " + panoramiouid);
+    	        	Logger.info("Going to filter Panoramio images by " + panoramiouid);
 					layerBuilder.buildPanoramioLayer(panoramiouid);
     	        } else {
     				layerBuilder.buildPanoramioLayer();
@@ -123,14 +88,14 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     		
     		case jQuery.GoogleMapOrchestrator.LayerType.KML:
     			if (kml == null || kml == "") {
-    	        	log("Error :: KML URL must be passed for the KML Layer. Aborting..");
+    	        	Logger.error("KML URL must be passed for the KML Layer. Aborting..");
     	        	return false;
     	        }
     			layerBuilder.buildKmlLayer(kml);
     		break;
     		
     		default:
-    			log("Warning :: Unknown layer type: " + type);
+    			Logger.warn("Unknown layer type: " + type);
     	}
     }
     
@@ -162,18 +127,8 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 			break;
 			
 		    default:
-    			log("Warning :: Unknown map control type: " + mapControlType);
+    			Logger.warn("Unknown map control type: " + mapControlType);
     	}
-    }
-    
-    function log(message) {
-    	if ( jQuery.browser.msie ) {
-    	    //Die... die... die.... why dont you just, die???
-    	 } else {
-    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
-    		    console.log(message);
-    		  }
-    	 }
     }
 }
 
@@ -209,7 +164,7 @@ jQuery.LayerBuilder = function (map) {
     
     this.buildPanoramioLayer = function (userId) {
     	if (typeof google.maps.panoramio == "undefined" || !google.maps.panoramio || google.maps.panoramio == null ) {
-        	log("Error :: We cannot access Panoramio library. Aborting..");
+        	Logger.error("We cannot access Panoramio library. Aborting..");
         	return false;
         }
     	var panoramioLayer = new google.maps.panoramio.PanoramioLayer();
@@ -219,48 +174,34 @@ jQuery.LayerBuilder = function (map) {
 			}
     		panoramioLayer.setMap(googleMap);
 		} else {
-			log("Error :: Could not instantiate Panoramio object. Aborting..");
+			Logger.error("Could not instantiate Panoramio object. Aborting..");
 		}
     }
     
     this.buildKmlLayer = function (url) {
     	if (url.toLowerCase().indexOf("http") < 0) {
-        	log("Error :: KML URL must start with HTTP(S). Aborting..");
+        	Logger.error("KML URL must start with HTTP(S). Aborting..");
         	return false;
         }
     	var kmlLayer = new google.maps.KmlLayer(url);
     	kmlLayer.setMap(googleMap);
     }
-    
-    function log(message) {
-    	if ( jQuery.browser.msie ) {
-    	    //Die... die... die.... why dont you just, die???
-    	 } else {
-    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
-    		    console.log(message);
-    		  }
-    	 }
-    }
 }
 
-jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirections) {
+jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
     jQuery.extend(this, jQuery.MarkerBuilder.defaultOptions);
 
     var markers = [];
     var storedAddresses = [];
-	var bubbleData = [];
     var timeout = null;
     var directionControlsBinded = false;
     var googleMap = map;
     var csvString = null;
-    var initLocation = initLocation;
 	var bubbleAutoPan = bubbleAutoPan;
-	var markerdirections = markerdirections;
-	var primaryAnimation = google.maps.Animation.DROP;
 	var originalExtendedBounds = null;
 	var originalMapCenter = null;
 	var updatedZoom = 5;
-
+	var mapDivId = googleMap.getDiv().id;
     var utils = new jQuery.Utils();
     var geocoder = new google.maps.Geocoder();
     var bounds = new google.maps.LatLngBounds();
@@ -271,38 +212,43 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
     	draggable: true
   	};
 	var directionsRenderer = new google.maps.DirectionsRenderer(rendererOptions);
-	directionsRenderer.setPanel(document.getElementById('rendered-directions-placeholder-' + googleMap.getDiv().id));
+	directionsRenderer.setPanel(document.getElementById('rendered-directions-placeholder-' + mapDivId));
 	var directionsService = new google.maps.DirectionsService();
 
 	function resetMap()  {
-			if (originalExtendedBounds != null) {
-			log("Info :: MarkerBuilder :: Panning map back to its original bounds center: " + originalExtendedBounds.getCenter() + " and updated zoom: " + updatedZoom);
+		if (originalExtendedBounds != null) {
+			if (googleMap.setCenter() != originalExtendedBounds.getCenter()) {
+				Logger.info("Panning map back to its original bounds center: " + originalExtendedBounds.getCenter() + " and updated zoom: " + updatedZoom);
     			googleMap.setCenter(originalExtendedBounds.getCenter());
 				googleMap.setZoom(updatedZoom);
+			}
 		} else 	if (originalMapCenter != null) {
-			log("Info :: MarkerBuilder :: Panning map back to its original center: " + originalMapCenter  + " and updated zoom: " + updatedZoom);
-    			googleMap.setCenter(originalMapCenter);
-				googleMap.setZoom(updatedZoom);
+			Logger.info("Panning map back to its original center: " + originalMapCenter  + " and updated zoom: " + updatedZoom);
+    		googleMap.setCenter(originalMapCenter);
+			googleMap.setZoom(updatedZoom);
 		}
+	}
+
+	function resetDirectionAddressFields(dirDivId)  {
+		jQuery(dirDivId + ' input#a_address').val('');
+		jQuery(dirDivId + ' input#b_address').val('');
+		jQuery(dirDivId + ' input#a_address').removeClass('d_error');
+		jQuery(dirDivId + ' input#b_address').removeClass('d_error');
 	}
 
     function attachEventlistener(marker) {
 
 		var localBubbleData = buildBubble(marker.content);
-
-		var parentInfoBubble = 'div#bubble-' + localBubbleData.bubbleHolderId;
-		var dirDivId = 'div#direction-controls-placeholder-' + googleMap.getDiv().id;
-		var targetDiv = jQuery("div#rendered-directions-placeholder-" + googleMap.getDiv().id);
+		var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
+		var targetDiv = jQuery("div#rendered-directions-placeholder-" + mapDivId);
 
 		google.maps.event.addListener(marker, 'click', function () {
 
-			jQuery(dirDivId + ' input#a_address').val('');
-			jQuery(dirDivId + ' input#b_address').val('');
-			jQuery(dirDivId + ' input#a_address').removeClass('d_error');
-			jQuery(dirDivId + ' input#b_address').removeClass('d_error');
-  			jQuery(dirDivId).fadeOut();
+		  	resetDirectionAddressFields(dirDivId);
+
+			jQuery(dirDivId).fadeOut();
 			directionsRenderer.setMap(null);
-			jQuery("div#rendered-directions-placeholder-" + googleMap.getDiv().id).html("");
+			targetDiv.html("");
 			targetDiv.hide();
 			jQuery(dirDivId + ' button#print_sub').hide();
 
@@ -310,6 +256,54 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 			infowindow.setOptions({disableAutoPan: bubbleAutoPan == "true" ? false : true });
             infowindow.open(map, this);
         });
+
+		validateMarkerStreetViewExists(marker, localBubbleData, dirDivId);
+		attachEventstoDirectionControls(marker, localBubbleData, dirDivId, targetDiv);
+    }
+
+	function attachEventstoDirectionControls(marker, localBubbleData, dirDivId, targetDiv)  {
+
+		var parentInfoBubble = 'div#bubble-' + localBubbleData.bubbleHolderId;
+		var splittedAddr = marker.content.split("<br />Lat/Long: ");
+
+		splittedAddr[0] = splittedAddr[0].replace("Lat/Long: ", "");
+
+		jQuery(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
+  			var thisId = this.id;
+			if (thisId == 'toHere-' + localBubbleData.bubbleHolderId) {
+				jQuery(dirDivId).fadeIn();
+				jQuery(dirDivId + ' input#a_address').val('');
+				jQuery(dirDivId + ' input#b_address').val(splittedAddr[0]);
+				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
+			}
+		});
+
+		jQuery(parentInfoBubble + ' a.dirFromHereTrigger').live("click", function() {
+  			var thisId = this.id;
+			if (thisId == 'fromHere-' + localBubbleData.bubbleHolderId) {
+				jQuery(dirDivId).fadeIn();
+				jQuery(dirDivId + ' input#a_address').val(splittedAddr[0]);
+				jQuery(dirDivId + ' input#b_address').val('');
+				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
+			}
+		});
+
+		jQuery(dirDivId + ' div.d_close-wrapper').live("click", function(event) {
+
+				resetDirectionAddressFields(dirDivId);
+
+  				jQuery(this).parent().fadeOut();
+				directionsRenderer.setMap(null);
+				targetDiv.html("");
+				targetDiv.hide();
+				jQuery(dirDivId + ' button#print_sub').hide();
+				resetMap();
+
+				return false;
+		});
+	}
+
+	function validateMarkerStreetViewExists(marker, localBubbleData, dirDivId)  {
 
 		streetViewService.getPanoramaByLocation(marker.position, 50, function (streetViewPanoramaData, status) {
     		if (status === google.maps.StreetViewStatus.OK) {
@@ -338,10 +332,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 
 						google.maps.event.addListener(infowindow, 'closeclick', function() {
 
-							jQuery(dirDivId + ' input#a_address').val('');
-							jQuery(dirDivId + ' input#b_address').val('');
-							jQuery(dirDivId + ' input#a_address').removeClass('d_error');
-							jQuery(dirDivId + ' input#b_address').removeClass('d_error');
+							resetDirectionAddressFields(dirDivId);
   							jQuery(dirDivId).fadeOut();
 
 							if (pano != null) {
@@ -366,7 +357,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				});
     		} else {
         		// no street view available in this range, or some error occurred
-				log("Warning :: There is not street view available for this marker location: " + marker.position + " status: " + status);
+				Logger.warn("There is not street view available for this marker location: " + marker.position + " status: " + status);
 				jQuery('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
 					e.preventDefault();
 				});
@@ -378,49 +369,13 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				});
     		}
 		});
-		
-		var splittedAddr = marker.content.split("<br />Lat/Long: ");
-
-		jQuery('a.dirToHereTrigger').live("click", function() {
-  			var thisId = this.id;
-			if (thisId == 'toHere-' + localBubbleData.bubbleHolderId) {
-				jQuery(dirDivId).fadeIn();
-				jQuery(dirDivId + ' input#a_address').val('');
-				jQuery(dirDivId + ' input#b_address').val(splittedAddr[0]);
-
-			}
-		});
-
-		jQuery('a.dirFromHereTrigger').live("click", function() {
-  			var thisId = this.id;
-			if (thisId == 'fromHere-' + localBubbleData.bubbleHolderId) {
-				jQuery(dirDivId).fadeIn();
-				jQuery(dirDivId + ' input#a_address').val(splittedAddr[0]);
-				jQuery(dirDivId + ' input#b_address').val('');
-
-			}
-		});
-
-		jQuery('div.d_close-wrapper').live("click", function() {
-				jQuery(dirDivId + ' input#a_address').val('');
-				jQuery(dirDivId + ' input#b_address').val('');
-				jQuery(dirDivId + ' input#a_address').removeClass('d_error');
-				jQuery(dirDivId + ' input#b_address').removeClass('d_error');
-  				jQuery(this).parent().fadeOut();
-				directionsRenderer.setMap(null);
-				jQuery("div#rendered-directions-placeholder-" + googleMap.getDiv().id).html("");
-				targetDiv.hide();
-				jQuery(dirDivId + ' button#print_sub').hide();
-				resetMap();
-		});
-
-    }
+	}
 
 
 	function bindDirectionControlsToEvents()  {
 
-		var dirDivId = 'div#direction-controls-placeholder-' + googleMap.getDiv().id;
-		var targetDiv = jQuery("div#rendered-directions-placeholder-" + googleMap.getDiv().id);
+		var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
+		var targetDiv = jQuery("div#rendered-directions-placeholder-" + mapDivId);
 
 		jQuery(dirDivId + ' a#reverse-btn').live("click", function(e) {
 
@@ -508,9 +463,10 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 							directionsRenderer.setDirections(response);
 							jQuery(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
 							jQuery(dirDivId + ' button#print_sub').fadeIn();
+							infowindow.close();
 
-		  				} else {
-		    				log('Error :: Could not route directions from "' + old_a_addr + '" to "' + old_b_addr + '", got result from Google: ' + status);
+						} else {
+		    				Logger.error('Could not route directions from "' + old_a_addr + '" to "' + old_b_addr + '", got result from Google: ' + status);
 							targetDiv.html("<span style='font-size: 12px; font-weight: bold; color: red'>Could not route directions from<br />'" + old_a_addr + "' to<br />'" + old_b_addr + "'<br />Got result from Google: [" + status + "]</span>");
 
 							jQuery(dirDivId + ' button#print_sub').hide();
@@ -564,14 +520,14 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 
 			if (thisId == 'dir_d_btn') {
 				if (jQuery(dirDivId + ' a#dir_d_btn').hasClass('selected')) {
-					log("Warning :: Driving travel mode is already selected");
+					Logger.warn("Driving travel mode is already selected");
 				} else {
 					jQuery(dirDivId + ' a#dir_d_btn').addClass('selected');
 					jQuery(dirDivId + ' a#dir_w_btn').removeClass('selected');
 				}
 			} else 	if (thisId == 'dir_w_btn') {
 				if (jQuery(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
-					log("Warning :: Walking travel mode is already selected");
+					Logger.warn("Walking travel mode is already selected");
 				} else {
 					jQuery(dirDivId + ' a#dir_w_btn').addClass('selected');
 					jQuery(dirDivId + ' a#dir_d_btn').removeClass('selected');
@@ -586,16 +542,15 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 	function buildBubble(contentFromMarker) {
 
 		var localBubbleData = [];
-		var mapId = googleMap.getDiv().id;
 		var randomNumber = Math.floor(Math.random() * 111111);
 
-		randomNumber = randomNumber + "-" + mapId;
+		randomNumber = randomNumber + "-" + mapDivId;
 
 		var	bubble = "<div id='bubble-" + randomNumber + "' style='height: 130px !important; width: 300px !important;' class='bubble-content'>";
 		bubble += "<h4>Address:</h4>";
 		bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
 		bubble += "<hr />";
-		bubble += "<p style='text-align: left'>Directions: <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'><b>To here</b></a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'><b>From here</b></a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'><b>Street View</b></a></p>";
+		bubble += "<p style='text-align: left'>Directions: <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>To here</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>From here</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>Street View</a></p>";
 		bubble += "</div>";
 
 		return {bubbleHolderId : randomNumber, bubbleContent: bubble};
@@ -604,26 +559,26 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
     function parseCsv() {
         csvString = csvString.replace(new RegExp("'", "g"), "");
 
-		log("Info :: Current CSV with locations: " + csvString);
+		Logger.info("Current CSV with locations: " + csvString);
 
         var locations = csvString.split("|");
 
-		log("Info :: Exploded CSV into locations: " + locations);
+		Logger.info("Exploded CSV into locations: " + locations);
 
         for (var i = 0; i < locations.length; i++) {
             var target = locations[i];
             if (target != null && target != "") {
 				target = target.replace(/^\s+|\s+$/g, '');
 				if (target == "") {
-					log("Warning :: Given extra marker address is empty");
+					Logger.warn("Given extra marker address is empty");
 					continue;
 				}
-            	pushGeoDestination(target, (i + 1), true);
+            	pushGeoDestination(target, (i + 1));
             }
         }
     }
     
-    function pushGeoDestination(target, index, isExtraMarker) {
+    function pushGeoDestination(target, index) {
 
 		 var targetArr = target.split(CGMPGlobal.sep);
 
@@ -633,28 +588,24 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
              storeAddress(targetArr[0], index, targetArr[1]);
          } else {
 			 storeAddress(targetArr[0], index, targetArr[1]);
-             log("Warning :: Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
+             Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
          }
     }
 
     function storeAddress(address, zIndex, markerIcon) {
 			
-			if (zIndex > 0 && initLocation == address) {
-				log("Warning :: Primary and given extra marker have the same address: " + address);
-			} else {
-				log("Info :: Storing address: " + address + " for marker-to-be");
-				storedAddresses.push({
-            		address: address,
-					animation: primaryAnimation,
-            		zIndex: zIndex,
-					markerIcon: markerIcon
-        		});
-			}
+			Logger.info("Storing address: " + address + " for marker-to-be");
+			storedAddresses.push({
+            	address: address,
+				animation: google.maps.Animation.DROP,
+            	zIndex: zIndex,
+				markerIcon: markerIcon
+        	});
 		}
     
     function addGeoPoint(point, zIndex, markerIcon) {
     	if (point == null || !point) {
-			log("Warning :: Given GEO point containing Lat/Long is NULL");
+			Logger.warn("Given GEO point containing Lat/Long is NULL");
     		return false;
     	}
         
@@ -664,12 +615,12 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
         		var latlngStr = point.split(",",4);
 
 				if (latlngStr == null || latlngStr.length != 2) {
-					log("Warning :: Exploded lat/long array is NULL or does not have length of two");
+					Logger.warn("Exploded lat/long array is NULL or does not have length of two");
 					return false;
 				}
 
 				if (latlngStr[0] == null || latlngStr[1] == null) {
-					log("Warning :: Lat or Long are NULL");
+					Logger.warn("Lat or Long are NULL");
 					return false;
 				}
 
@@ -677,7 +628,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				latlngStr[1] = latlngStr[1].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 
 				if (latlngStr[0] == '' || latlngStr[1] == '') {
-					log("Warning :: Lat or Long are empty string");
+					Logger.warn("Lat or Long are empty string");
 					return false;
 				}
 
@@ -689,41 +640,15 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
         storeAddress(latLng, zIndex, markerIcon);
     }
     
-	this.getOriginalExtendedBounds = function()  {
-		return originalExtendedBounds;
-	}
-
-	this.getUpdatedZoom = function()  {
-		return updatedZoom;
-	}
-
-	 
-	this.getOriginalMapCenter = function()  {
-		return originalMapCenter;
-	}
-
-
-    this.updateInitLocationMarker = function(newInitLocation, primAnimation) {
-    	initLocation = newInitLocation;
-		primaryAnimation = primAnimation;
-    }
-
-    this.buildInitLocationMarker = function (showPrimaryMarker) {
-
-		if (showPrimaryMarker)  {
-    		pushGeoDestination(initLocation, 0);
-		} else {
-			pushGeoDestination(initLocation, -1);
-		}
-
-		queryGeocoderService();
-    }
-    
     this.buildAddressMarkers = function (additionalMarkerLocations) {
     	csvString = additionalMarkerLocations;
         parseCsv();
         queryGeocoderService();
     }
+
+	this.shiftMapToOriginalZoomAndLocation = function() {
+		resetMap();
+	}
 
     function queryGeocoderService() {
       	timeout = null;
@@ -769,8 +694,9 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 	}
 
 	function buildBubbleContent(element, addressPoint)  {
-		if (element.zIndex < 1) {
+		if (element.zIndex == 1) {
            	originalMapCenter = addressPoint;
+			Logger.info("Storing original map center [" + originalMapCenter + "]");
 		}
 
 		var lat = addressPoint.lat();
@@ -798,22 +724,12 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
         	storedAddresses.push(element);   	
         	timeout = setTimeout(function() { queryGeocoderService(); }, 3000);
         } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-        	log("Warning :: Got ZERO results for " + element.address + " while having " + markers.length + " markers");
+        	Logger.warn("Got ZERO results for " + element.address + " while having " + markers.length + " markers");
        		//alert("Got ZERO results for " + element.address);
 	   	}
 
     }
     
-    function log(message) {
-    	if ( jQuery.browser.msie ) {
-    	    //Die... die... die.... why dont you just, die???
-    	 } else {
-    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
-    		    console.log(message);
-    		  }
-    	 }
-    }
-
     function instrumentMarker(point, element) {
         var marker = new google.maps.Marker({
             position: point,
@@ -824,10 +740,6 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
             map: googleMap
         });
         if (marker) {
-
-			if (element.zIndex == -1) {
-				marker.setVisible(false);
-			}
 
 			if (element.markerIcon) {
 				var markerIcon = element.markerIcon;
@@ -860,7 +772,7 @@ jQuery.MarkerBuilder = function (map, initLocation, bubbleAutoPan, markerdirecti
 				}
 
 				var urlParts = shadow.url.split("/");
-				log("Info :: Setting shadow file [" + urlParts[urlParts.length-1] + "] for icon [" + markerIcon + "]");
+				Logger.info("Setting shadow file [" + urlParts[urlParts.length-1] + "] for icon [" + markerIcon + "]");
 
 				marker.setShadow(shadow);
 			}
@@ -901,50 +813,41 @@ jQuery.OrchestratorHub = function () {
 		});
 		return found;
 	}
-
-	 function log(message) {
-    	if ( jQuery.browser.msie ) {
-    	    //Die... die... die.... why dont you just, die???
-    	 } else {
-    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
-    		    console.log(message);
-    		  }
-    	 }
-    }
-
 }
 
-var orcHolder = new jQuery.OrchestratorHub();
 
-	function routeDirections(lat, lng, userOrigin, mapId)  {
-		var orc = orcHolder.getOrc(mapId);
-		if (orc == null || !orc) {
-			jQuery("div#directions-placeholder-" + mapId).html("<span style='font-size: 13px; font-weight: bold; color: red'>Cannot route directions</span>");
-			return false;
-		}
+var Logger = {
 
-		jQuery("div#directions-placeholder-" + mapId).html("<span style='font-size: 13px; font-weight: bold;'>Please wait, routing..</span>");
-		orc.routeDirections(lat, lng, userOrigin);
+	info: function(message) {
+        var msg = "Info :: " + message;
+		this.print(msg);
+	},
 
-	}
+	warn: function(message) {
+       	var msg = "Warning :: " + message;
+		this.print(msg);
+	},
 
+	error: function(message) {
+        var msg = "Error :: " + message;
+		this.print(msg);
+	},
 
-	function removeDirections(mapId)  {
-		var orc = orcHolder.getOrc(mapId);
-		if (orc == null || !orc) {
-			return false;
-		}
-		orc.removeDirections();
-	}
+	fatal: function(message) {
+        var msg = "Fatal :: " + message;
+		this.print(msg);
+	},
 
-
- 	function log(message) {
+	print: function(message) {
     	if ( jQuery.browser.msie ) {
     	    //Die... die... die.... why dont you just, die???
     	 } else {
-    		  if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
-    		    console.log(message);
-    		  }
+    		if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    			console.log(message);
+    		}
     	 }
-	}
+    }
+}
 
+//Used on the client site during map instantiation
+var orcHolder = new jQuery.OrchestratorHub();

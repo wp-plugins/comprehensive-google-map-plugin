@@ -87,23 +87,11 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	$controlOpts['scalecontrol'] = $scalecontrol;
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
 
-	$legacyLoc = isset($addresscontent) ? $addresscontent : "";
-
-	if (isset($latitude) && isset($longitude)) {
-		if ($latitude != "0" && $longitude != "0" && $latitude != 0 && $longitude != 0) {
-			$legacyLoc = $latitude.",".$longitude;
-		}
-	}
-
-	if (trim($legacyLoc) != "")  {
-		$addmarkerlist = $legacyLoc.CGMP_SEP."1-default.png"."|".$addmarkerlist;
-	}
-
+	$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
 
 	$result = '';
-	$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
-	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
-	//$result .= cgmp_draw_map_marker($id, $showmarker, $animation, $addresscontent, $addmarkerlist, $kml, $latitude, $longitude);
+	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
+	$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleiautopan, $controlOpts);
 	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);

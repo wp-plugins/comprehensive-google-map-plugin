@@ -84,16 +84,12 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$id = md5(time().' '.rand());
 
-
-		$hiddenmarkers = $this->updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers);
-
+		$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
 
 		$result = '';
-		$result .= cgmp_draw_map_placeholder($id, $width, $height, $markerdirections, $mapalign);
-		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $bubbleautopan, $controlOpts, $markerdirections);
-		
+		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
+		$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
 		$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $kml);
-
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
 		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
@@ -138,33 +134,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		return $instance;
 	}
 
-	function updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers)  {
-
-		$legacyLoc = isset($addresscontent) ? $addresscontent : "";
-
-		if (isset($latitude) && isset($longitude)) {
-			if ($latitude != "0" && $longitude != "0" && $latitude != 0 && $longitude != 0) {
-				$legacyLoc = $latitude.",".$longitude;
-			}
-		}
-
-		if (isset($hiddenmarkers) && $hiddenmarkers != "") {
-
-			if (strpos($hiddenmarkers, CGMP_SEP) === false) {
-				$hiddenmarkers = explode("|", $hiddenmarkers);
-				$hiddenmarkers = implode(CGMP_SEP."1-default.png|", $hiddenmarkers);
-				$hiddenmarkers = $hiddenmarkers.CGMP_SEP."1-default.png";
-			}
-		}
-
-		if (trim($legacyLoc) != "")  {
-			$hiddenmarkers = $legacyLoc.CGMP_SEP."1-default.png"."|".$hiddenmarkers;
-		}
-
-		return $hiddenmarkers;
-
-	}
-
+	
 	function form( $instance ) {
 
 		$bools = array("Show" => "true", "Hide" => "false");
@@ -204,7 +174,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$panoramiouid = !empty($instance['panoramiouid']) ? esc_attr($instance['panoramiouid']) : '';
 
 
-		$hiddenmarkers = $this->updateMarkerListFromLegacyLocations($latitude, $longitude, $addresscontent, $hiddenmarkers);
+		$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
 
 
 		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");

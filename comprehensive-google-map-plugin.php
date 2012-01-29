@@ -2,8 +2,8 @@
 /*
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
-Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 5.0.0
+Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
+Version: 5.0.1
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,10 +31,8 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '5.0.0');
+define('CGMP_VERSION', '5.0.1');
 define('CGMP_SEP', '{}');
-define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
-define('CGMP_NONCE_NAME', 'cgmp-marker-db-operation-nonce');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
@@ -56,7 +54,6 @@ define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Custom Overlays');
 define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Map Controls');
 define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS');
 define('CGMP_FIELDSETNAME_PANORAMIO', 'Panoramio Library');
-
 
 $global_fieldset_names = array();
 $global_fieldset_names["LEGEND_BASIC_SETTINGS"] = CGMP_FIELDSETNAME_BASICSETTINGS;

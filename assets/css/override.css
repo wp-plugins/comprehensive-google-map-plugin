@@ -64,6 +64,7 @@
 .bubble-content a {
     color: #1982D1 !important;
     text-decoration: none !important;
+    font-weight: normal !important;
 }
 
 .bubble-content a:focus,
