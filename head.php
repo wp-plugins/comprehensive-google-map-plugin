@@ -32,8 +32,7 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
 				wp_enqueue_script('jquery-ui-slider', CGMP_PLUGIN_JS.'/jquery-ui-slider-1.8.16.min.js', array('jquery', 'jquery-ui-core'), '1.8.16');
               	wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5.a', true);
 				wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput.js', array('jquery'), CGMP_VERSION, true);
-				wp_localize_script('cgmp-jquery-tokeninput', 'CGMPGlobal', array( 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
-              	wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/admin.js', array('jquery', 'jquery-ui-core', 'jquery-ui-slider', 'jquery-ui-tabs'), CGMP_VERSION, true);
+				wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/admin.js', array('jquery', 'jquery-ui-core', 'jquery-ui-slider', 'jquery-ui-tabs'), CGMP_VERSION, true);
 
         }
 endif;
@@ -57,7 +56,7 @@ if ( !function_exists('cgmp_google_map_init_scripts') ):
 				global $shortcode_tags;
 
 				if (isset($shortcode_tags['google-map-v3']) && $shortcode_tags['google-map-v3'] == 'cgmp_shortcode_googlemap_handler') {
-
+					//Do stuff
 				}
 		}
 endif;

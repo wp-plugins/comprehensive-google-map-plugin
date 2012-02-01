@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 5.0.2
+Version: 5.0.3
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,7 +31,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '5.0.2');
+define('CGMP_VERSION', '5.0.3');
 define('CGMP_SEP', '{}');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
@@ -79,7 +79,8 @@ require_once (CGMP_PLUGIN_DIR . '/metabox.php');
 require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
-add_action('the_posts', 'is_map_shortcode_present');
+//add_action('the_posts', 'is_map_shortcode_present');
+add_action('init', 'cgmp_google_map_init_scripts');
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
 add_action('admin_init', 'cgmp_google_map_admin_add_script');
 
@@ -94,6 +95,7 @@ function cgmp_google_map_deregister_scripts() {
 	$handle = '';
 	global $wp_scripts;
 
+	if (isset($wp_scripts->registered) && is_array($wp_scripts->registered)) {
 		foreach ( $wp_scripts->registered as $script) {
 
 			if (strpos($script->src, 'http://maps.googleapis.com/maps/api/js') !== false && $script->handle != 'cgmp-google-map-api') {
@@ -113,4 +115,5 @@ function cgmp_google_map_deregister_scripts() {
 			}
 		}
 	}
+}
 ?>

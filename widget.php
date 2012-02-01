@@ -31,23 +31,22 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
 
 		if ( is_active_widget(false, false, $this->id_base) ) {
-				add_action('init', 'cgmp_google_map_init_scripts');
+				//add_action('init', 'cgmp_google_map_init_scripts');
 				//add_action( 'wp_print_scripts', array(&$this, 'add_script') );
 				//add_action( 'wp_print_styles', array(&$this, 'add_style') );
 		}
 	}
 
 	function add_script(){
-		wp_enqueue_style('cgmp-google-map-override', CGMP_PLUGIN_CSS . '/override.css', false, CGMP_VERSION, "screen");
-		wp_enqueue_style('cgmp-google-map-directions', CGMP_PLUGIN_CSS . '/directions.css', false, CGMP_VERSION, "screen");
-
+		//wp_enqueue_style('cgmp-google-map-override', CGMP_PLUGIN_CSS . '/override.css', false, CGMP_VERSION, "screen");
+		//wp_enqueue_style('cgmp-google-map-directions', CGMP_PLUGIN_CSS . '/directions.css', false, CGMP_VERSION, "screen");
 	}
 
 	function add_style() {
-		wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
+		//wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
 		//wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp-framework.js', array('jquery'), CGMP_VERSION, false);
-		wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp-framework.min.js', array('jquery'), CGMP_VERSION, false);
-		wp_localize_script('cgmp-google-map-wrapper-framework-final', 'CGMPGlobal', array( 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
+		//wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp-framework.min.js', array('jquery'), CGMP_VERSION, false);
+		//wp_localize_script('cgmp-google-map-wrapper-framework-final', 'CGMPGlobal', array( 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
 	}
 
 	function widget( $args, $instance ) {
