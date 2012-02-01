@@ -108,6 +108,41 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
  	}
 endif;
 
+
+if ( !function_exists('is_map_shortcode_present') ):
+	function is_map_shortcode_present($posts)
+	{
+		if ( empty($posts) ) {
+			return $posts;
+		}
+
+    	$found = false;
+
+    	foreach ($posts as $post) {
+        	if ( stripos($post->post_content, '[google-map-v3') !== false) {
+            	$found = true;
+				break;
+			}
+        }
+
+		if ($found) {
+			cgmp_google_map_init_scripts();
+		}
+
+		return $posts;
+	}
+endif;
+
+
+
+if ( !function_exists('trim_marker_value') ):
+	function trim_marker_value(&$value)
+	{
+    	$value = trim($value);
+	}
+endif;
+
+
 if ( !function_exists('update_markerlist_from_legacy_locations') ):
 	function update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers)  {
 
@@ -132,8 +167,10 @@ if ( !function_exists('update_markerlist_from_legacy_locations') ):
 			$hiddenmarkers = $legacyLoc.CGMP_SEP."1-default.png".(isset($hiddenmarkers) && $hiddenmarkers != "" ? "|".$hiddenmarkers : "");
 		}
 
-		return $hiddenmarkers;
-
+		$hiddenmarkers_arr = explode("|", $hiddenmarkers );
+		array_walk($hiddenmarkers_arr, 'trim_marker_value');
+		$hiddenmarkers_arr = array_unique($hiddenmarkers_arr);
+		return implode("|", $hiddenmarkers_arr);
 	}
 endif;
 

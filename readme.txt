@@ -4,13 +4,11 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
-
-
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
@@ -59,7 +57,7 @@ Send to editor button is located at the bottom of the short code builder
 You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
 
 3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?<br />
-Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
+Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. Also, if jQuery lib is loaded twice by some other plugins, it also messes with Javascrip. 
 
 4. When I activate the plugin, some other plugin's admin menu or plugin itself does not load/work , why?<br />
 Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
@@ -91,6 +89,12 @@ Just click once somewhere on the map
 10. Street view in the marker's infer window
 
 == Changelog ==
+
+= 5.0.2 =
+* Enhancement: Some clarification to documentation
+* Enhancement: Removing duplicates from the list of marker addresses
+* Enhancement: Making sure that Google API and plugin scripts only loaded if widgets and/or short codes are active
+* Enhancement: Added overflow: visible to direction button for IE
 
 = 5.0.1 =
 * Code refactoring and cleanup

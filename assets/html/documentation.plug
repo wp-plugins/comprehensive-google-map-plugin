@@ -36,9 +36,9 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;zoom="<span class="italic">any positive numeric character, without decimal points between zero and 20</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;maptype="<span class="italic">ROADMAP <span class="sep">|</span> SATELLITE <span class="sep">|</span> HYBRID <span class="sep">|</span> TERRAIN </span>"<br />  
 
-	&nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;addresscontent="<span class="italic">full geo address string or latitude/longitude</span>" <span style="color: red;">(Deprecated. Please do not use. Supported only for backwards compatibility)</span><br /> 
+	&nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;addresscontent="<span class="italic">full geo address string or latitude/longitude</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br /> 
 
 	&nbsp;&nbsp;&nbsp;&nbsp;showmarker="<span class="italic">true <span class="sep">|</span> false</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;animation="<span class="italic">DROP <span class="sep">|</span> BOUNCE</span>"<br />  

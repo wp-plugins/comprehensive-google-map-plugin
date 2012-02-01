@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
-function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {
-	
+	function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {
+
 	extract(shortcode_atts(array(
 		'width' => 250,
 		'height' => 250,
@@ -98,7 +98,6 @@ function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) 
 	$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
 	$result .= cgmp_draw_kml($id, $kml);
 	$result .= cgmp_end_map_init();
-
 
 	return $result;
 }
