@@ -70,6 +70,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$markerdirections = empty($instance['markerdirections']) ? 'true' : $instance['markerdirections'];
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
+		$addmarkermashup = empty($instance['addmarkermashuphidden']) ? 'false' : $instance['addmarkermashuphidden'];
 		$mapalign = empty($instance['mapalign']) ? 'center' : $instance['mapalign'];
 		$panoramiouid = empty($instance['panoramiouid']) ? '' : $instance['panoramiouid'];
 
@@ -89,7 +90,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$id = md5(time().' '.rand());
 
-		$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
+		if ($addmarkermashup == 'true') {
+			$hiddenmarkers = make_marker_geo_mashup();
+		} else if ($addmarkermashup == 'false') {
+			$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
+		}
 
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
@@ -107,9 +112,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 	}
 
 	function update( $new_instance, $old_instance ) {
-		$instance = $old_instance;
-
-
+			$instance = $old_instance;
+		
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['width'] = strip_tags($new_instance['width']);
 		$instance['height'] = strip_tags($new_instance['height']);
@@ -131,11 +135,13 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['kml'] = strip_tags($new_instance['kml']);
 		$instance['showpanoramio'] = strip_tags($new_instance['showpanoramio']);
 		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
+		$instance['addmarkermashuphidden'] = strip_tags($new_instance['addmarkermashuphidden']);
 		$instance['bubbleautopan'] = strip_tags($new_instance['bubbleautopan']);
 		$instance['markerdirections'] = strip_tags($new_instance['markerdirections']);
 		$instance['mapalign'] = strip_tags($new_instance['mapalign']);
 		$instance['panoramiouid'] = strip_tags($new_instance['panoramiouid']);
 
+		
 		return $instance;
 	}
 
@@ -173,6 +179,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$showpanoramio = !empty($instance['showpanoramio']) ? esc_attr($instance['showpanoramio']) : 'false';
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
+		$addmarkermashup = !empty($instance['addmarkermashuphidden']) ? esc_attr($instance['addmarkermashuphidden']) : 'false';
+
 		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'true';
 		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
 		$mapalign = !empty($instance['mapalign']) ? esc_attr($instance['mapalign']) : 'center';
@@ -299,6 +307,15 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$v = $m."icons";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "")); 
 		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
+
+		$v = $m."mashup";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Make this map a Marker Geo Mashup")); 
+		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_id($v), "value" => "", "class" => "marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashuphidden";
+		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $addmarkermashup, "class" => "", "style" => ""));
+
+
 
 		$v = $m."list";
 		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "class" => "token-input-list", "style" => ""));

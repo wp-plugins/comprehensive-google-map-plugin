@@ -49,7 +49,8 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'kml' => '',
 		'markerdirections' => 'true',
 		'mapalign' => 'center',
-		'panoramiouid' => ''
+		'panoramiouid' => '',
+		'addmarkermashup' => 'false'
 	), $attr));
 	
 	$id = md5(time().' '.rand()); 
@@ -87,7 +88,11 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	$controlOpts['scalecontrol'] = $scalecontrol;
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
 
-	$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
+	if ($addmarkermashup == 'true') {
+		$addmarkerlist = make_marker_geo_mashup();
+	} else if ($addmarkermashup == 'false') {
+		$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
+	}
 
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);

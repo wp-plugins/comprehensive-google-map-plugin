@@ -184,6 +184,7 @@ jQuery.LayerBuilder = function (map) {
         	return false;
         }
     	var kmlLayer = new google.maps.KmlLayer(url);
+		//kmlLayer.preserveViewport = true;
     	kmlLayer.setMap(googleMap);
     }
 }
@@ -558,9 +559,6 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 
     function parseCsv() {
         csvString = csvString.replace(new RegExp("'", "g"), "");
-
-		Logger.info("Current CSV with locations: " + csvString);
-
         var locations = csvString.split("|");
 
 		Logger.info("Exploded CSV into locations: " + locations);
@@ -772,7 +770,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 				}
 
 				var urlParts = shadow.url.split("/");
-				Logger.info("Setting shadow file [" + urlParts[urlParts.length-1] + "] for icon [" + markerIcon + "]");
+				//Logger.info("Setting shadow file [" + urlParts[urlParts.length-1] + "] for icon [" + markerIcon + "]");
 
 				marker.setShadow(shadow);
 			}

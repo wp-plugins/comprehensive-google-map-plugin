@@ -1,12 +1,13 @@
 === Comprehensive Google Map Plugin ===
 Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
-Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons
+Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 5.0.3
+Stable tag: 6.0.0
 
-A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code.
+
+A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
 == Description ==
 
@@ -14,6 +15,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers
 * Over 250 amazing custom marker icons to choose from!
+* Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
 * Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
@@ -89,6 +91,12 @@ Just click once somewhere on the map
 10. Street view in the marker's infer window
 
 == Changelog ==
+
+= 6.0.0 =
+* Enhancement: Added marker Geo mashup option
+* Enhancement: Documentation revisisted
+* Enhancement: directions.css and override.css now merged into style.css and moved into the root of the plugin home directory so it can be accessible via WP plugin editor
+* Bug: Preventing from marker location text field to be sent to editor
 
 = 5.0.3 =
 * Reverted: Making sure that Google API and plugin scripts only loaded if widgets and/or short codes are active. Apparently it started causing problems to some people. Need to do more testing.

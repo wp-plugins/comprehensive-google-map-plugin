@@ -37,6 +37,10 @@ function buildShortcode(id) {
 			    //alert(jQuery(this).attr('role') + ': ' + jQuery(this).val());
 				var role = jQuery(this).attr('role');
 				var val =  jQuery(this).attr('value');
+
+				if (jQuery(this).attr('type') == "checkbox") {
+					val = jQuery(this).is(":checked");
+				}
 				
 				if (typeof role == "undefined" || role == "undefined") {
 					role = jQuery(this).attr('id');
@@ -191,6 +195,46 @@ function fadeInOutOnError(targetInput)  {
 
 }
 
+function hideShowCustomMarker(hiddenElemId) {
+
+		if (hiddenElemId.indexOf('_i_') == -1) {
+			var val = jQuery('#' + hiddenElemId).val();
+			var checkboxId = hiddenElemId.replace("hidden", "");
+			var customIconsId = checkboxId.replace("mashup", "icons");
+			var kmlId = checkboxId.replace("addmarkermashup", "kml");
+
+
+			if (val == 'true') {
+				jQuery("#" + kmlId).closest("fieldset").hide();
+				jQuery("#" + customIconsId).closest("fieldset").hide();
+				jQuery("#" + checkboxId).attr("checked", "checked");
+			} else {
+				jQuery("#" + kmlId).closest("fieldset").show();
+				jQuery("#" + customIconsId).closest("fieldset").show();
+				jQuery("#" + checkboxId).removeAttr("checked");
+			}
+		}
+}
+
+function initGeoMashupEvent() {
+
+		jQuery("input.marker-geo-mashup").change(function (source) {
+			var checkboxId = jQuery(this).attr("id");
+			var customIconsId = checkboxId.replace("mashup", "icons");
+			var kmlId = checkboxId.replace("addmarkermashup", "kml");
+
+			if (jQuery(this).is(":checked")) {
+				jQuery("#" + kmlId).closest("fieldset").fadeOut();
+				jQuery("#" + customIconsId).closest("fieldset").fadeOut();
+				jQuery("#" + checkboxId + "hidden").val("true");
+			} else {
+				jQuery("#" + kmlId).closest("fieldset").fadeIn();
+				jQuery("#" + customIconsId).closest("fieldset").fadeIn();
+				jQuery("#" + checkboxId + "hidden").val("false");
+			}
+		});
+}
+
 function initTokenHoldersAndEvent()  {
 	var holder = new jQuery.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
 	var initLists = holder.getLists();
@@ -315,6 +359,7 @@ jQuery(document).ready(function() {
 	initSliders(); 
 	initTooltips();
 	initMarkerIconEvents();
+	initGeoMashupEvent() ;
 
 	jQuery("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
         tabs: 'li',
@@ -336,6 +381,7 @@ jQuery(document).ajaxSuccess(
 						initSliders();
 						initTooltips();
 						initMarkerIconEvents();
+						initGeoMashupEvent() ;
 					}
 				}
 			}

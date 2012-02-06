@@ -156,11 +156,17 @@ if ( !function_exists('update_markerlist_from_legacy_locations') ):
 
 		if (isset($hiddenmarkers) && $hiddenmarkers != "") {
 
-			if (strpos($hiddenmarkers, CGMP_SEP) === false) {
-				$hiddenmarkers = explode("|", $hiddenmarkers);
-				$hiddenmarkers = implode(CGMP_SEP."1-default.png|", $hiddenmarkers);
-				$hiddenmarkers = $hiddenmarkers.CGMP_SEP."1-default.png";
+			$hiddenmarkers_arr = explode("|", $hiddenmarkers);
+			$filtered = array();
+			foreach($hiddenmarkers_arr as $marker) {
+				if (strpos(trim($marker), CGMP_SEP) === false) {
+					$filtered[] = trim($marker.CGMP_SEP."1-default.png");
+				} else {
+					$filtered[] = trim($marker);
+				}
 			}
+
+			$hiddenmarkers = implode("|", $filtered);
 		}
 
 		if (trim($legacyLoc) != "")  {
@@ -310,7 +316,11 @@ if ( !function_exists('cgmp_create_html_input') ):
 				$slider = "<div id='".$role."' class='slider'></div>";
 				$class .= " slider-output";
 		}
-		return $slider."<input role='".$role."' {$steps} class='".$class." shortcodeitem' id='".$id."' name='".$name."' value='".$value."' style='".$style."' />";
+
+		if (strpos($class, "notshortcodeitem") === false) {
+			$class = $class." shortcodeitem";
+		}
+		return $slider."<input role='".$role."' {$steps} class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' />";
 	}
 endif;
 
@@ -355,6 +365,32 @@ if ( !function_exists('cgmp_create_html_label') ):
 			$value = $attr['value'];
 		 	return "<label for=".$for.">".$value."</label>";
 	}
+endif;
+
+
+if ( !function_exists('cgmp_create_html_geo') ):
+		function cgmp_create_html_geo($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+
+				return  "<input type='checkbox' ".$checked." class='".$class."' id='".$id."' name='".$name."' style='".$style."' />";
+		}
+endif;
+
+
+
+if ( !function_exists('cgmp_create_html_geohidden') ):
+		function cgmp_create_html_geohidden($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+				$value = $attr['value'];
+
+				return "<script>jQuery(document).ready(function() { return hideShowCustomMarker('".$id."'); });</script><input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
+		}
 endif;
 
 
@@ -447,6 +483,283 @@ if ( !function_exists('cgmp_build_template_values') ):
 		}
 		return $template_values;
 	}
+endif;
+
+
+
+if ( !function_exists('cgmp_google_map_deregister_scripts') ):
+function cgmp_google_map_deregister_scripts() {
+	$handle = '';
+	global $wp_scripts;
+
+	if (isset($wp_scripts->registered) && is_array($wp_scripts->registered)) {
+		foreach ( $wp_scripts->registered as $script) {
+
+			if (strpos($script->src, 'http://maps.googleapis.com/maps/api/js') !== false && $script->handle != 'cgmp-google-map-api') {
+
+				if (!isset($script->handle) || $script->handle == '') {
+					$script->handle = 'remove-google-map-duplicate';
+				}
+
+				unset($script->src);
+				$handle = $script->handle;
+
+				if ($handle != '') {
+					$wp_scripts->remove( $handle );
+					$handle = '';
+					break;
+				}
+			}
+		}
+	}
+}
+endif;
+
+
+
+
+if ( !function_exists('cgmp_invalidate_published_post_marker') ):
+		function cgmp_invalidate_published_post_marker($postID)  {
+
+			$db_markers = get_option(CGMP_DB_PUBLISHED_POST_MARKERS);
+
+			if (!isset($db_markers) || $db_markers == '') {
+				$db_markers = array();
+			} else if ($db_markers != '') {
+				$db_markers = unserialize(base64_decode($db_markers));
+			}
+
+			if (is_array($db_markers) && count($db_markers) > 0) {
+				if (isset($db_markers[$postID])) {
+					update_option(CGMP_DB_POST_COUNT, -1);
+				}
+			}
+		}
+endif;
+
+
+
+
+
+
+if ( !function_exists('cgmp_cleanup_markers_from_published_posts') ):
+
+		function cgmp_cleanup_markers_from_published_posts()  {
+			update_option(CGMP_DB_PUBLISHED_POST_MARKERS, '');
+			update_option(CGMP_DB_POST_COUNT, '');
+		}
+endif;
+
+
+
+
+
+if ( !function_exists('cgmp_extract_markers_from_published_posts') ):
+
+		function cgmp_extract_markers_from_published_posts()  {
+
+			$serial = get_option(CGMP_DB_PUBLISHED_POST_MARKERS);
+			$db_markers = '';
+			if ($serial != '') {
+				$db_markers = unserialize(base64_decode($serial));
+			}
+			$first_time_run = false;
+			$invalidation_needed = false;
+
+			if (!isset($db_markers) || $db_markers == '') {
+				$first_time_run = true;
+				//echo "Running marker location extraction for the first time<br />";
+			} else if (is_array($db_markers) && count($db_markers) > 0) {
+				$total_post_count = get_option(CGMP_DB_POST_COUNT);
+
+				if (isset($total_post_count) && $total_post_count != '') {
+					$count_posts = wp_count_posts();
+					$published_posts = $count_posts->publish;
+
+					if ($total_post_count != $published_posts) {
+						$invalidation_needed = true;
+						//echo "Current total of saved posts is not equal to the actual number of published posts<br />";
+					}
+				} else {
+					$invalidation_needed = true;
+					//echo "Dont have current total of saved posts<br />";
+				}
+
+			} else if (is_array($db_markers) && count($db_markers) == 0) {
+				$invalidation_needed = true;
+				//echo "Array of saved marker locations is empty<br />";
+			} else {
+				//$invalidation_needed = true;
+			}
+
+				if ($invalidation_needed || $first_time_run) {
+
+					$db_markers = extract_locations_from_all_posts();
+
+					if (sizeof($db_markers) > 0) {
+						$serial = base64_encode(serialize($db_markers)); 
+						update_option(CGMP_DB_PUBLISHED_POST_MARKERS, $serial);
+						update_option(CGMP_DB_POST_COUNT, count($posts));
+					}
+				} else {
+					//echo "Not extracting for the first time and no invalidation needed, simply outputing existing array<br />";
+				}
+
+				//echo "Marker list: " .print_r($db_markers, true);
+			//exit;
+
+				return $db_markers;
+        	}
+endif;
+
+
+if ( !function_exists('extract_locations_from_all_posts') ):
+		function extract_locations_from_all_posts()  {
+			$args = array(
+					'numberposts'     => 100,
+	    		    'orderby'         => 'post_date',
+	    			'order'           => 'DESC',
+	   	 		    'post_type'       => 'post',
+					'post_status'     => 'publish' );
+
+				$posts = get_posts( $args );
+
+				$db_markers = array();
+				foreach($posts as $post) { 
+					$post_content = $post->post_content;
+					$extracted = extract_locations_from_post_content($post_content);
+					//echo "Extracted list: " .print_r($extracted, true)."<br /><br />";
+					if (count($extracted) > 0) {
+						$db_markers[$post->ID] = $extracted;
+					}
+				}
+
+				return $db_markers;
+
+	}
+endif;
+
+
+if ( !function_exists('extract_locations_from_post_content') ):
+	function extract_locations_from_post_content($post_content)  {
+
+		$arr = array();
+
+		if (isset($post_content) && $post_content != '') {
+				
+			if (strpos($post_content, "addresscontent") !== false) {
+				$pattern = "/addresscontent=\"(.*?)\"/";
+				$found = find_for_regex($pattern, $post_content); 
+
+				if (count($found) > 0) {
+					$arr = array_merge($arr, $found);
+				}
+			}
+
+			if (strpos($post_content, "addmarkerlist") !== false) {
+				$pattern = "/addmarkerlist=\"(.*?)\"/";
+				$found = find_for_regex($pattern, $post_content); 
+
+				if (count($found) > 0) {
+					$arr = array_merge($arr, $found);
+				}
+			}
+
+			if (strpos($post_content, "latitude") !== false) {
+
+				$pattern = "/latitude=\"(.*?)\"(\s{0,})longitude=\"(.*?)\"/";
+
+				preg_match_all($pattern, $post_content, $matches);
+
+				if (is_array($matches)) {
+
+					if (isset($matches[1]) && is_array($matches[1]) &&
+						isset($matches[3]) && is_array($matches[3])) {
+
+						for ($idx = 0; $idx < sizeof($matches[1]); $idx++) {
+							
+							if (isset($matches[1][$idx]) && isset($matches[3][$idx])) {
+								$lat = $matches[1][$idx];
+								$lng = $matches[3][$idx];
+
+								if (trim($lat) != "0" && trim($lng) != "0") {
+									$arr[] = trim($lat).",".trim($lng);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			$arr = array_unique($arr);
+		}
+		return $arr;
+	}
+
+endif;
+
+
+if ( !function_exists('find_for_regex') ):
+
+	function find_for_regex($pattern, $post_content)  {
+			$arr = array();
+			preg_match_all($pattern, $post_content, $matches);
+
+			if (is_array($matches)) {
+				if (isset($matches[1]) && is_array($matches[1])) {
+
+					foreach($matches[1] as $key => $value) {
+						if (isset($value) && trim($value) != "") {
+
+							if (strpos($value, "|") !== false) {
+								$value_arr = explode("|", $value);
+								foreach ($value_arr as $value) {
+									$arr[$value] = $value;
+								}
+							} else {
+								$arr[$value] = $value;
+							}
+						}
+					}
+				}
+			}
+
+		return $arr;
+	}
+endif;
+
+
+
+if ( !function_exists('make_marker_geo_mashup') ):
+
+function make_marker_geo_mashup()   {
+
+	$db_markers = cgmp_extract_markers_from_published_posts();
+
+	if (is_array($db_markers) && count($db_markers) > 0) {
+
+		$filtered = array();
+		foreach($db_markers as $postID => $locations) {
+
+			foreach($locations as $full_loc) {
+
+				$tobe_filtered_loc = $full_loc;
+				if (strpos($full_loc, CGMP_SEP) !== false) {
+					$loc_arr = explode(CGMP_SEP, $full_loc);
+					$tobe_filtered_loc = $loc_arr[0];
+				}
+
+				if (!isset($filtered[$tobe_filtered_loc])) {
+					$filtered[$tobe_filtered_loc] = $full_loc;
+				}
+			}
+		}
+
+		$addmarkerlist = implode("|", $filtered);
+		$addmarkerlist = update_markerlist_from_legacy_locations(0, 0, "", $addmarkerlist);
+		return $addmarkerlist;
+	}
+}
 endif;
 
 ?>

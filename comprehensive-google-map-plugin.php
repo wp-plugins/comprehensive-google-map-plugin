@@ -2,8 +2,8 @@
 /*
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
-Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 5.0.3
+Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
+Version: 6.0.0
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,8 +31,11 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '5.0.3');
+define('CGMP_VERSION', '6.0.0');
 define('CGMP_SEP', '{}');
+define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
+define('CGMP_DB_POST_COUNT', 'cgmp_total_published_posts');
+define('CGMP_DB_PUBLISHED_POST_MARKERS', 'cgmp_published_post_markers');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
@@ -91,29 +94,7 @@ add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
 
 add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
 
-function cgmp_google_map_deregister_scripts() {
-	$handle = '';
-	global $wp_scripts;
+register_activation_hook( __FILE__, 'cgmp_extract_markers_from_published_posts');
+add_action('publish_post', 'cgmp_invalidate_published_post_marker' );
 
-	if (isset($wp_scripts->registered) && is_array($wp_scripts->registered)) {
-		foreach ( $wp_scripts->registered as $script) {
-
-			if (strpos($script->src, 'http://maps.googleapis.com/maps/api/js') !== false && $script->handle != 'cgmp-google-map-api') {
-
-				if (!isset($script->handle) || $script->handle == '') {
-					$script->handle = 'remove-google-map-duplicate';
-				}
-
-				unset($script->src);
-				$handle = $script->handle;
-
-				if ($handle != '') {
-					$wp_scripts->remove( $handle );
-					$handle = '';
-					break;
-				}
-			}
-		}
-	}
-}
 ?>

@@ -80,6 +80,12 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 		$template_values["CUSTOM_ADDMARKERICONS"] = "";
 		$template_values["LIST_ADDMARKERLIST"] = "";
 		$template_values["HIDDEN_ADDMARKERLISTHIDDEN"] = "";
+
+		$template_values["GEO_ADDMARKERMASHUP"] = "";
+		$template_values["GEOHIDDEN_ADDMARKERMASHUPHIDDEN"] = "";
+		$template_values["LABEL_ADDMARKERMASHUP"] = "If selected, the generated map will aggregate all markers from other maps created by you in your public published posts. In other words, you get a Geo marker mashup in one map! At the moment, the mashup does not include markers from maps on pages and widgets, posts ONLY. When Geo mashup is enabled, the KML and custom marker sections become hidden, in order to reduce the confusion for the user.";
+
+
 		$template_values["LABEL_SHOWPANORAMIO"] = "<b>Panoramio</b>";
 		$template_values["SELECT_SHOWPANORAMIO"] = "Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Earth and Google Maps, with new photos being added at the end of every month. The site's goal is to allow Google Earth users to learn more about a given area by viewing the photos that other users have taken at that place.";
 

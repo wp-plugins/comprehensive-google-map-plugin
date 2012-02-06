@@ -120,7 +120,7 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = "bubbleautopan";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bubble Auto-Pan")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "true", "options" => $bools3)); 
 
 
 		$v = "kml";
@@ -137,11 +137,18 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = $m."input";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Location")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat widefat marker-location-text default-marker-icon", "style" => "width: 100% !important;"));
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat marker-location-text default-marker-icon notshortcodeitem", "style" => "width: 100% !important;"));
 
 		$v = $m."icons";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
 		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
+
+		$v = $m."mashup";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Make this map a Marker Geo Mashup")); 
+		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashuphidden";
+		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "notshortcodeitem", "style" => ""));
 
 		
 		$v = $m."list";
