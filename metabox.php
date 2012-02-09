@@ -33,19 +33,22 @@ if ( !function_exists('cgmp_render_shortcode_builder_form') ):
 function cgmp_render_shortcode_builder_form() {
 
 		$bools = array("Show" => "true", "Hide" => "false");
+		$bools2 = array("Enable" => "false", "Disable" => "true");
+		$bools3 = array("Enable" => "true", "Disable" => "false");
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
+		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
 
 		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
 
 		$v = "width";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Width (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "350", "class" => "widefat", "style" => "")); 
 
 
 		$v = "height";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Height (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "350", "class" => "widefat", "style" => "")); 
 
 		$v = "latitude";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Latitude")); 
@@ -57,7 +60,7 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = "zoom";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Zoom")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => 12, "class" => "widefat", "style" => "")); 
 
 		$v = "maptype";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map type")); 
@@ -109,15 +112,59 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = "showbike";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bike Paths")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
 
 		$v = "showtraffic";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Traffic Info")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+		$v = "bubbleautopan";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bubble Auto-Pan")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "true", "options" => $bools3)); 
+
 
 		$v = "kml";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "URL")); 
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "KML/GeoRSS URL")); 
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
+
+		$v = "showpanoramio";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Panoramio")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+			$m = "addmarker";
+		$settings[] = array("type" => "button", "token" => $m, "attr"=> array("id" => $m, "name" => $m, "value" => "Add Marker", "class" => "button-primary add-additonal-location", "style" => ""));
+
+
+		$v = $m."input";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Location")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat marker-location-text default-marker-icon notshortcodeitem", "style" => "width: 100% !important;"));
+
+		$v = $m."icons";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
+		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
+
+		$v = $m."mashup";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Make this map a Marker Geo Mashup")); 
+		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashuphidden";
+		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "notshortcodeitem", "style" => ""));
+
+		
+		$v = $m."list";
+		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "token-input-list", "style" => ""));
+
+		$v = $v."hidden";
+		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "shortcodeitem", "value" => "", "style" => ""));
+
+
+		$v = "mapalign";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Alignment")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $aligns)); 
+
+		$v = "panoramiouid";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "User ID (Opt.)")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => ""));
 
 	
 		$template_values = cgmp_build_template_values($settings);
