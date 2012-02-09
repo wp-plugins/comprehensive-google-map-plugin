@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.0
+Stable tag: 6.0.1
 
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
@@ -91,6 +91,11 @@ Just click once somewhere on the map
 10. Street view in the marker's infer window
 
 == Changelog ==
+
+= 6.0.1 =
+* Enhancement: Disabled zooming on mouse scroll
+* Enhancement: Some CSS fixes in directions
+* Enhancement: Using jQuerynoConflict();. Renamed all 'jQuery' into 'jQueryCgmp'
 
 = 6.0.0 =
 * Enhancement: Added marker Geo mashup option

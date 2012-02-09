@@ -24,7 +24,7 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 	$result = '<div align="'.$align.'"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
 			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="loading" style="top: '.$toploading.'px !important;"></div></div>';
 
-			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
+			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="background: white; width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
 			<div class="d_close-wrapper">
 				<a id="d_close" href="javascript:void(0)"> 
 					<img src="'.CGMP_PLUGIN_IMAGES.'/transparent.png" class="close"> 
@@ -183,15 +183,15 @@ endif;
 if ( !function_exists('cgmp_begin_map_init_v2') ):
 	function cgmp_begin_map_init_v2($id, $zoom, $type, $bubbleAutoPan, $controlOpts) {
 		$result =  '<script type="text/javascript">'.PHP_EOL;
-		$result .= '    jQuery(document).ready(function() {'.PHP_EOL;
+		$result .= '    jQueryCgmp(document).ready(function() {'.PHP_EOL;
 		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
-		$result .= '    var orc = new jQuery.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
+		$result .= '    var orc = new jQueryCgmp.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
 		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc});'.PHP_EOL;
-		$result .= '    orc.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQuery.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['pancontrol'].', jQuery.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['z_oomcontrol'].', jQuery.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['scalecontrol'].', jQuery.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['streetviewcontrol'].', jQuery.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
+		$result .= '    orc.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['pancontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['z_oomcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['scalecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
+        $result .= '    orc.switchMapControl('.$controlOpts['streetviewcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
 
 		return $result;
 	}
@@ -219,7 +219,7 @@ if ( !function_exists('cgmp_draw_map_bikepath') ):
 	function cgmp_draw_map_bikepath($id, $showbikepath) {
 		$result = '';
 		if (isset($showbikepath) && strtolower(trim($showbikepath)) == 'true') {
-			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
+			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -229,7 +229,7 @@ if ( !function_exists('cgmp_draw_map_traffic') ):
 	function cgmp_draw_map_traffic($id, $showtraffic) {
 		$result = '';
 		if (isset($showtraffic) && strtolower(trim($showtraffic)) == 'true') {
-			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
+			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -241,7 +241,7 @@ if ( !function_exists('cgmp_draw_kml') ):
 		$result = '';
 		if (isset($kml) && $kml != "" && strtolower(trim(strpos($kml, "http"))) !== false) {
 			$kml = str_replace("&#038;", "&", $kml);
-			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
+			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -252,7 +252,7 @@ if ( !function_exists('cgmp_draw_panoramio') ):
 	function cgmp_draw_panoramio($id, $showpanoramio, $userId) {
 		$result = '';
 		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
-			$result = 'orc.buildLayer(jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
+			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -389,7 +389,7 @@ if ( !function_exists('cgmp_create_html_geohidden') ):
 				$style = $attr['style'];
 				$value = $attr['value'];
 
-				return "<script>jQuery(document).ready(function() { return hideShowCustomMarker('".$id."'); });</script><input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
+				return "<script>jQueryCgmp(document).ready(function() { return hideShowCustomMarker('".$id."'); });</script><input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
 		}
 endif;
 

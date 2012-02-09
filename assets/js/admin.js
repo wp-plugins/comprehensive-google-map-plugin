@@ -15,14 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+var jQueryCgmp = {};
+jQueryCgmp = jQuery.noConflict();
 
 function generateWidgetShortcode(container_id) {
 	var id = '#' + container_id;
 	var code = buildShortcode(id);
-	jQuery(id + " #shortcode-placeholder").html(code);
-	jQuery(id + " #shortcode-placeholder").show();
-	jQuery(id + " #shortcode-placeholder").textSelect('select');
+	jQueryCgmp(id + " #shortcode-placeholder").html(code);
+	jQueryCgmp(id + " #shortcode-placeholder").show();
+	jQueryCgmp(id + " #shortcode-placeholder").textSelect('select');
 }
 
 function sendShortcodeToEditor(container_id) {
@@ -33,17 +34,17 @@ function sendShortcodeToEditor(container_id) {
 
 function buildShortcode(id) {
 	var code = "[google-map-v3 ";
-	jQuery(id + ' .shortcodeitem').each(function() {
-			    //alert(jQuery(this).attr('role') + ': ' + jQuery(this).val());
-				var role = jQuery(this).attr('role');
-				var val =  jQuery(this).attr('value');
+	jQueryCgmp(id + ' .shortcodeitem').each(function() {
+			    //alert(jQueryCgmp(this).attr('role') + ': ' + jQueryCgmp(this).val());
+				var role = jQueryCgmp(this).attr('role');
+				var val =  jQueryCgmp(this).attr('value');
 
-				if (jQuery(this).attr('type') == "checkbox") {
-					val = jQuery(this).is(":checked");
+				if (jQueryCgmp(this).attr('type') == "checkbox") {
+					val = jQueryCgmp(this).is(":checked");
 				}
 				
 				if (typeof role == "undefined" || role == "undefined") {
-					role = jQuery(this).attr('id');
+					role = jQueryCgmp(this).attr('id');
 				}
 
 				if (role != null && role != "" && val != null && val != "") {
@@ -65,42 +66,42 @@ function buildShortcode(id) {
 
 function configureSlider(min, max, step, elem) {
 
-	jQuery("div#" + elem).slider("destroy");
-	jQuery("div#" + elem).slider({min: min, max: max, step: step, animate: true,
+	jQueryCgmp("div#" + elem).slider("destroy");
+	jQueryCgmp("div#" + elem).slider({min: min, max: max, step: step, animate: true,
 		create: function(event, ui) {
-			var sibling = jQuery(this).siblings("input[role=" + elem + "]");
-			var siblingId = jQuery(sibling).attr("id");
-			var siblingVal = jQuery("input#" + siblingId).attr("value");
+			var sibling = jQueryCgmp(this).siblings("input[role=" + elem + "]");
+			var siblingId = jQueryCgmp(sibling).attr("id");
+			var siblingVal = jQueryCgmp("input#" + siblingId).attr("value");
 
 			if (siblingVal == null || siblingVal == "") {
 				siblingVal = 0;
 			}
 
-			jQuery(this).slider("value", siblingVal);
-			jQuery(sibling).change(function() {
-  				var siblingSlider =  jQuery(this).siblings("div#" + elem);
-				siblingSlider.slider("value", jQuery(this).attr("value"));
+			jQueryCgmp(this).slider("value", siblingVal);
+			jQueryCgmp(sibling).change(function() {
+  				var siblingSlider =  jQueryCgmp(this).siblings("div#" + elem);
+				siblingSlider.slider("value", jQueryCgmp(this).attr("value"));
 			});
 		},
 
 		change: function(event, ui) {
-			var sibling = jQuery(this).siblings("input[role=" + elem + "]");
-			var siblingId = jQuery(sibling).attr("id");
+			var sibling = jQueryCgmp(this).siblings("input[role=" + elem + "]");
+			var siblingId = jQueryCgmp(sibling).attr("id");
 			var value =  ui.value;
 			if (!isNumber(step)) {
 				value =  ui.value.toFixed(5);
 			}
-			jQuery("input#" + siblingId).attr("value", value);
+			jQueryCgmp("input#" + siblingId).attr("value", value);
 		},
 
 	 	slide: function(event, ui) {
-			var sibling = jQuery(this).siblings("input[role=" + elem + "]");
-			var siblingId = jQuery(sibling).attr("id");
+			var sibling = jQueryCgmp(this).siblings("input[role=" + elem + "]");
+			var siblingId = jQueryCgmp(sibling).attr("id");
 			var value =  ui.value;
 			if (!isNumber(step)) {
 				value =  ui.value.toFixed(5);
 			}
-			jQuery("input#" + siblingId).attr("value", value);
+			jQueryCgmp("input#" + siblingId).attr("value", value);
 	}});
 }
 
@@ -118,11 +119,11 @@ function initSliders() {
 
 function initTooltips()  {
 
-	jQuery('a.google-map-tooltip-marker').hover(function() {
+	jQueryCgmp('a.google-map-tooltip-marker').hover(function() {
 
-		var tooltip_marker_id = jQuery(this).attr('id');
+		var tooltip_marker_id = jQueryCgmp(this).attr('id');
 
-		jQuery("a#" + tooltip_marker_id + "[title]").tooltip({
+		jQueryCgmp("a#" + tooltip_marker_id + "[title]").tooltip({
 			effect: 'slide',
 			opacity: 0.8,
 			tipClass : "google-map-tooltip",
@@ -132,24 +133,24 @@ function initTooltips()  {
 			}
 		});
 
-		jQuery("a#" + tooltip_marker_id).mouseout(function(event) {
-			if (jQuery(this).data('tooltip')) {
-  				jQuery(this).data('tooltip').hide();
+		jQueryCgmp("a#" + tooltip_marker_id).mouseout(function(event) {
+			if (jQueryCgmp(this).data('tooltip')) {
+  				jQueryCgmp(this).data('tooltip').hide();
 			}
 		});
 	});
 }
 
 
-jQuery.TokenListHolder = function (classPath) {
-    jQuery.extend(this, jQuery.TokenListHolder.defaultOptions);
+jQueryCgmp.TokenListHolder = function (classPath) {
+    jQueryCgmp.extend(this, jQueryCgmp.TokenListHolder.defaultOptions);
 
 	var lists = [];
-	jQuery.map(jQuery(classPath), function(element) {
-		var id = jQuery(element).attr("id");
+	jQueryCgmp.map(jQueryCgmp(classPath), function(element) {
+		var id = jQueryCgmp(element).attr("id");
 
 		if (id != null) {
-			lists.push({id : id, obj: jQuery(element).tokenInput({holderId: id})});
+			lists.push({id : id, obj: jQueryCgmp(element).tokenInput({holderId: id})});
 		}
 	});
 
@@ -164,7 +165,7 @@ jQuery.TokenListHolder = function (classPath) {
 
 	this.getListIds = function() {
 		var found = [];
-		jQuery.map(jQuery(lists), function(element) {
+		jQueryCgmp.map(jQueryCgmp(lists), function(element) {
 			found.push(element.id);
 		});
 		return found;
@@ -173,7 +174,7 @@ jQuery.TokenListHolder = function (classPath) {
 
 	this.getList = function(listId) {
 		var found = {};
-		jQuery.map(jQuery(lists), function(element) {
+		jQueryCgmp.map(jQueryCgmp(lists), function(element) {
 			if (element.id == listId) {
 				found = element.obj;
 			}
@@ -184,13 +185,13 @@ jQuery.TokenListHolder = function (classPath) {
 
 function fadeInOutOnError(targetInput)  {
 
-		jQuery(targetInput).fadeIn("slow", function() {
-			jQuery(this).addClass("errorToken");
+		jQueryCgmp(targetInput).fadeIn("slow", function() {
+			jQueryCgmp(this).addClass("errorToken");
 		});
 
-     	jQuery(targetInput).focus().fadeOut(function() {
-			jQuery(this).removeClass("errorToken");
-			jQuery(this).fadeIn("slow");
+     	jQueryCgmp(targetInput).focus().fadeOut(function() {
+			jQueryCgmp(this).removeClass("errorToken");
+			jQueryCgmp(this).fadeIn("slow");
 		});
 
 }
@@ -198,73 +199,73 @@ function fadeInOutOnError(targetInput)  {
 function hideShowCustomMarker(hiddenElemId) {
 
 		if (hiddenElemId.indexOf('_i_') == -1) {
-			var val = jQuery('#' + hiddenElemId).val();
+			var val = jQueryCgmp('#' + hiddenElemId).val();
 			var checkboxId = hiddenElemId.replace("hidden", "");
 			var customIconsId = checkboxId.replace("mashup", "icons");
 			var kmlId = checkboxId.replace("addmarkermashup", "kml");
 
 
 			if (val == 'true') {
-				jQuery("#" + kmlId).closest("fieldset").hide();
-				jQuery("#" + customIconsId).closest("fieldset").hide();
-				jQuery("#" + checkboxId).attr("checked", "checked");
+				jQueryCgmp("#" + kmlId).closest("fieldset").hide();
+				jQueryCgmp("#" + customIconsId).closest("fieldset").hide();
+				jQueryCgmp("#" + checkboxId).attr("checked", "checked");
 			} else {
-				jQuery("#" + kmlId).closest("fieldset").show();
-				jQuery("#" + customIconsId).closest("fieldset").show();
-				jQuery("#" + checkboxId).removeAttr("checked");
+				jQueryCgmp("#" + kmlId).closest("fieldset").show();
+				jQueryCgmp("#" + customIconsId).closest("fieldset").show();
+				jQueryCgmp("#" + checkboxId).removeAttr("checked");
 			}
 		}
 }
 
 function initGeoMashupEvent() {
 
-		jQuery("input.marker-geo-mashup").change(function (source) {
-			var checkboxId = jQuery(this).attr("id");
+		jQueryCgmp("input.marker-geo-mashup").change(function (source) {
+			var checkboxId = jQueryCgmp(this).attr("id");
 			var customIconsId = checkboxId.replace("mashup", "icons");
 			var kmlId = checkboxId.replace("addmarkermashup", "kml");
 
-			if (jQuery(this).is(":checked")) {
-				jQuery("#" + kmlId).closest("fieldset").fadeOut();
-				jQuery("#" + customIconsId).closest("fieldset").fadeOut();
-				jQuery("#" + checkboxId + "hidden").val("true");
+			if (jQueryCgmp(this).is(":checked")) {
+				jQueryCgmp("#" + kmlId).closest("fieldset").fadeOut();
+				jQueryCgmp("#" + customIconsId).closest("fieldset").fadeOut();
+				jQueryCgmp("#" + checkboxId + "hidden").val("true");
 			} else {
-				jQuery("#" + kmlId).closest("fieldset").fadeIn();
-				jQuery("#" + customIconsId).closest("fieldset").fadeIn();
-				jQuery("#" + checkboxId + "hidden").val("false");
+				jQueryCgmp("#" + kmlId).closest("fieldset").fadeIn();
+				jQueryCgmp("#" + customIconsId).closest("fieldset").fadeIn();
+				jQueryCgmp("#" + checkboxId + "hidden").val("false");
 			}
 		});
 }
 
 function initTokenHoldersAndEvent()  {
-	var holder = new jQuery.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
+	var holder = new jQueryCgmp.TokenListHolder("div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list");
 	var initLists = holder.getLists();
 
 	//console.log(initLists);
 
-		jQuery.map(jQuery(initLists), function(element) {
+		jQueryCgmp.map(jQueryCgmp(initLists), function(element) {
 			var hiddenInput = "#" + element.id + "hidden";
-			var csv = jQuery(hiddenInput).val();
+			var csv = jQueryCgmp(hiddenInput).val();
 
 			if (csv != null && csv != "") {
 				var holderList = element.obj;
 				var locations = csv.split("|");
-				jQuery.map(locations, function (element) {
+				jQueryCgmp.map(locations, function (element) {
         			holderList.add(element);
 				});
 			}
 		});
 
-	jQuery("input.add-additonal-location").click(function (source) {
+	jQueryCgmp("input.add-additonal-location").click(function (source) {
 
-				var listId = jQuery(this).attr("id") + "list";
+				var listId = jQueryCgmp(this).attr("id") + "list";
 				var tokenList = holder.getList(listId);
-				var targetInput = "#" + jQuery(this).attr("id") + "input";
+				var targetInput = "#" + jQueryCgmp(this).attr("id") + "input";
 
-				var customIconListId = "#" + jQuery(this).attr("id") + "icons";
-				var selectedIcon = jQuery(customIconListId + " input[name='custom-icons-radio']:checked").val();
+				var customIconListId = "#" + jQueryCgmp(this).attr("id") + "icons";
+				var selectedIcon = jQueryCgmp(customIconListId + " input[name='custom-icons-radio']:checked").val();
 
-				if (jQuery(targetInput).val() != null && jQuery(targetInput).val() != "") {
-					var target = jQuery(targetInput).val().replace(/^\s+|\s+$/g, '');
+				if (jQueryCgmp(targetInput).val() != null && jQueryCgmp(targetInput).val() != "") {
+					var target = jQueryCgmp(targetInput).val().replace(/^\s+|\s+$/g, '');
 //http://stackoverflow.com/questions/1997616/regex-for-password-that-requires-one-numeric-or-one-non-alphanumeric-character
 					var chars = /^(?=.*(\d|[a-zA-Z])).{5,}$/;
 					var hasValidChars = chars.test(target);
@@ -273,16 +274,16 @@ function initTokenHoldersAndEvent()  {
 						//console.log(target + CGMPGlobal.sep + selectedIcon);
 						tokenList.add(target + CGMPGlobal.sep + selectedIcon);
 
-						resetPreviousIconSelection(jQuery(customIconListId));
+						resetPreviousIconSelection(jQueryCgmp(customIconListId));
 
-						jQuery(customIconListId + " img#default-marker-icon").attr("style", "cursor: default; ");
-						jQuery(customIconListId + " img#default-marker-icon").addClass('selected-marker-image');
-						jQuery(customIconListId + " input#default-marker-icon-radio").attr('checked', 'checked');
+						jQueryCgmp(customIconListId + " img#default-marker-icon").attr("style", "cursor: default; ");
+						jQueryCgmp(customIconListId + " img#default-marker-icon").addClass('selected-marker-image');
+						jQueryCgmp(customIconListId + " input#default-marker-icon-radio").attr('checked', 'checked');
 
-						jQuery(targetInput).attr("style", "");
-						jQuery(targetInput).addClass("default-marker-icon");
-						jQuery(targetInput).val("");
-						jQuery(targetInput).focus();
+						jQueryCgmp(targetInput).attr("style", "");
+						jQueryCgmp(targetInput).addClass("default-marker-icon");
+						jQueryCgmp(targetInput).val("");
+						jQueryCgmp(targetInput).focus();
 
 
 					} else {
@@ -298,53 +299,53 @@ function initTokenHoldersAndEvent()  {
 
 function resetPreviousIconSelection(parentDiv)  {
 	
-		jQuery.each(parentDiv.children(), function() {
-   			var liImg = jQuery(this).find("img");
+		jQueryCgmp.each(parentDiv.children(), function() {
+   			var liImg = jQueryCgmp(this).find("img");
 
 			if (liImg != null) {
-				jQuery(liImg).attr("style", "");
-				jQuery(liImg).removeClass('selected-marker-image');
+				jQueryCgmp(liImg).attr("style", "");
+				jQueryCgmp(liImg).removeClass('selected-marker-image');
 			}
 		});
 }
 
 function doMarkerIconUpdateOnSelection(parentDiv, img)  {
 
-	jQuery(img).attr("style", "cursor: default; ");
-	jQuery(img).addClass('selected-marker-image');
+	jQueryCgmp(img).attr("style", "cursor: default; ");
+	jQueryCgmp(img).addClass('selected-marker-image');
 
-	var currentSrc = jQuery(img).attr('src');
-	var inputId = jQuery(parentDiv).attr("id").replace("icons", "input");
-	jQuery("#" + inputId).attr("style", "background: url('" + currentSrc + "') no-repeat scroll 0px 0px #F9F9F9 !important");
-	jQuery("#" + inputId).removeClass("default-marker-icon");
-	jQuery("#" + inputId).focus();
+	var currentSrc = jQueryCgmp(img).attr('src');
+	var inputId = jQueryCgmp(parentDiv).attr("id").replace("icons", "input");
+	jQueryCgmp("#" + inputId).attr("style", "background: url('" + currentSrc + "') no-repeat scroll 0px 0px #F9F9F9 !important");
+	jQueryCgmp("#" + inputId).removeClass("default-marker-icon");
+	jQueryCgmp("#" + inputId).focus();
 
 }
 
 function initMarkerIconEvents() {
-	//jQuery('img.nomarker').attr("style", "cursor: default; background-color: green; border-radius: 3px 3px 3px 3px;");
+	//jQueryCgmp('img.nomarker').attr("style", "cursor: default; background-color: green; border-radius: 3px 3px 3px 3px;");
 
-	jQuery("div.custom-icons-placeholder a img").click(function () {
+	jQueryCgmp("div.custom-icons-placeholder a img").click(function () {
 		
-			var currentSrc = jQuery(this).attr('src');
+			var currentSrc = jQueryCgmp(this).attr('src');
 			if (currentSrc != null) {
 
-					var parentDiv = jQuery(this).closest("div.custom-icons-placeholder");
+					var parentDiv = jQueryCgmp(this).closest("div.custom-icons-placeholder");
 					resetPreviousIconSelection(parentDiv);
 
-					jQuery(this).parent("a").siblings('input[name="custom-icons-radio"]').attr("checked", "checked");
-					doMarkerIconUpdateOnSelection(parentDiv, jQuery(this));
+					jQueryCgmp(this).parent("a").siblings('input[name="custom-icons-radio"]').attr("checked", "checked");
+					doMarkerIconUpdateOnSelection(parentDiv, jQueryCgmp(this));
 			}
 	});
 
 
-	jQuery("input[name='custom-icons-radio']").click(function () {
+	jQueryCgmp("input[name='custom-icons-radio']").click(function () {
 
-			var img = jQuery(this).siblings("a").children('img');
-			var currentSrc = jQuery(img).attr('src');
+			var img = jQueryCgmp(this).siblings("a").children('img');
+			var currentSrc = jQueryCgmp(img).attr('src');
 			if (currentSrc != null) {
 
-					var parentDiv = jQuery(this).closest("div.custom-icons-placeholder");
+					var parentDiv = jQueryCgmp(this).closest("div.custom-icons-placeholder");
 					resetPreviousIconSelection(parentDiv);
 
 					doMarkerIconUpdateOnSelection(parentDiv, img);
@@ -353,7 +354,7 @@ function initMarkerIconEvents() {
 
 }
 
-jQuery(document).ready(function() {
+jQueryCgmp(document).ready(function() {
 
 	initTokenHoldersAndEvent();
 	initSliders(); 
@@ -361,15 +362,15 @@ jQuery(document).ready(function() {
 	initMarkerIconEvents();
 	initGeoMashupEvent() ;
 
-	jQuery("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
+	jQueryCgmp("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
         tabs: 'li',
         effect: 'default'
     });
 });
 
-jQuery(document).ajaxSuccess(
+jQueryCgmp(document).ajaxSuccess(
 	function (e, x, o) {
-    	jQuery(document).ready(
+    	jQueryCgmp(document).ready(
     		function ($) {
 				
 				if (o.data != null)	{
@@ -388,5 +389,6 @@ jQuery(document).ajaxSuccess(
 		);
 	}
 );
+
 
 

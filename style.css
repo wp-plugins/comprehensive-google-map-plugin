@@ -320,13 +320,13 @@
 }
 
 .dir-tm-d {
-    background: url("assets/css/images/directions.png") no-repeat scroll 0 -96px transparent;
+    background: url("assets/css/images/directions.png") no-repeat scroll 0 -96px transparent !important;
     height: 12px;
     width: 15px;
 }
 
 .dir-tm-w {
-    background: url("assets/css/images/directions.png") no-repeat scroll 0 -489px transparent;
+    background: url("assets/css/images/directions.png") no-repeat scroll 0 -489px transparent !important;
     height: 16px;
     width: 10px;
 }
@@ -342,7 +342,7 @@
 }
 
 .close {
-    background: url("assets/css/images/utilbuttons.png") no-repeat scroll -108px -26px transparent;
+    background: url("assets/css/images/utilbuttons.png") no-repeat scroll -108px -26px transparent !important;
     height: 10px;
     width: 10px;
 }
@@ -362,7 +362,7 @@ img {
 }
 
 .dir-reverse {
-    background: url("assets/css/images/directions.png") no-repeat scroll -10px -489px transparent;
+    background: url("assets/css/images/directions.png") no-repeat scroll -10px -489px transparent !important;
     height: 12px;
     width: 10px;
     margin-top: -15px !important;
@@ -566,6 +566,7 @@ img {
     font-family: Arial,Tahoma,Verdana !important;
     font-size: 13px !important;
     line-height: 160% !important;
+    color: #555555 !important;
 }
 
 .google-map-placeholder hr {
@@ -579,6 +580,10 @@ img {
     font-family: Arial,Tahoma,Verdana !important;
     font-size: 12px !important;
     line-height: 160% !important;
+}
+
+.direction-controls-placeholder #d_options {
+    color: #22222 !important;
 }
 
 .direction-controls-placeholder #d_options input {

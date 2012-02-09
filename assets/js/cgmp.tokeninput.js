@@ -11,6 +11,9 @@
  *
  */
 
+var jQueryCgmp = {};
+jQueryCgmp = jQuery.noConflict();
+
 (function ($) {
 		
 		var DEFAULT_SETTINGS = {
@@ -171,8 +174,8 @@
 		            return element[settings.tokenDataValue];
 	    	   	});
 				//console.log("ID of this holder: " + settings.holderId);
-	    		jQuery("#" + settings.holderId + "hidden").val((saved_token_values.join("|")));
+	    		jQueryCgmp("#" + settings.holderId + "hidden").val((saved_token_values.join("|")));
 	        }
 		};
 		
-	}(jQuery));
+	}(jQueryCgmp));

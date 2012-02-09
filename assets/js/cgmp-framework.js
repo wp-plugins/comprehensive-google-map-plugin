@@ -14,18 +14,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+var jQueryCgmp = {};
+jQueryCgmp = jQuery.noConflict();
 
-jQuery.GoogleMapOrchestrator = function (map, options) {
+jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
 	
 	if (typeof google == "undefined" || !google) {
     	Logger.fatal("We do not have reference to Google API. Aborting..");
     	return false;
 	}
 	 
-    jQuery.extend(this, jQuery.GoogleMapOrchestrator.defaultOptions);
-    jQuery.GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
-	jQuery.GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
-    jQuery.GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4};
+    jQueryCgmp.extend(this, jQueryCgmp.GoogleMapOrchestrator.defaultOptions);
+    jQueryCgmp.GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
+	jQueryCgmp.GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
+    jQueryCgmp.GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4};
     
     var options = options || {};
     var placeHolder = options.placeHolder || "map";
@@ -41,8 +43,8 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     });
 
     
-    var layerBuilder = new jQuery.LayerBuilder(googleMap);
-    var builder = new jQuery.MarkerBuilder(googleMap, bubbleAutoPan);
+    var layerBuilder = new jQueryCgmp.LayerBuilder(googleMap);
+    var builder = new jQueryCgmp.MarkerBuilder(googleMap, bubbleAutoPan);
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		builder.shiftMapToOriginalZoomAndLocation();
@@ -69,15 +71,15 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     		return false;
     	}
     	switch (type) {
-    		case jQuery.GoogleMapOrchestrator.LayerType.TRAFFIC:
+    		case jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC:
     			layerBuilder.buildTrafficLayer();
     		break;
     		
-    		case jQuery.GoogleMapOrchestrator.LayerType.BIKE:
+    		case jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE:
     			layerBuilder.buildBikeLayer();
     		break;
     		
-    		case jQuery.GoogleMapOrchestrator.LayerType.PANORAMIO:
+    		case jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO:
 				if (panoramiouid != null && panoramiouid != "") {
     	        	Logger.info("Going to filter Panoramio images by " + panoramiouid);
 					layerBuilder.buildPanoramioLayer(panoramiouid);
@@ -86,7 +88,7 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
 				}
     		break;
     		
-    		case jQuery.GoogleMapOrchestrator.LayerType.KML:
+    		case jQueryCgmp.GoogleMapOrchestrator.LayerType.KML:
     			if (kml == null || kml == "") {
     	        	Logger.error("KML URL must be passed for the KML Layer. Aborting..");
     	        	return false;
@@ -104,25 +106,27 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     	if (!sanityCheck()) {
     		return false;
     	}
+
+		googleMap.setOptions({scrollwheel: false});
     	
     	switch (mapControlType) {
-	    	case jQuery.GoogleMapOrchestrator.ControlType.MAPTYPE:
+	    	case jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE:
 				googleMap.setOptions({mapTypeControl: isOn});
 			break;
 		
-		    case jQuery.GoogleMapOrchestrator.ControlType.PAN:
+		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN:
 				googleMap.setOptions({panControl: isOn});
 			break;
 			
-		    case jQuery.GoogleMapOrchestrator.ControlType.ZOOM:
+		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM:
 				googleMap.setOptions({zoomControl: isOn});
 			break;
 			
-		    case jQuery.GoogleMapOrchestrator.ControlType.SCALE:
+		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE:
 				googleMap.setOptions({scaleControl: isOn});
 			break;
 			
-		    case jQuery.GoogleMapOrchestrator.ControlType.STREETVIEW:
+		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW:
 				googleMap.setOptions({streetViewControl: isOn});
 			break;
 			
@@ -132,8 +136,8 @@ jQuery.GoogleMapOrchestrator = function (map, options) {
     }
 }
 
-jQuery.Utils = function () {
-    jQuery.extend(this, jQuery.Utils.defaultOptions);
+jQueryCgmp.Utils = function () {
+    jQueryCgmp.extend(this, jQueryCgmp.Utils.defaultOptions);
 
     var addressRegex = /^([a-zA-Z0-9?(/\-.,\s{1,})]+)$/;
     var numericRegex = /^([0-9?(\-.,\s{1,})]+)$/;
@@ -147,8 +151,8 @@ jQuery.Utils = function () {
     }
 }
 
-jQuery.LayerBuilder = function (map) {
-    jQuery.extend(this, jQuery.LayerBuilder.defaultOptions);
+jQueryCgmp.LayerBuilder = function (map) {
+    jQueryCgmp.extend(this, jQueryCgmp.LayerBuilder.defaultOptions);
 
     var googleMap = map;
     
@@ -189,8 +193,8 @@ jQuery.LayerBuilder = function (map) {
     }
 }
 
-jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
-    jQuery.extend(this, jQuery.MarkerBuilder.defaultOptions);
+jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
+    jQueryCgmp.extend(this, jQueryCgmp.MarkerBuilder.defaultOptions);
 
     var markers = [];
     var storedAddresses = [];
@@ -203,7 +207,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 	var originalMapCenter = null;
 	var updatedZoom = 5;
 	var mapDivId = googleMap.getDiv().id;
-    var utils = new jQuery.Utils();
+    var utils = new jQueryCgmp.Utils();
     var geocoder = new google.maps.Geocoder();
     var bounds = new google.maps.LatLngBounds();
     var infowindow = new google.maps.InfoWindow();
@@ -231,27 +235,27 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 	}
 
 	function resetDirectionAddressFields(dirDivId)  {
-		jQuery(dirDivId + ' input#a_address').val('');
-		jQuery(dirDivId + ' input#b_address').val('');
-		jQuery(dirDivId + ' input#a_address').removeClass('d_error');
-		jQuery(dirDivId + ' input#b_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#a_address').val('');
+		jQueryCgmp(dirDivId + ' input#b_address').val('');
+		jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
 	}
 
     function attachEventlistener(marker) {
 
 		var localBubbleData = buildBubble(marker.content);
 		var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
-		var targetDiv = jQuery("div#rendered-directions-placeholder-" + mapDivId);
+		var targetDiv = jQueryCgmp("div#rendered-directions-placeholder-" + mapDivId);
 
 		google.maps.event.addListener(marker, 'click', function () {
 
 		  	resetDirectionAddressFields(dirDivId);
 
-			jQuery(dirDivId).fadeOut();
+			jQueryCgmp(dirDivId).fadeOut();
 			directionsRenderer.setMap(null);
 			targetDiv.html("");
 			targetDiv.hide();
-			jQuery(dirDivId + ' button#print_sub').hide();
+			jQueryCgmp(dirDivId + ' button#print_sub').hide();
 
 			infowindow.setContent(localBubbleData.bubbleContent);
 			infowindow.setOptions({disableAutoPan: bubbleAutoPan == "true" ? false : true });
@@ -269,35 +273,35 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 
 		splittedAddr[0] = splittedAddr[0].replace("Lat/Long: ", "");
 
-		jQuery(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
+		jQueryCgmp(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
   			var thisId = this.id;
 			if (thisId == 'toHere-' + localBubbleData.bubbleHolderId) {
-				jQuery(dirDivId).fadeIn();
-				jQuery(dirDivId + ' input#a_address').val('');
-				jQuery(dirDivId + ' input#b_address').val(splittedAddr[0]);
-				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
+				jQueryCgmp(dirDivId).fadeIn();
+				jQueryCgmp(dirDivId + ' input#a_address').val('');
+				jQueryCgmp(dirDivId + ' input#b_address').val(splittedAddr[0]);
+				jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
 			}
 		});
 
-		jQuery(parentInfoBubble + ' a.dirFromHereTrigger').live("click", function() {
+		jQueryCgmp(parentInfoBubble + ' a.dirFromHereTrigger').live("click", function() {
   			var thisId = this.id;
 			if (thisId == 'fromHere-' + localBubbleData.bubbleHolderId) {
-				jQuery(dirDivId).fadeIn();
-				jQuery(dirDivId + ' input#a_address').val(splittedAddr[0]);
-				jQuery(dirDivId + ' input#b_address').val('');
-				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
+				jQueryCgmp(dirDivId).fadeIn();
+				jQueryCgmp(dirDivId + ' input#a_address').val(splittedAddr[0]);
+				jQueryCgmp(dirDivId + ' input#b_address').val('');
+				jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
 			}
 		});
 
-		jQuery(dirDivId + ' div.d_close-wrapper').live("click", function(event) {
+		jQueryCgmp(dirDivId + ' div.d_close-wrapper').live("click", function(event) {
 
 				resetDirectionAddressFields(dirDivId);
 
-  				jQuery(this).parent().fadeOut();
+  				jQueryCgmp(this).parent().fadeOut();
 				directionsRenderer.setMap(null);
 				targetDiv.html("");
 				targetDiv.hide();
-				jQuery(dirDivId + ' button#print_sub').hide();
+				jQueryCgmp(dirDivId + ' button#print_sub').hide();
 				resetMap();
 
 				return false;
@@ -309,7 +313,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 		streetViewService.getPanoramaByLocation(marker.position, 50, function (streetViewPanoramaData, status) {
     		if (status === google.maps.StreetViewStatus.OK) {
         		// ok
-					jQuery('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function() {
+					jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function() {
 
 						var panoramaOptions = {
 								navigationControl: true,
@@ -334,7 +338,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 						google.maps.event.addListener(infowindow, 'closeclick', function() {
 
 							resetDirectionAddressFields(dirDivId);
-  							jQuery(dirDivId).fadeOut();
+  							jQueryCgmp(dirDivId).fadeOut();
 
 							if (pano != null) {
 								pano.unbind("position");
@@ -348,7 +352,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 							if (pano != null) {
 								pano.unbind("position");
 								pano.setVisible(false);
-								jQuery('div#bubble-' + localBubbleData.bubbleHolderId).css("background", "none");
+								jQueryCgmp('div#bubble-' + localBubbleData.bubbleHolderId).css("background", "none");
 							}
 
 							pano = null;
@@ -359,14 +363,14 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
     		} else {
         		// no street view available in this range, or some error occurred
 				Logger.warn("There is not street view available for this marker location: " + marker.position + " status: " + status);
-				jQuery('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
+				jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
 					e.preventDefault();
 				});
-				jQuery('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
+				jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
 
 				google.maps.event.addListener(infowindow, 'domready', function () {
-					jQuery('a#trigger-' + localBubbleData.bubbleHolderId).removeAttr("href");
-					jQuery('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
+					jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).removeAttr("href");
+					jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
 				});
     		}
 		});
@@ -376,62 +380,62 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 	function bindDirectionControlsToEvents()  {
 
 		var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
-		var targetDiv = jQuery("div#rendered-directions-placeholder-" + mapDivId);
+		var targetDiv = jQueryCgmp("div#rendered-directions-placeholder-" + mapDivId);
 
-		jQuery(dirDivId + ' a#reverse-btn').live("click", function(e) {
+		jQueryCgmp(dirDivId + ' a#reverse-btn').live("click", function(e) {
 
-				var old_a_addr = jQuery(dirDivId + ' input#a_address').val();
-				var old_b_addr = jQuery(dirDivId + ' input#b_address').val();
+				var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
+				var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
 
-				jQuery(dirDivId + ' input#a_address').val(old_b_addr);
-				jQuery(dirDivId + ' input#b_address').val(old_a_addr);
+				jQueryCgmp(dirDivId + ' input#a_address').val(old_b_addr);
+				jQueryCgmp(dirDivId + ' input#b_address').val(old_a_addr);
 				return false;
 		});
 
-		jQuery(dirDivId + ' a#d_options_show').live("click", function() {
-				jQuery(dirDivId + ' a#d_options_hide').show();
-				jQuery(dirDivId + ' a#d_options_show').hide();
-				jQuery(dirDivId + ' div#d_options').show();
+		jQueryCgmp(dirDivId + ' a#d_options_show').live("click", function() {
+				jQueryCgmp(dirDivId + ' a#d_options_hide').show();
+				jQueryCgmp(dirDivId + ' a#d_options_show').hide();
+				jQueryCgmp(dirDivId + ' div#d_options').show();
 				return false;
 		});
 
-		jQuery(dirDivId + ' a#d_options_hide').live("click", function() {
-				jQuery(dirDivId + ' a#d_options_hide').hide();
-				jQuery(dirDivId + ' a#d_options_show').show();
-				jQuery(dirDivId + ' div#d_options').hide();
-				jQuery(dirDivId + ' input#avoid_hway').removeAttr("checked");
-				jQuery(dirDivId + ' input#avoid_tolls').removeAttr("checked");
-				jQuery(dirDivId + ' input#radio_km').removeAttr("checked");
-				jQuery(dirDivId + ' input#radio_miles').attr("checked", "checked");
+		jQueryCgmp(dirDivId + ' a#d_options_hide').live("click", function() {
+				jQueryCgmp(dirDivId + ' a#d_options_hide').hide();
+				jQueryCgmp(dirDivId + ' a#d_options_show').show();
+				jQueryCgmp(dirDivId + ' div#d_options').hide();
+				jQueryCgmp(dirDivId + ' input#avoid_hway').removeAttr("checked");
+				jQueryCgmp(dirDivId + ' input#avoid_tolls').removeAttr("checked");
+				jQueryCgmp(dirDivId + ' input#radio_km').removeAttr("checked");
+				jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
 				return false;
 		});
 //
-		jQuery(dirDivId + ' button#d_sub').live("click", function() {
-				var old_a_addr = jQuery(dirDivId + ' input#a_address').val();
-				var old_b_addr = jQuery(dirDivId + ' input#b_address').val();
+		jQueryCgmp(dirDivId + ' button#d_sub').live("click", function() {
+				var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
+				var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
 				var halt = false;
 				if (old_a_addr == null || old_a_addr == '') {
-					jQuery(dirDivId + ' input#a_address').addClass('d_error');
+					jQueryCgmp(dirDivId + ' input#a_address').addClass('d_error');
 					halt = true;
 				}
 	
 				if (old_b_addr == null || old_b_addr == '') {
-					jQuery(dirDivId + ' input#b_address').addClass('d_error');
+					jQueryCgmp(dirDivId + ' input#b_address').addClass('d_error');
 					halt = true;
 				}
 
 				if (!halt) {
 
-					jQuery(dirDivId + ' button#d_sub').attr('disabled', 'disabled').html("Please wait..");
+					jQueryCgmp(dirDivId + ' button#d_sub').attr('disabled', 'disabled').html("Please wait..");
 					// Query direction service
 					var travelMode = google.maps.DirectionsTravelMode.DRIVING;
-					if (jQuery(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+					if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 						travelMode = google.maps.DirectionsTravelMode.WALKING;
 					}
 
-					var is_avoid_hway = jQuery(dirDivId + ' input#avoid_hway').is(":checked");
-					var is_avoid_tolls = jQuery(dirDivId + ' input#avoid_tolls').is(":checked");
-					var is_miles = jQuery(dirDivId + ' input#radio_miles').is(":checked");
+					var is_avoid_hway = jQueryCgmp(dirDivId + ' input#avoid_hway').is(":checked");
+					var is_avoid_tolls = jQueryCgmp(dirDivId + ' input#avoid_tolls').is(":checked");
+					var is_miles = jQueryCgmp(dirDivId + ' input#radio_miles').is(":checked");
 					var unitSystem = google.maps.DirectionsUnitSystem.METRIC;
 
 					var request = {
@@ -462,32 +466,32 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 							targetDiv.show();
 							directionsRenderer.setMap(googleMap);
 							directionsRenderer.setDirections(response);
-							jQuery(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
-							jQuery(dirDivId + ' button#print_sub').fadeIn();
+							jQueryCgmp(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
+							jQueryCgmp(dirDivId + ' button#print_sub').fadeIn();
 							infowindow.close();
 
 						} else {
 		    				Logger.error('Could not route directions from "' + old_a_addr + '" to "' + old_b_addr + '", got result from Google: ' + status);
 							targetDiv.html("<span style='font-size: 12px; font-weight: bold; color: red'>Could not route directions from<br />'" + old_a_addr + "' to<br />'" + old_b_addr + "'<br />Got result from Google: [" + status + "]</span>");
 
-							jQuery(dirDivId + ' button#print_sub').hide();
-							jQuery(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
+							jQueryCgmp(dirDivId + ' button#print_sub').hide();
+							jQueryCgmp(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
   						}
 					});
 				}
 		});
 
-		jQuery(dirDivId + ' button#print_sub').live("click", function() {
-			var old_a_addr = jQuery(dirDivId + ' input#a_address').val();
-			var old_b_addr = jQuery(dirDivId + ' input#b_address').val();
+		jQueryCgmp(dirDivId + ' button#print_sub').live("click", function() {
+			var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
+			var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
 
 			var dirflag = "d";
-			if (jQuery(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+			if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 				dirflag = "w";
 			}
 
 			var url = "http://maps.google.com/?saddr=" + old_a_addr + "&daddr=" + old_b_addr + "&dirflg=" + dirflag + "&pw=2";
-			var is_miles = jQuery(dirDivId + ' input#radio_miles').is(":checked");
+			var is_miles = jQueryCgmp(dirDivId + ' input#radio_miles').is(":checked");
 			if (is_miles) {
 				url += "&doflg=ptm";
 			}
@@ -496,42 +500,42 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
         	return false;
 		});
 
-		jQuery(dirDivId + ' input#a_address').live("change", function() {
-			jQuery(dirDivId + ' input#a_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#a_address').live("change", function() {
+			jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
 			return false;
 		});
 
-		jQuery(dirDivId + ' input#b_address').live("change", function() {
-			jQuery(dirDivId + ' input#b_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#b_address').live("change", function() {
+			jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
 			return false;
 		});
 
-		jQuery(dirDivId + ' input#a_address').live("focus", function() {
-			jQuery(dirDivId + ' input#a_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#a_address').live("focus", function() {
+			jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
 			return false;
 		});
 
-		jQuery(dirDivId + ' input#b_address').live("focus", function() {
-			jQuery(dirDivId + ' input#b_address').removeClass('d_error');
+		jQueryCgmp(dirDivId + ' input#b_address').live("focus", function() {
+			jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
 			return false;
 		});
 
-		jQuery(dirDivId + ' .kd-button').live("click", function() {
+		jQueryCgmp(dirDivId + ' .kd-button').live("click", function() {
 			var thisId = this.id;
 
 			if (thisId == 'dir_d_btn') {
-				if (jQuery(dirDivId + ' a#dir_d_btn').hasClass('selected')) {
+				if (jQueryCgmp(dirDivId + ' a#dir_d_btn').hasClass('selected')) {
 					Logger.warn("Driving travel mode is already selected");
 				} else {
-					jQuery(dirDivId + ' a#dir_d_btn').addClass('selected');
-					jQuery(dirDivId + ' a#dir_w_btn').removeClass('selected');
+					jQueryCgmp(dirDivId + ' a#dir_d_btn').addClass('selected');
+					jQueryCgmp(dirDivId + ' a#dir_w_btn').removeClass('selected');
 				}
 			} else 	if (thisId == 'dir_w_btn') {
-				if (jQuery(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+				if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 					Logger.warn("Walking travel mode is already selected");
 				} else {
-					jQuery(dirDivId + ' a#dir_w_btn').addClass('selected');
-					jQuery(dirDivId + ' a#dir_d_btn').removeClass('selected');
+					jQueryCgmp(dirDivId + ' a#dir_w_btn').addClass('selected');
+					jQueryCgmp(dirDivId + ' a#dir_d_btn').removeClass('selected');
 				}
 			}
 
@@ -669,7 +673,7 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
     function setBounds() {
 
         if (markers.length > 1) {
-            jQuery.each(markers, function (index, marker) {
+            jQueryCgmp.each(markers, function (index, marker) {
             	if (!bounds.contains(marker.position)) {
             		bounds.extend(marker.position);
             	}
@@ -747,12 +751,12 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
 				var defaultMarkers = ['1-default.png', '2-default.png'];
 				var defaultPins = ['4-default.png', '5-default.png', '6-default.png', '7-default.png'];
 
-				if (jQuery.inArray(markerIcon, defaultMarkers) != -1) {
+				if (jQueryCgmp.inArray(markerIcon, defaultMarkers) != -1) {
 					shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
       				new google.maps.Size(59, 32),
       				new google.maps.Point(0,0),
       				new google.maps.Point(16, 33));
-				} else 	if (jQuery.inArray(markerIcon, defaultPins) != -1) {
+				} else 	if (jQueryCgmp.inArray(markerIcon, defaultPins) != -1) {
 					shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
       				new google.maps.Size(59, 32),
       				new google.maps.Point(0,0),
@@ -789,8 +793,8 @@ jQuery.MarkerBuilder = function (map, bubbleAutoPan) {
     }
 }
 
-jQuery.OrchestratorHub = function () {
-    jQuery.extend(this, jQuery.OrchestratorHub.defaultOptions);
+jQueryCgmp.OrchestratorHub = function () {
+    jQueryCgmp.extend(this, jQueryCgmp.OrchestratorHub.defaultOptions);
 
 	var orcs = [];
 	
@@ -804,7 +808,7 @@ jQuery.OrchestratorHub = function () {
 
 	this.getOrc = function(mapId) {
 		var found = {};
-		jQuery.map(jQuery(orcs), function(element) {
+		jQueryCgmp.map(jQueryCgmp(orcs), function(element) {
 			if (element.mapId == mapId) {
 				found = element.orchestrator;
 			}
@@ -837,10 +841,10 @@ var Logger = {
 	},
 
 	print: function(message) {
-    	if ( jQuery.browser.msie ) {
+    	if ( jQueryCgmp.browser.msie ) {
     	    //Die... die... die.... why dont you just, die???
     	 } else {
-    		if (jQuery.browser.mozilla && jQuery.browser.version >= "3.0" ) {
+    		if (jQueryCgmp.browser.mozilla && jQueryCgmp.browser.version >= "3.0" ) {
     			console.log(message);
     		}
     	 }
@@ -848,4 +852,6 @@ var Logger = {
 }
 
 //Used on the client site during map instantiation
-var orcHolder = new jQuery.OrchestratorHub();
+var orcHolder = new jQueryCgmp.OrchestratorHub();
+
+
