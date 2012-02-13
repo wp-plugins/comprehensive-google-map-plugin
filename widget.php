@@ -34,6 +34,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 				//add_action('init', 'cgmp_google_map_init_scripts');
 				//add_action( 'wp_print_scripts', array(&$this, 'add_script') );
 				//add_action( 'wp_print_styles', array(&$this, 'add_style') );
+				cgmp_google_map_init_scripts(); 
 		}
 	}
 
@@ -71,6 +72,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$kml = empty($instance['kml']) ? '' : $instance['kml'];
 		$hiddenmarkers = empty($instance['addmarkerlisthidden']) ? '' : $instance['addmarkerlisthidden'];
 		$addmarkermashup = empty($instance['addmarkermashuphidden']) ? 'false' : $instance['addmarkermashuphidden'];
+
+		$geomashupbubble = empty($instance['addmarkermashupbubble']) ? 'false' : $instance['addmarkermashupbubble'];
+
 		$mapalign = empty($instance['mapalign']) ? 'center' : $instance['mapalign'];
 		$panoramiouid = empty($instance['panoramiouid']) ? '' : $instance['panoramiouid'];
 
@@ -81,6 +85,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$controlOpts['z_oomcontrol'] = empty($instance['z_oomcontrol']) ? "true" : $instance['z_oomcontrol'];
 		$controlOpts['scalecontrol'] = empty($instance['scalecontrol']) ? "true" : $instance['scalecontrol'];
 		$controlOpts['streetviewcontrol'] = empty($instance['streetviewcontrol']) ? "true" : $instance['streetviewcontrol'];
+		$controlOpts['scrollwheelcontrol'] = empty($instance['scrollwheelcontrol']) ? "false" : $instance['scrollwheelcontrol'];
+
 
 		echo $before_widget;
 
@@ -99,7 +105,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
 		$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
-		$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $kml);
+		$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $addmarkermashup, $geomashupbubble, $kml);
 		$result .= cgmp_draw_map_bikepath($id, $showbike);
 		$result .= cgmp_draw_map_traffic($id, $showtraffic);
 		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
@@ -129,6 +135,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['z_oomcontrol'] = strip_tags($new_instance['z_oomcontrol']);
 		$instance['scalecontrol'] = strip_tags($new_instance['scalecontrol']);
 		$instance['streetviewcontrol'] = strip_tags($new_instance['streetviewcontrol']);
+		$instance['scrollwheelcontrol'] = strip_tags($new_instance['scrollwheelcontrol']);
 		$instance['addresscontent'] = strip_tags($new_instance['addresscontent']);
 		$instance['showbike'] = strip_tags($new_instance['showbike']);
 		$instance['showtraffic'] = strip_tags($new_instance['showtraffic']);
@@ -136,6 +143,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['showpanoramio'] = strip_tags($new_instance['showpanoramio']);
 		$instance['addmarkerlisthidden'] = strip_tags($new_instance['addmarkerlisthidden']);
 		$instance['addmarkermashuphidden'] = strip_tags($new_instance['addmarkermashuphidden']);
+		$instance['addmarkermashupbubble'] = strip_tags($new_instance['addmarkermashupbubble']);
+
 		$instance['bubbleautopan'] = strip_tags($new_instance['bubbleautopan']);
 		$instance['markerdirections'] = strip_tags($new_instance['markerdirections']);
 		$instance['mapalign'] = strip_tags($new_instance['mapalign']);
@@ -174,12 +183,14 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$zoomcontrol = !empty($instance['z_oomcontrol']) ? esc_attr($instance['z_oomcontrol']) : 'true';
 		$scalecontrol = !empty($instance['scalecontrol']) ? esc_attr($instance['scalecontrol']) : 'true';
 		$streetviewcontrol = !empty($instance['streetviewcontrol']) ? esc_attr($instance['streetviewcontrol']) : 'true';
+		$scrollwheelcontrol = !empty($instance['scrollwheelcontrol']) ? esc_attr($instance['scrollwheelcontrol']) : 'false';
 		$showbike = !empty($instance['showbike']) ? esc_attr($instance['showbike']) : 'false';
 		$showtraffic = !empty($instance['showtraffic']) ? esc_attr($instance['showtraffic']) : 'false';
 		$showpanoramio = !empty($instance['showpanoramio']) ? esc_attr($instance['showpanoramio']) : 'false';
 		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
 		$hiddenmarkers = !empty($instance['addmarkerlisthidden']) ? esc_attr($instance['addmarkerlisthidden']) : '';
 		$addmarkermashup = !empty($instance['addmarkermashuphidden']) ? esc_attr($instance['addmarkermashuphidden']) : 'false';
+		$geomashupbubble = !empty($instance['addmarkermashupbubble']) ? esc_attr($instance['addmarkermashupbubble']) : 'false';
 
 		$bubbleautopan = !empty($instance['bubbleautopan']) ? esc_attr($instance['bubbleautopan']) : 'true';
 		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
@@ -260,6 +271,10 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $streetviewcontrol, "options" => $bools)); 
 
 
+		$v = "scrollwheelcontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "ScrollWheel")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $scrollwheelcontrol, "options" => $bools3)); 
+
 		$v = "infobubblecontent";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Content Text")); 
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $infobubblecontent, "class" => "widefat", "style" => "width: 90% !important;"));
@@ -310,7 +325,12 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$v = $m."mashup";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Make this map a Marker Geo Mashup")); 
-		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_id($v), "value" => "", "class" => "marker-geo-mashup", "style" => ""));
+		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => "", "class" => "marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashupbubble";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "")); 
+		$settings[] = array("type" => "geobubble", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $geomashupbubble, "class" => "marker-bubble-geo-mashup", "style" => ""));
+
 
 		$v = $m."mashuphidden";
 		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $addmarkermashup, "class" => "", "style" => ""));

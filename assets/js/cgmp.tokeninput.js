@@ -11,8 +11,7 @@
  *
  */
 
-var jQueryCgmp = {};
-jQueryCgmp = jQuery.noConflict();
+var jQueryCgmp = jQuery.noConflict();
 
 (function ($) {
 		

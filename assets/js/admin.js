@@ -15,8 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var jQueryCgmp = {};
-jQueryCgmp = jQuery.noConflict();
+var jQueryCgmp = jQuery.noConflict();
 
 function generateWidgetShortcode(container_id) {
 	var id = '#' + container_id;
@@ -41,6 +40,12 @@ function buildShortcode(id) {
 
 				if (jQueryCgmp(this).attr('type') == "checkbox") {
 					val = jQueryCgmp(this).is(":checked");
+				}
+
+				if (jQueryCgmp(this).attr('type') == "radio") {
+					var name = jQueryCgmp(this).attr('name');
+					val = jQueryCgmp('input[name=' + name + ']:checked').val();
+					role = name;
 				}
 				
 				if (typeof role == "undefined" || role == "undefined") {
@@ -362,6 +367,8 @@ jQueryCgmp(document).ready(function() {
 	initMarkerIconEvents();
 	initGeoMashupEvent() ;
 
+	//jQueryCgmp("fieldset.collapsible").collapse( { closed : true } );
+
 	jQueryCgmp("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
         tabs: 'li',
         effect: 'default'
@@ -383,6 +390,9 @@ jQueryCgmp(document).ajaxSuccess(
 						initTooltips();
 						initMarkerIconEvents();
 						initGeoMashupEvent() ;
+
+						//jQueryCgmp("fieldset.collapsible").collapse( { closed : true } );
+
 					}
 				}
 			}
@@ -391,4 +401,60 @@ jQueryCgmp(document).ajaxSuccess(
 );
 
 
+/**
+ * CHANGES
+ * v.2.1.3 - Made it $.noConflict() compatible
+ * v.2.1.2 - Fixed bug in which nested fieldsets do not work correctly.
+ * v.2.1.1 - Forgot to put the new filter from v.2.1 into the if (settings.closed)
+ * v.2.1 - Changed jQuery(this).parent().children().filter( ELEMENTS HERE) to jQuery(this).parent().children().not('label').  Prevents you from having to guess what elements will be in the fieldset.
+ * v.2.0 - Added settings to allow a fieldset to be initiated as closed.
+ *
+ * This script may be used by anyone, but please link back to me.
+ *
+ * Copyright 2009-2010.  Michael Irwin (http://michael.theirwinfamily.net)
+ */
+       
+jQueryCgmp.fn.collapse = function(options) {
+	var defaults = {
+		closed : false
+	}
+	settings = jQueryCgmp.extend({}, defaults, options);
 
+	return this.each(function() {
+		var obj = jQueryCgmp(this);
+		obj.find("legend:first").addClass('collapsible').click(function() {
+
+			if (obj.hasClass('collapsed')) {
+				obj.removeClass('collapsed').addClass('collapsible');
+			}
+	
+			jQueryCgmp(this).removeClass('collapsed');
+			var legendHtml = obj.find("legend").html(); 
+			legendHtml = legendHtml.replace("+", "-");
+			obj.find("legend").html(legendHtml);
+
+	
+			obj.children().not('legend').toggle("fast", function() {
+
+				 if (jQueryCgmp(this).is(":visible")) {
+						obj.find("legend:first").addClass('collapsible');
+					}
+				 else {
+						obj.addClass('collapsed').find("legend").addClass('collapsed');
+						var legendHtml = obj.find("legend").html(); 
+						legendHtml = legendHtml.replace("-", "+");
+						obj.find("legend").html(legendHtml);
+
+					}
+			 });
+		});
+		if (settings.closed) {
+			obj.addClass('collapsed').find("legend:first").addClass('collapsed');
+
+			var legendHtml = obj.find("legend").html(); 
+			obj.find("legend").html(legendHtml + " [<b><font size='3px'>+</font></b>]");
+
+			obj.children().not("legend:first").css('display', 'none');
+		}
+	});
+};

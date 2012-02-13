@@ -40,6 +40,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'zoomcontrol' => 'true',
 		'scalecontrol' => 'true',
 		'streetviewcontrol' => 'true',
+		'scrollwheelcontrol' => 'false',
 		'addresscontent' => '',
 		'showbike' => 'false',
 		'bubbleautopan' => 'nada',
@@ -50,7 +51,8 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'markerdirections' => 'true',
 		'mapalign' => 'center',
 		'panoramiouid' => '',
-		'addmarkermashup' => 'false'
+		'addmarkermashup' => 'false',
+		'addmarkermashupbubble' => 'false'
 	), $attr));
 	
 	$id = md5(time().' '.rand()); 
@@ -87,6 +89,8 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	
 	$controlOpts['scalecontrol'] = $scalecontrol;
 	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
+	$controlOpts['scrollwheelcontrol'] = $scrollwheelcontrol;
+
 
 	if ($addmarkermashup == 'true') {
 		$addmarkerlist = make_marker_geo_mashup();
@@ -97,7 +101,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
 	$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleiautopan, $controlOpts);
-	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $kml);
+	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $addmarkermashup, $addmarkermashupbubble, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
 	$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);

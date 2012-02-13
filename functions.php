@@ -185,13 +185,14 @@ if ( !function_exists('cgmp_begin_map_init_v2') ):
 		$result =  '<script type="text/javascript">'.PHP_EOL;
 		$result .= '    jQueryCgmp(document).ready(function() {'.PHP_EOL;
 		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
-		$result .= '    var orc = new jQueryCgmp.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
-		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc});'.PHP_EOL;
-		$result .= '    orc.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['pancontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['z_oomcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['scalecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
-        $result .= '    orc.switchMapControl('.$controlOpts['streetviewcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
+		$result .= '    var orc_'.$id.' = new jQueryCgmp.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
+		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc_'.$id.'});'.PHP_EOL;
+		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
+        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['pancontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
+        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['z_oomcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
+		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['scalecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
+		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['scrollwheelcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL);'.PHP_EOL;
+        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['streetviewcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
 
 		return $result;
 	}
@@ -199,15 +200,20 @@ endif;
 
 
 if ( !function_exists('cgmp_draw_map_marker_v2') ):
-	function cgmp_draw_map_marker_v2($id, $extramarkers, $kml) {
+	function cgmp_draw_map_marker_v2($id, $extramarkers, $addmarkermashup, $geomarkerbubble, $kml) {
 
 		$result = "";
 
 		if ((!isset($kml) || $kml == "")) {
 
 			if (isset($extramarkers) && $extramarkers != '') {
-				$result .= '    orc.buildAddressMarkers("'.$extramarkers.'");'.PHP_EOL;
+				$result .= '    orc_'.$id.'.buildAddressMarkers(\''.$extramarkers.'\', "'.$addmarkermashup.'", "'.$geomarkerbubble.'");'.PHP_EOL;
 			}
+			
+			$result .= '    var isBuildAddressMarkersCalled = orc_'.$id.'.isBuildAddressMarkersCalled();'.PHP_EOL;
+			$result .= '    if (!isBuildAddressMarkersCalled) {'.PHP_EOL;
+			$result .= '    	alert("ATTENTION!\n\nDear blog/website owner,\nIt looks like you did not specify any locations for the Google map!\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?\n\nPlease revisit your configuration..");'.PHP_EOL;
+			$result .= '    }'.PHP_EOL;
 		}
 
 		return $result;
@@ -219,7 +225,7 @@ if ( !function_exists('cgmp_draw_map_bikepath') ):
 	function cgmp_draw_map_bikepath($id, $showbikepath) {
 		$result = '';
 		if (isset($showbikepath) && strtolower(trim($showbikepath)) == 'true') {
-			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
+			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -229,7 +235,7 @@ if ( !function_exists('cgmp_draw_map_traffic') ):
 	function cgmp_draw_map_traffic($id, $showtraffic) {
 		$result = '';
 		if (isset($showtraffic) && strtolower(trim($showtraffic)) == 'true') {
-			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
+			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -241,7 +247,7 @@ if ( !function_exists('cgmp_draw_kml') ):
 		$result = '';
 		if (isset($kml) && $kml != "" && strtolower(trim(strpos($kml, "http"))) !== false) {
 			$kml = str_replace("&#038;", "&", $kml);
-			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
+			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -252,7 +258,7 @@ if ( !function_exists('cgmp_draw_panoramio') ):
 	function cgmp_draw_panoramio($id, $showpanoramio, $userId) {
 		$result = '';
 		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
-			$result = 'orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
+			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
 		}
 		return $result;
 	}
@@ -389,9 +395,42 @@ if ( !function_exists('cgmp_create_html_geohidden') ):
 				$style = $attr['style'];
 				$value = $attr['value'];
 
-				return "<script>jQueryCgmp(document).ready(function() { return hideShowCustomMarker('".$id."'); });</script><input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
+				return "<script>
+								if (typeof jQueryCgmp != 'undefined') {
+									jQueryCgmp(document).ready(function() { 
+										return hideShowCustomMarker('".$id."'); 
+									});
+								}
+						</script>
+						<input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
 		}
 endif;
+
+
+if ( !function_exists('cgmp_create_html_geobubble') ):
+		function cgmp_create_html_geobubble($attr) {
+				$id = $attr['id'];
+				$name = $attr['name'];
+				$class = $attr['class'];
+				$style = $attr['style'];
+				$value = $attr['value'];
+
+				$falseselected = "checked";
+				$trueselected = "";
+
+				if ($value == "true") {
+					$falseselected = "";
+					$trueselected = "checked";
+				}
+
+				$elem = "<input type='radio' class='".$class."' id='".$id."-false' role='".$name."' name='".$name."' ".$falseselected." value='false' />&nbsp;";
+				$elem .= "<label for='".$id."-false'>Display Geo address and lat/long in the marker info bubble</label><br />";
+				$elem .= "<input type='radio' class='".$class."' id='".$id."-true' role='".$name."' name='".$name."' ".$trueselected." value='true' />&nbsp;";
+				$elem .= "<label for='".$id."-true'>Display linked title and excerpt of the original blog post in the marker info bubble</label>";
+				return $elem;
+		}
+endif;
+
 
 
 if ( !function_exists('cgmp_create_html_custom') ):
@@ -616,7 +655,7 @@ endif;
 if ( !function_exists('extract_locations_from_all_posts') ):
 		function extract_locations_from_all_posts()  {
 			$args = array(
-					'numberposts'     => 100,
+					'numberposts'     => 120,
 	    		    'orderby'         => 'post_date',
 	    			'order'           => 'DESC',
 	   	 		    'post_type'       => 'post',
@@ -625,15 +664,32 @@ if ( !function_exists('extract_locations_from_all_posts') ):
 				$posts = get_posts( $args );
 
 				$db_markers = array();
-				foreach($posts as $post) { 
+				foreach($posts as $post) {
+
+					//echo "Extracted list: " .print_r($post, true)."<br /><br />";
+
 					$post_content = $post->post_content;
 					$extracted = extract_locations_from_post_content($post_content);
 					//echo "Extracted list: " .print_r($extracted, true)."<br /><br />";
 					if (count($extracted) > 0) {
-						$db_markers[$post->ID] = $extracted;
+							$db_markers[$post->ID]['markers'] = $extracted;
+							$db_markers[$post->ID]['title'] = $post->post_title;
+							$db_markers[$post->ID]['permalink'] = $post->guid;
+							$db_markers[$post->ID]['excerpt'] = '';
+
+						$excerpt = substr($post_content, 0, 135);
+
+						if (isset($post->post_excerpt) && strlen($post->post_excerpt) > 0) {
+							$excerpt = substr($post->post_excerpt, 0, 135);
+						}
+
+						if ( stripos($excerpt, '[google-map-v3') === false) {
+							$db_markers[$post->ID]['excerpt'] = $excerpt."..";
+						}
 					}
 				}
-
+				//echo "Extracted list: " .print_r(json_decode(json_encode($db_markers)), true)."<br /><br />";
+				//exit;
 				return $db_markers;
 
 	}
@@ -683,7 +739,8 @@ if ( !function_exists('extract_locations_from_post_content') ):
 								$lng = $matches[3][$idx];
 
 								if (trim($lat) != "0" && trim($lng) != "0") {
-									$arr[] = trim($lat).",".trim($lng);
+									$coord = trim($lat).",".trim($lng);
+									$arr[$coord] = $coord;
 								}
 							}
 						}
@@ -736,12 +793,27 @@ function make_marker_geo_mashup()   {
 
 	$db_markers = cgmp_extract_markers_from_published_posts();
 
+	//echo "Extracted list: " .print_r($db_markers, true)."<br /><br />";
+	//exit;
+
 	if (is_array($db_markers) && count($db_markers) > 0) {
 
 		$filtered = array();
-		foreach($db_markers as $postID => $locations) {
+		foreach($db_markers as $postID => $post_data) {
 
-			foreach($locations as $full_loc) {
+			//echo "Extracted list: " .print_r($post_data, true)."<br /><br />";
+			//exit;
+
+			$title = $post_data['title'];
+			$permalink = $post_data['permalink'];
+			$markers = $post_data['markers'];
+			$excerpt = $post_data['excerpt'];
+
+			$markers = implode("|", $markers);
+			$addmarkerlist = update_markerlist_from_legacy_locations(0, 0, "", $markers);
+			$markers = explode("|", $addmarkerlist);
+
+			foreach($markers as $full_loc) {
 
 				$tobe_filtered_loc = $full_loc;
 				if (strpos($full_loc, CGMP_SEP) !== false) {
@@ -750,14 +822,20 @@ function make_marker_geo_mashup()   {
 				}
 
 				if (!isset($filtered[$tobe_filtered_loc])) {
-					$filtered[$tobe_filtered_loc] = $full_loc;
+					$filtered[$tobe_filtered_loc]['addy'] = $full_loc;
+					$filtered[$tobe_filtered_loc]['title'] = $title;
+					$filtered[$tobe_filtered_loc]['permalink'] = $permalink;
+					$filtered[$tobe_filtered_loc]['excerpt'] = $excerpt;
 				}
 			}
 		}
 
-		$addmarkerlist = implode("|", $filtered);
-		$addmarkerlist = update_markerlist_from_legacy_locations(0, 0, "", $addmarkerlist);
-		return $addmarkerlist;
+		//echo "Extracted list: " .print_r($filtered, true)."<br /><br />";
+		//exit;
+		//$addmarkerlist = implode("|", $filtered);
+		//$addmarkerlist = update_markerlist_from_legacy_locations(0, 0, "", $addmarkerlist);
+
+		return json_encode($filtered);
 	}
 }
 endif;

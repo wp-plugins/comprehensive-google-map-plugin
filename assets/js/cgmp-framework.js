@@ -14,8 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-var jQueryCgmp = {};
-jQueryCgmp = jQuery.noConflict();
+var jQueryCgmp = jQuery.noConflict();
 
 jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
 	
@@ -27,7 +26,7 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     jQueryCgmp.extend(this, jQueryCgmp.GoogleMapOrchestrator.defaultOptions);
     jQueryCgmp.GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
 	jQueryCgmp.GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
-    jQueryCgmp.GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4};
+    jQueryCgmp.GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4, SCROLLWHEEL: 5};
     
     var options = options || {};
     var placeHolder = options.placeHolder || "map";
@@ -45,6 +44,10 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     
     var layerBuilder = new jQueryCgmp.LayerBuilder(googleMap);
     var builder = new jQueryCgmp.MarkerBuilder(googleMap, bubbleAutoPan);
+
+	this.isBuildAddressMarkersCalled = function() {
+		return builder.isBuildAddressMarkersCalled();
+	}
    
    	google.maps.event.addListener(googleMap, 'click', function () {
 		builder.shiftMapToOriginalZoomAndLocation();
@@ -59,11 +62,11 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     }
 	
         
-    this.buildAddressMarkers = function (additionalMarkerLocations) {
+    this.buildAddressMarkers = function (additionalMarkerLocations, isGeoMashap, isBubbleContainsPostLink) {
     	if (!sanityCheck()) {
     		return false;
     	}
-    	builder.buildAddressMarkers(additionalMarkerLocations);
+    	builder.buildAddressMarkers(additionalMarkerLocations, isGeoMashap, isBubbleContainsPostLink);
     }
     
     this.buildLayer = function (type, kml, panoramiouid) {
@@ -106,10 +109,13 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     	if (!sanityCheck()) {
     		return false;
     	}
-
-		googleMap.setOptions({scrollwheel: false});
     	
     	switch (mapControlType) {
+
+			case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL:
+				googleMap.setOptions({scrollwheel: isOn});
+			break;
+
 	    	case jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE:
 				googleMap.setOptions({mapTypeControl: isOn});
 			break;
@@ -198,6 +204,8 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 
     var markers = [];
     var storedAddresses = [];
+	var badAddresses = [];
+	var wasBuildAddressMarkersCalled = false;
     var timeout = null;
     var directionControlsBinded = false;
     var googleMap = map;
@@ -241,9 +249,9 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 		jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
 	}
 
-    function attachEventlistener(marker) {
+    function attachEventlistener(marker, markersElement) {
 
-		var localBubbleData = buildBubble(marker.content);
+		var localBubbleData = buildBubble(marker.content, markersElement);
 		var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
 		var targetDiv = jQueryCgmp("div#rendered-directions-placeholder-" + mapDivId);
 
@@ -544,7 +552,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 
 	}
 
-	function buildBubble(contentFromMarker) {
+	function buildBubble(contentFromMarker, markersElement) {
 
 		var localBubbleData = [];
 		var randomNumber = Math.floor(Math.random() * 111111);
@@ -552,8 +560,16 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 		randomNumber = randomNumber + "-" + mapDivId;
 
 		var	bubble = "<div id='bubble-" + randomNumber + "' style='height: 130px !important; width: 300px !important;' class='bubble-content'>";
-		bubble += "<h4>Address:</h4>";
-		bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
+
+		if (!markersElement.geoMashup) {
+			bubble += "<h4>Address:</h4>";
+			bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
+		} else {
+			bubble += "<h4>Original Post:</h4>";
+			bubble += "<p style='text-align: left'><a style='font-size: 14px !important; font-weight: bold !important;' href='" + markersElement.postLink  + "'>" + markersElement.postTitle + "</a></p>";
+			bubble += "<p style='font-size: 12px !important; padding-left: 12px !important; padding-right: 6px !important; text-align: left; line-height: 130% !important'>" + markersElement.postExcerpt  + "</p>";
+		}
+
 		bubble += "<hr />";
 		bubble += "<p style='text-align: left'>Directions: <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>To here</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>From here</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>Street View</a></p>";
 		bubble += "</div>";
@@ -579,33 +595,57 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
             }
         }
     }
+
+	function parseJsonStructure(json, infoBubbleContainPostLink)  {
+
+		var index = 1;
+		jQueryCgmp.each(json, function() {
+    		Logger.info("Looping over JSON object:\n\tTitle: " + this.title + "\n\tAddy: " + this.addy + "\n\tLink: " + this.permalink + "\n\tExcerpt: " + this.excerpt);
+
+			var targetArr = this.addy.split(CGMPGlobal.sep);
+
+			if (utils.isNumeric(targetArr[0])) {
+    			addGeoPoint(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+         	} else if (utils.isAlphaNumeric(targetArr[0])) {
+             	storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+         	} else {
+				storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+            	Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
+         	}
+			index ++;
+		});
+	}
     
     function pushGeoDestination(target, index) {
 
 		 var targetArr = target.split(CGMPGlobal.sep);
 
     	 if (utils.isNumeric(targetArr[0])) {
-    		 addGeoPoint(targetArr[0], index, targetArr[1]);
+    		 addGeoPoint(targetArr[0], index, targetArr[1], '', '', '', false);
          } else if (utils.isAlphaNumeric(targetArr[0])) {
-             storeAddress(targetArr[0], index, targetArr[1]);
+             storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
          } else {
-			 storeAddress(targetArr[0], index, targetArr[1]);
+			 storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
              Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
          }
     }
 
-    function storeAddress(address, zIndex, markerIcon) {
+    function storeAddress(address, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup) {
 			
-			Logger.info("Storing address: " + address + " for marker-to-be");
+			Logger.info("Storing address: " + address + " for marker-to-be for the map ID: " + mapDivId);
 			storedAddresses.push({
             	address: address,
 				animation: google.maps.Animation.DROP,
             	zIndex: zIndex,
-				markerIcon: markerIcon
+				markerIcon: markerIcon,
+				postTitle: postTitle,
+				postLink: postLink,
+				postExcerpt: postExcerpt,
+				geoMashup: geoMashup
         	});
 		}
     
-    function addGeoPoint(point, zIndex, markerIcon) {
+    function addGeoPoint(point, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup) {
     	if (point == null || !point) {
 			Logger.warn("Given GEO point containing Lat/Long is NULL");
     		return false;
@@ -639,13 +679,31 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 	            latLng = new google.maps.LatLng(lat, lng);
         	}
         }
-        storeAddress(latLng, zIndex, markerIcon);
+        storeAddress(latLng, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup);
     }
     
-    this.buildAddressMarkers = function (additionalMarkerLocations) {
-    	csvString = additionalMarkerLocations;
-        parseCsv();
-        queryGeocoderService();
+    this.buildAddressMarkers = function (additionalMarkerLocations, isGeoMashap, isBubbleContainsPostLink) {
+
+		wasBuildAddressMarkersCalled = true;
+
+		if (isGeoMashap == "true") {
+			//Logger.info("Got Geo mashup JSON: ");
+			additionalMarkerLocations = additionalMarkerLocations.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+			var json = jQueryCgmp.parseJSON(additionalMarkerLocations);
+			//Logger.raw(json);
+
+			if (isBubbleContainsPostLink == "true") {
+				parseJsonStructure(json, true);
+			} else if (isBubbleContainsPostLink == "false") {
+				parseJsonStructure(json, false);
+			}
+			queryGeocoderService();
+
+		} else if (isGeoMashap == "false") {
+    		csvString = additionalMarkerLocations;
+        	parseCsv();
+        	queryGeocoderService();
+		}
     }
 
 	this.shiftMapToOriginalZoomAndLocation = function() {
@@ -656,6 +714,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
       	timeout = null;
         if (storedAddresses.length > 0) {
             var element = storedAddresses.shift();
+			Logger.info("Passing [" + element.address + "] to Geo service. Have left " + storedAddresses.length + " items to process!");
 
             if (element.address instanceof google.maps.LatLng) {
             	buildLocationFromCoords(element);
@@ -667,7 +726,17 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 			}
         } else {
             setBounds();
-        }
+
+			if (badAddresses.length > 0) {
+				var msg = "";
+				jQueryCgmp.each(badAddresses, function (index, addy) {
+            		msg += "\t" + (1 + index) + ". " + addy + "\n";
+            	});
+
+				alert("ATTENTION!\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
+			}
+        	badAddresses = [];
+		}
     }
 
     function setBounds() {
@@ -698,7 +767,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 	function buildBubbleContent(element, addressPoint)  {
 		if (element.zIndex == 1) {
            	originalMapCenter = addressPoint;
-			Logger.info("Storing original map center [" + originalMapCenter + "]");
+			//Logger.info("Storing original map center [" + originalMapCenter + "]");
 		}
 
 		var lat = addressPoint.lat();
@@ -726,11 +795,16 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
         	storedAddresses.push(element);   	
         	timeout = setTimeout(function() { queryGeocoderService(); }, 3000);
         } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-        	Logger.warn("Got ZERO results for " + element.address + " while having " + markers.length + " markers");
-       		//alert("Got ZERO results for " + element.address);
-	   	}
+        	Logger.warn("Got ZERO results for [" + element.address + "]. Have left " + markers.length + " items to process");
+			badAddresses.push(element.address);
+	   		timeout = setTimeout(function() { queryGeocoderService(); }, 400);
+		}
 
     }
+
+	this.isBuildAddressMarkersCalled = function() {
+		return wasBuildAddressMarkersCalled;
+	}
     
     function instrumentMarker(point, element) {
         var marker = new google.maps.Marker({
@@ -782,7 +856,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 			if (element.zIndex == 0 && element.animation == google.maps.Animation.BOUNCE) {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
-			attachEventlistener(marker);
+			attachEventlistener(marker, element);
 			if (!directionControlsBinded) {
 				bindDirectionControlsToEvents();
 				directionControlsBinded = true;
@@ -822,6 +896,10 @@ var Logger = {
 
 	info: function(message) {
         var msg = "Info :: " + message;
+		this.print(msg);
+	},
+
+	raw: function(msg) {
 		this.print(msg);
 	},
 

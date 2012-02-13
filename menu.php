@@ -60,7 +60,11 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
         $template_values["LABEL_SCALECONTROL"] = "<b>Scale</b>"; 
         $template_values["SELECT_SCALECONTROL"] = "The Scale control displays a map scale element. This control is not enabled by default.";
         $template_values["LABEL_STREETVIEWCONTROL"] = "<b>StreetView</b>";
-        $template_values["SELECT_STREETVIEWCONTROL"] = "The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map";
+		$template_values["SELECT_STREETVIEWCONTROL"] = "The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map";
+
+		$template_values["LABEL_SCROLLWHEELCONTROL"] = "<b>ScrollWheel</b>";
+        $template_values["SELECT_SCROLLWHEELCONTROL"] = "The Scroll Wheel control enables user to zoom in/out on mouse wheel scroll. This setting has 'disable' setting by default";
+
 
         $template_values["LABEL_INFOBUBBLECONTENT"] = "<b>Content&nbsp;Text</b>"; 
         $template_values["INPUT_INFOBUBBLECONTENT"] = "Text to be displayed inside info bubble (info window).";
@@ -82,6 +86,9 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 		$template_values["HIDDEN_ADDMARKERLISTHIDDEN"] = "";
 
 		$template_values["GEO_ADDMARKERMASHUP"] = "";
+
+
+		$template_values["GEOBUBBLE_ADDMARKERMASHUPBUBBLE"] = "When selecting a marker Geo mashup, you are also given an option to select what will appear in the marker info bubble window when marker is clicked. There are two options: to display marker's address and latitude/longitude or to display marker's original blog post title that is linked to the post and few words from post content as an excerpt. If the original blog post already has an excerpt set, then the latter will be used for the info bubble content.";
 		$template_values["GEOHIDDEN_ADDMARKERMASHUPHIDDEN"] = "";
 		$template_values["LABEL_ADDMARKERMASHUP"] = "If selected, the generated map will aggregate all markers from other maps created by you in your public published posts. In other words, you get a Geo marker mashup in one map! At the moment, the mashup does not include markers from maps on pages and widgets, posts ONLY. When Geo mashup is enabled, the KML and custom marker sections become hidden, in order to reduce the confusion for the user.";
 

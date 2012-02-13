@@ -542,3 +542,22 @@ div.token-input-dropdown ul li em {
 div.token-input-dropdown ul li.token-input-selected-dropdown-item {
     background-color: #d0efa0;
 }
+
+fieldset.collapsible {
+
+}
+
+#google_map_shortcode_builder fieldset.collapsed,
+.widget-google-map-container  fieldset.collapsed {
+    border: 1px solid #777 !important;
+}
+
+#google_map_shortcode_builder legend.collapsible,
+.widget-google-map-container legend.collapsible {
+    color:gray !important;
+}
+
+#google_map_shortcode_builder legend.collapsed,
+.widget-google-map-container legend.collapsed {
+    color: #333 !important;
+}

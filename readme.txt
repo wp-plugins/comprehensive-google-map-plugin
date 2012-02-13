@@ -4,8 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.1
-
+Stable tag: 6.0.2
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -89,8 +88,17 @@ Just click once somewhere on the map
 8. Direction panel
 9. Markers info window with the direction and street view
 10. Street view in the marker's infer window
+11. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 6.0.2 =
+* Enhancement: When choosing marker geo mashup, user can now select what to display in the info bubble of the markers: Geo address or title and link to the marker's blog post (Check the screenshots)
+* Enhancement: Zoom on mouse wheel scroll added as a config option
+* Enhancement: Documentation refinement
+* Enhancement: Making sure that Google API and plugin scripts only loaded if widgets and/or short codes are active
+* Enhancement: Added notifications for users to let them know whether they: (a) have specified un-parsable by Google map locations or (b) have not provided locations at all
+* Bug (unreported): When one of the provided locations was un-parsable by Google, the map was stopping from generation.
 
 = 6.0.1 =
 * Enhancement: Disabled zooming on mouse scroll

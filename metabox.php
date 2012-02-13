@@ -100,6 +100,12 @@ function cgmp_render_shortcode_builder_form() {
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
 
 
+		$v = "scrollwheelcontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "ScrollWheel")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
+
+
+
 		$v = "infobubblecontent";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Content Text")); 
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
@@ -146,6 +152,11 @@ function cgmp_render_shortcode_builder_form() {
 		$v = $m."mashup";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Make this map a Marker Geo Mashup")); 
 		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashupbubble";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
+		$settings[] = array("type" => "geobubble", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-bubble-geo-mashup", "style" => ""));
+
 
 		$v = $m."mashuphidden";
 		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "notshortcodeitem", "style" => ""));
