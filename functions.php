@@ -212,7 +212,7 @@ if ( !function_exists('cgmp_draw_map_marker_v2') ):
 			
 			$result .= '    var isBuildAddressMarkersCalled = orc_'.$id.'.isBuildAddressMarkersCalled();'.PHP_EOL;
 			$result .= '    if (!isBuildAddressMarkersCalled) {'.PHP_EOL;
-			$result .= '    	alert("ATTENTION!\n\nDear blog/website owner,\nIt looks like you did not specify any locations for the Google map!\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?\n\nPlease revisit your configuration..");'.PHP_EOL;
+			$result .= '    	alert("ATTENTION!\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?\n\nPlease revisit and reconfigure your widget or shortcode configuration.\n\nThe map requires at least one marker location to be added..");'.PHP_EOL;
 			$result .= '    }'.PHP_EOL;
 		}
 
@@ -677,21 +677,47 @@ if ( !function_exists('extract_locations_from_all_posts') ):
 							$db_markers[$post->ID]['permalink'] = $post->guid;
 							$db_markers[$post->ID]['excerpt'] = '';
 
-						$excerpt = substr($post_content, 0, 135);
-
+						$clean = "";
 						if (isset($post->post_excerpt) && strlen($post->post_excerpt) > 0) {
-							$excerpt = substr($post->post_excerpt, 0, 135);
+							$clean = clean_excerpt($post->post_excerpt);
+						} else {
+							$clean = clean_excerpt($post_content);
 						}
-
-						if ( stripos($excerpt, '[google-map-v3') === false) {
+						
+						//Dont consider text that has shortcodes of some sort
+						if ( strlen($clean) > 0 ) {
+							$excerpt = substr($clean, 0, 130);
 							$db_markers[$post->ID]['excerpt'] = $excerpt."..";
-						}
+						} 
 					}
 				}
 				//echo "Extracted list: " .print_r(json_decode(json_encode($db_markers)), true)."<br /><br />";
-				//exit;
 				return $db_markers;
 
+	}
+endif;
+
+if ( !function_exists('clean_excerpt') ):
+	function clean_excerpt($content)  {
+
+		if (!isset($content) || $content == "") {
+			return $content;
+		}
+	
+		$content = preg_replace ('@<[^>]*>@', '', $content);
+		$start = strpos($content, "[");
+
+		if ($start !== false) {
+
+				if ($start > 0) {
+					$content = substr($content, 0, $start - 1);
+					$content = str_replace("'", "", $content);
+					$content = str_replace("\"", "", $content);
+				} else {
+					$content = "";
+				}
+		}
+		return trim($content);
 	}
 endif;
 

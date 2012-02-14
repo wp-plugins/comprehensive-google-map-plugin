@@ -565,8 +565,9 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 			bubble += "<h4>Address:</h4>";
 			bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
 		} else {
+			var substr = markersElement.postTitle.substring(0, 32);
 			bubble += "<h4>Original Post:</h4>";
-			bubble += "<p style='text-align: left'><a style='font-size: 14px !important; font-weight: bold !important;' href='" + markersElement.postLink  + "'>" + markersElement.postTitle + "</a></p>";
+			bubble += "<p style='text-align: left'><a style='font-size: 14px !important; font-weight: bold !important;' href='" + markersElement.postLink  + "'>" + substr + "..</a></p>";
 			bubble += "<p style='font-size: 12px !important; padding-left: 12px !important; padding-right: 6px !important; text-align: left; line-height: 130% !important'>" + markersElement.postExcerpt  + "</p>";
 		}
 

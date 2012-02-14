@@ -163,7 +163,7 @@
 				<tr>
 					<td><a id="tooltip-marker-panoramio" class="google-map-tooltip-marker" href="javascript:void(0);" title="Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Maps. In other words, each photo will be placed on the map like a marker.">[?]</a>&nbsp;LABEL_SHOWPANORAMIO</td>
 					<td>SELECT_SHOWPANORAMIO</td>
-					<td><a id="tooltip-marker-panoramiouid" class="google-map-tooltip-marker" href="javascript:void(0);" title="If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID">[?]</a>&nbsp;LABEL_PANORAMIOUID</td>
+					<td><a id="tooltip-marker-panoramiouid" class="google-map-tooltip-marker" href="javascript:void(0);" title="If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID. Please provide NUMERIC user ID only! NOT the Panoramio user web URL!">[?]</a>&nbsp;LABEL_PANORAMIOUID</td>
 					<td>INPUT_PANORAMIOUID</td>
 				</tr>
 			</tbody>
