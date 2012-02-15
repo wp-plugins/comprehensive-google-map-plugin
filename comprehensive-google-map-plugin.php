@@ -2,8 +2,8 @@
 /*
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
-Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more. 
-Version: 1.0.1
+Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
+Version: 6.0.4
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -29,24 +29,34 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?sensor=false');
-define('CGMP_VERSION', '1.0.1');
+define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
+
+define('CGMP_VERSION', '6.0.4');
+define('CGMP_SEP', '{}');
+define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
+define('CGMP_DB_POST_COUNT', 'cgmp_total_published_posts');
+define('CGMP_DB_PUBLISHED_POST_MARKERS', 'cgmp_published_post_markers');
+define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
 define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
+define('CGMP_PLUGIN_ASSETS_DIR', CGMP_PLUGIN_DIR.'/assets');
 define('CGMP_PLUGIN_CSS', CGMP_PLUGIN_ASSETS_URI . '/css');
+define('CGMP_PLUGIN_CSS_DIR', CGMP_PLUGIN_ASSETS_DIR . '/css');
 define('CGMP_PLUGIN_IMAGES', CGMP_PLUGIN_CSS . '/images');
+define('CGMP_PLUGIN_IMAGES_DIR', CGMP_PLUGIN_CSS_DIR . '/images');
 define('CGMP_PLUGIN_JS', CGMP_PLUGIN_ASSETS_URI . '/js');
 define('CGMP_PLUGIN_HTML', CGMP_PLUGIN_DIR . '/assets/html');
 
 define('CGMP_FIELDSETNAME_WIDGETTITLE', 'Widget Title');
 define('CGMP_FIELDSETNAME_BASICSETTINGS', 'Basic Settings');
-define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Marker Configuration');
-define('CGMP_FIELDSETNAME_MARKER_INFOBUBBLE', 'Marker Info Bubble Configuration');
-define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Destination Address Information');
-define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Bike Paths and Traffic Information');
-define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Control Handle Configuration');
-define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS Configuration');
+define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Map Markers');
+define('CGMP_FIELDSETNAME_MARKER_INFOBUBBLE', 'Map Marker Info Bubbles');
+define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'KML/Geo RSS');
+define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Custom Overlays');
+define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Map Controls');
+define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS');
+define('CGMP_FIELDSETNAME_PANORAMIO', 'Panoramio Library');
 
 $global_fieldset_names = array();
 $global_fieldset_names["LEGEND_BASIC_SETTINGS"] = CGMP_FIELDSETNAME_BASICSETTINGS;
@@ -57,12 +67,13 @@ $global_fieldset_names["LEGEND_ADDRESS"] = CGMP_FIELDSETNAME_DESTINATION_ADDR_IN
 $global_fieldset_names["LEGEND_WIDGETTITLE"] = CGMP_FIELDSETNAME_WIDGETTITLE;
 $global_fieldset_names["LEGEND_BIKE_AND_TRAFFIC"] = CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH;
 $global_fieldset_names["LEGEND_KML"] = CGMP_FIELDSETNAME_KML;
+$global_fieldset_names["LEGEND_PANORAMIO"] = CGMP_FIELDSETNAME_PANORAMIO;
 
 $doc_url = get_option('siteurl')."/wp-admin/admin.php?page=menu.php";
 $global_fieldset_names["DOC_URL"] = $doc_url;
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
+
+$notices = '<span style="font-size: 9px;"><a href="'.$doc_url.'">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8">Support</a></span>';
+$global_fieldset_names["FOOTER_NOTICES"] = $notices;
 
 require_once (CGMP_PLUGIN_DIR . '/functions.php');
 require_once (CGMP_PLUGIN_DIR . '/widget.php');
@@ -71,12 +82,19 @@ require_once (CGMP_PLUGIN_DIR . '/metabox.php');
 require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
+//add_action('the_posts', 'is_map_shortcode_present');
+add_action('init', 'cgmp_google_map_init_scripts');
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
 add_action('admin_init', 'cgmp_google_map_admin_add_script');
+
 add_action('admin_menu', 'cgmp_google_map_meta_boxes');
 add_action('admin_menu', 'cgmp_google_map_plugin_menu');
 add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
-add_action('wp_head', 'cgmp_google_map_head_scripts', 10);
 add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
+
+add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
+
+register_activation_hook( __FILE__, 'cgmp_extract_markers_from_published_posts');
+add_action('publish_post', 'cgmp_invalidate_published_post_marker' );
 
 ?>
