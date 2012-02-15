@@ -685,8 +685,11 @@ if ( !function_exists('extract_locations_from_all_posts') ):
 					$extracted = extract_locations_from_post_content($post_content);
 					//echo "Extracted list: " .print_r($extracted, true)."<br /><br />";
 					if (count($extracted) > 0) {
+							$post_title = $post->post_title;
+							$post_title = str_replace("'", "", $post_title);
+							$post_title = str_replace("\"", "", $post_title);
 							$db_markers[$post->ID]['markers'] = $extracted;
-							$db_markers[$post->ID]['title'] = $post->post_title;
+							$db_markers[$post->ID]['title'] = $post_title;
 							$db_markers[$post->ID]['permalink'] = $post->guid;
 							$db_markers[$post->ID]['excerpt'] = '';
 
