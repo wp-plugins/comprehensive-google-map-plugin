@@ -183,7 +183,8 @@ endif;
 if ( !function_exists('cgmp_begin_map_init_v2') ):
 	function cgmp_begin_map_init_v2($id, $zoom, $type, $bubbleAutoPan, $controlOpts) {
 		$result =  '<script type="text/javascript">'.PHP_EOL;
-		$result .= '    jQueryCgmp(document).ready(function() {'.PHP_EOL;
+		//$result .= '    jQueryCgmp(document).ready(function() {'.PHP_EOL;
+		//$result .= '    if (typeof google == "undefined") { alert("ATTENTION!\n\nDear user, the Google API could not be reached! Aborting map generation..");  } '.PHP_EOL;
 		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
 		$result .= '    var orc_'.$id.' = new jQueryCgmp.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
 		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc_'.$id.'});'.PHP_EOL;
@@ -245,9 +246,16 @@ endif;
 if ( !function_exists('cgmp_draw_kml') ):
 	function cgmp_draw_kml($id, $kml) {
 		$result = '';
-		if (isset($kml) && $kml != "" && strtolower(trim(strpos($kml, "http"))) !== false) {
-			$kml = str_replace("&#038;", "&", $kml);
-			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
+		if (isset($kml) && $kml != "") {
+
+			$kml = strtolower(trim($kml));
+			$pos = strpos($kml, "http");
+
+			if ($pos !== false && $pos == "0") {
+				$kml = strip_tags($kml);
+				$kml = str_replace("&#038;", "&", $kml);
+				$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
+			}
 		}
 		return $result;
 	}
@@ -258,6 +266,10 @@ if ( !function_exists('cgmp_draw_panoramio') ):
 	function cgmp_draw_panoramio($id, $showpanoramio, $userId) {
 		$result = '';
 		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
+			if (isset($userId) && $userId != "") {
+				$userId = strtolower(trim($userId));
+				$userId = strip_tags($userId);
+			}
 			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
 		}
 		return $result;
@@ -268,7 +280,8 @@ endif;
 
 if ( !function_exists('cgmp_end_map_init') ):
 	function cgmp_end_map_init() {
-		$result =  '});</script>';
+			//$result =  '});';
+			$result =  '</script>';
 		return 	$result;
 	}
 endif;
