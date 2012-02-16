@@ -688,6 +688,7 @@ if ( !function_exists('extract_locations_from_all_posts') ):
 							$post_title = $post->post_title;
 							$post_title = str_replace("'", "", $post_title);
 							$post_title = str_replace("\"", "", $post_title);
+							$post_title = preg_replace("/\r\n|\n\r|\n|\r/", "", $post_title);
 							$db_markers[$post->ID]['markers'] = $extracted;
 							$db_markers[$post->ID]['title'] = $post_title;
 							$db_markers[$post->ID]['permalink'] = $post->guid;
@@ -729,9 +730,14 @@ if ( !function_exists('clean_excerpt') ):
 					$content = substr($content, 0, $start - 1);
 					$content = str_replace("'", "", $content);
 					$content = str_replace("\"", "", $content);
+					$content = preg_replace("/\r\n|\n\r|\n|\r/", "", $content);
 				} else {
 					$content = "";
 				}
+		} else {
+			$content = str_replace("'", "", $content);
+			$content = str_replace("\"", "", $content);
+			$content = preg_replace("/\r\n|\n\r|\n|\r/", "", $content);
 		}
 		return trim($content);
 	}
