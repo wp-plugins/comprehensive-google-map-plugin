@@ -762,7 +762,8 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 
 		element.address = buildBubbleContent(element, addressPoint);
 		instrumentMarker(addressPoint, element);
-       	timeout = setTimeout(function() { queryGeocoderService(); }, 330);
+       	//timeout = setTimeout(function() { queryGeocoderService(); }, 330);
+		queryGeocoderService();
 	}
 
 	function buildBubbleContent(element, addressPoint)  {
