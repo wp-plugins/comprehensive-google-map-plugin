@@ -394,7 +394,7 @@ if ( !function_exists('cgmp_create_html_geo') ):
 				$class = $attr['class'];
 				$style = $attr['style'];
 
-				return  "<input type='checkbox' ".$checked." class='".$class."' id='".$id."' name='".$name."' style='".$style."' />";
+				return  "<input type='checkbox' class='".$class."' id='".$id."' name='".$name."' style='".$style."' />";
 		}
 endif;
 

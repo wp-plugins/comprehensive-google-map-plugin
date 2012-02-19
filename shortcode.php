@@ -100,7 +100,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
-	$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleiautopan, $controlOpts);
+	$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
 	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $addmarkermashup, $addmarkermashupbubble, $kml);
 	$result .= cgmp_draw_map_bikepath($id, $showbike);
 	$result .= cgmp_draw_map_traffic($id, $showtraffic);
