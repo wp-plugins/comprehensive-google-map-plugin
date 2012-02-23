@@ -16,13 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var jQueryCgmp = jQuery.noConflict();
 
+
+(function () {
+
 jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
 	
-	if (typeof google == "undefined" || !google) {
-    	Logger.fatal("We do not have reference to Google API. Aborting..");
-    	return false;
-	}
-	 
     jQueryCgmp.extend(this, jQueryCgmp.GoogleMapOrchestrator.defaultOptions);
     jQueryCgmp.GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
 	jQueryCgmp.GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
@@ -33,6 +31,16 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     var zoom = options.zoom || 16;
     var mapType = options.mapType || google.maps.MapTypeId.ROADMAP;
 	var bubbleAutoPan = options.bubbleAutoPan || "true";
+
+	if (mapType == "ROADMAP") {
+		mapType = google.maps.MapTypeId.ROADMAP;
+	} else if (mapType == "SATELLITE") {
+		mapType = google.maps.MapTypeId.SATELLITE;
+	} else if (mapType == "HYBRID") {
+		mapType = google.maps.MapTypeId.HYBRID;
+	} else if (mapType == "TERRAIN") {
+		mapType = google.maps.MapTypeId.TERRAIN;
+	}
 
     var googleMap = map;
     googleMap.setOptions({
@@ -105,7 +113,7 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     }
     
     this.switchMapControl = function(isOn, mapControlType) {
-    	
+
     	if (!sanityCheck()) {
     		return false;
     	}
@@ -113,27 +121,27 @@ jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
     	switch (mapControlType) {
 
 			case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL:
-				googleMap.setOptions({scrollwheel: isOn});
+				googleMap.setOptions({scrollwheel: (isOn == "false" ? false : true) });
 			break;
 
 	    	case jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE:
-				googleMap.setOptions({mapTypeControl: isOn});
+				googleMap.setOptions({mapTypeControl: (isOn == "false" ? false : true) });
 			break;
 		
 		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN:
-				googleMap.setOptions({panControl: isOn});
+				googleMap.setOptions({panControl: (isOn == "false" ? false : true) });
 			break;
 			
 		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM:
-				googleMap.setOptions({zoomControl: isOn});
+				googleMap.setOptions({zoomControl: (isOn == "false" ? false : true) });
 			break;
 			
 		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE:
-				googleMap.setOptions({scaleControl: isOn});
+				googleMap.setOptions({scaleControl: (isOn == "false" ? false : true) });
 			break;
 			
 		    case jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW:
-				googleMap.setOptions({streetViewControl: isOn});
+				googleMap.setOptions({streetViewControl: (isOn == "false" ? false : true) });
 			break;
 			
 		    default:
@@ -277,16 +285,19 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 	function attachEventstoDirectionControls(marker, localBubbleData, dirDivId, targetDiv)  {
 
 		var parentInfoBubble = 'div#bubble-' + localBubbleData.bubbleHolderId;
-		var splittedAddr = marker.content.split("<br />Lat/Long: ");
+		var addy = marker.content;
 
-		splittedAddr[0] = splittedAddr[0].replace("Lat/Long: ", "");
+		/*
+			var splittedAddr = marker.content.split("<br />Lat/Long: ");
+		*/
+		addy = addy.replace("Lat/Long: ", "");
 
 		jQueryCgmp(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
   			var thisId = this.id;
 			if (thisId == 'toHere-' + localBubbleData.bubbleHolderId) {
 				jQueryCgmp(dirDivId).fadeIn();
 				jQueryCgmp(dirDivId + ' input#a_address').val('');
-				jQueryCgmp(dirDivId + ' input#b_address').val(splittedAddr[0]);
+				jQueryCgmp(dirDivId + ' input#b_address').val(addy);
 				jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
 			}
 		});
@@ -295,7 +306,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
   			var thisId = this.id;
 			if (thisId == 'fromHere-' + localBubbleData.bubbleHolderId) {
 				jQueryCgmp(dirDivId).fadeIn();
-				jQueryCgmp(dirDivId + ' input#a_address').val(splittedAddr[0]);
+				jQueryCgmp(dirDivId + ' input#a_address').val(addy);
 				jQueryCgmp(dirDivId + ' input#b_address').val('');
 				jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
 			}
@@ -760,13 +771,13 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 	function buildLocationFromCoords(element)  {
 		var addressPoint = element.address;
 
-		element.address = buildBubbleContent(element, addressPoint);
+		element.address = buildLatLongBubbleInfo(element, addressPoint);
 		instrumentMarker(addressPoint, element);
        	//timeout = setTimeout(function() { queryGeocoderService(); }, 330);
 		queryGeocoderService();
 	}
 
-	function buildBubbleContent(element, addressPoint)  {
+	function buildLatLongBubbleInfo(element, addressPoint)  {
 		if (element.zIndex == 1) {
            	originalMapCenter = addressPoint;
 			//Logger.info("Storing original map center [" + originalMapCenter + "]");
@@ -788,7 +799,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 
             var addressPoint = results[0].geometry.location;
 			
-			element.address = results[0].formatted_address + "<br />" + buildBubbleContent(element, addressPoint);
+			element.address = results[0].formatted_address; /* + "<br />" + buildLatLongBubbleInfo(element, addressPoint); */
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -924,14 +935,74 @@ var Logger = {
     	if ( jQueryCgmp.browser.msie ) {
     	    //Die... die... die.... why dont you just, die???
     	 } else {
-    		if (jQueryCgmp.browser.mozilla && jQueryCgmp.browser.version >= "3.0" ) {
+    		if (jQueryCgmp.browser.mozilla && parseInt(jQueryCgmp.browser.version) >= 3 ) {
     			console.log(message);
-    		}
+    		} else {
+				console.log("Logger could not print because browser is Mozilla [" + jQueryCgmp.browser.mozilla + "] and its version is [" + parseInt(jQueryCgmp.browser.version) + "]");
+			}
     	 }
     }
 }
 
-//Used on the client site during map instantiation
-var orcHolder = new jQueryCgmp.OrchestratorHub();
+
+jQueryCgmp(document).ready(function() {
+
+	var orcHolder = new jQueryCgmp.OrchestratorHub();
+
+	jQueryCgmp.each(CGMPGlobal.maps, function(index, json) {
+
+		if (typeof google == "undefined" || !google) {
+			alert("ATTENTION!" +
+					"\n\nDear blog/website owner,\nIt looks like Google map API could not be reached. " + 
+					"Map generation was aborted!" + 
+					"\n\nPlease check that Google API script was loaded in the HEAD section of your web page");
+
+    		Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
+    		return false;
+		}
+
+		var googleMap = new google.maps.Map(document.getElementById(json.id));
+    	var orc = new jQueryCgmp.GoogleMapOrchestrator(googleMap, {bubbleAutoPan: json.bubbleautopan, zoom : parseInt(json.zoom), mapType: json.maptype});
+
+		orcHolder.push({mapId: json.id, orchestrator: orc});
+
+		orc.switchMapControl(json.maptypecontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);
+    	orc.switchMapControl(json.pancontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);
+    	orc.switchMapControl(json.zoomcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);
+    	orc.switchMapControl(json.scalecontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);
+    	orc.switchMapControl(json.scrollwheelcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL);
+    	orc.switchMapControl(json.streetviewcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);
 
 
+		if (json.showpanoramio == "true") {
+			orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, json.panoramiouid);
+		}
+
+		if (json.showbike == "true") {
+			orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);
+		}
+		if (json.showtraffic == "true") {
+			orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);
+		}
+
+		if (json.kml != null && json.kml != '') {
+			orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, json.kml);
+		} else {
+
+			if (json.markerlist != null && json.markerlist != '') {
+    			orc.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.geomashupbubble);
+			}
+
+			var isBuildAddressMarkersCalled = orc.isBuildAddressMarkersCalled();
+			if (!isBuildAddressMarkersCalled) {
+    			alert("ATTENTION!" +
+					"\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!" +
+					"\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?" +
+					"\n\nPlease revisit and reconfigure your widget or shortcode configuration." +
+					"\n\nThe map requires at least one marker location to be added..");
+    		}
+		}
+	});
+});
+
+}(jQueryCgmp));

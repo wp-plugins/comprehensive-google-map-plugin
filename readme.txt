@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.8
+Stable tag: 6.0.9
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -91,6 +91,13 @@ Just click once somewhere on the map
 11. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 6.0.9 =
+* Enhancement: Not injecting anymore JS business logic to the client side. Instead injecting JSON object with map data.
+* Enhancement: Plugin JS business logic now running within its own eco system. It knows how to read the above JSON object and pass the data to Google API. This way is safer against JS clash errors.
+* Enhancement: Not displaying Lat/Long in info bubble anymore when Geo address provided.
+* Enhancement: Added help message above the map placeholder that says to click on the markers if one needs directions
+* Enhancement: Directions CSS tweak
 
 = 6.0.8 =
 * Bug: PHP notices due to wrong variable naming.

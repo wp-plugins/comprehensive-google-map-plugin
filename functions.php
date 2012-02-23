@@ -21,8 +21,8 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 
 			$toploading = ceil($height / 2) - 50;
 
-	$result = '<div align="'.$align.'"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
-			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="loading" style="top: '.$toploading.'px !important;"></div></div>';
+	$result = '<div align="'.$align.'"><div style="padding: 3px 0 3px 0; width:' .$width . 'px; background-color: #efefef; border: 1px #cecece solid;">For directions, click on map marker(s)</div><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
+			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="map-loading" style="position: relative; top: '.$toploading.'px !important;"></div></div>';
 
 			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="background: white; width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
 			<div class="d_close-wrapper">
@@ -106,6 +106,28 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 
         return $result;
  	}
+endif;
+
+
+if ( !function_exists('cgmp_map_data_injector') ):
+	function cgmp_map_data_injector( $map_json ) {
+		cgmp_map_data_hook_function( $map_json );
+		//do_action('cgmp_map_data_injector_hook', $map_json);
+		//add_action('cgmp_map_data_injector_hook', 'cgmp_map_data_hook_function');
+	}
+endif;
+
+
+if ( !function_exists('cgmp_map_data_hook_function') ):
+	function cgmp_map_data_hook_function( $map_json ) {
+
+		echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
+		echo "/* <![CDATA[ */".PHP_EOL;
+		echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
+		echo "/* ]]> */".PHP_EOL;
+		echo "</script>".PHP_EOL;
+
+	}
 endif;
 
 
@@ -260,6 +282,39 @@ if ( !function_exists('cgmp_draw_kml') ):
 		return $result;
 	}
 endif;
+
+
+if ( !function_exists('cgmp_clean_kml') ):
+	function cgmp_clean_kml($kml) {
+		$result = '';
+		if (isset($kml) && $kml != "") {
+
+			$kml = strtolower(trim($kml));
+			$pos = strpos($kml, "http");
+
+			if ($pos !== false && $pos == "0") {
+				$kml = strip_tags($kml);
+				$kml = str_replace("&#038;", "&", $kml);
+				$result = $kml;
+			}
+		}
+		return $result;
+	}
+endif;
+
+
+if ( !function_exists('cgmp_clean_panoramiouid') ):
+	function cgmp_clean_panoramiouid($userId) {
+
+		if (isset($userId) && $userId != "") {
+			$userId = strtolower(trim($userId));
+			$userId = strip_tags($userId);
+		}
+
+		return $userId;
+	}
+endif;
+
 
 
 if ( !function_exists('cgmp_draw_panoramio') ):

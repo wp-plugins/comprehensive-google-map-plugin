@@ -615,6 +615,10 @@ img {
     max-width: 100% !important;
 }
 
+.direction-controls-placeholder input {
+    margin: 0 !important;
+}
+
 .rendered-directions-placeholder table {
 	border-collapse: separate !important;
 	border-spacing: 0 !important;
@@ -662,6 +666,7 @@ img {
     border: none !important;
 }
 
+
 .rendered-directions-placeholder div.warnbox-content {
     font-family: Arial,Tahoma,Verdana !important;
     font-size: 13px !important;
@@ -674,3 +679,9 @@ img {
     font-weight: bold !important;
 }
 
+.map-loading {
+    background: url("assets/css/images/loading.gif") no-repeat 0 0 transparent !important;
+    height: 100px;
+    width: 100px;
+
+}

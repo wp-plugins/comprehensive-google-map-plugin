@@ -90,22 +90,45 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$result = '';
 		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
-		$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
-		$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $addmarkermashup, $geomashupbubble, $kml);
-		$result .= cgmp_draw_map_bikepath($id, $showbike);
-		$result .= cgmp_draw_map_traffic($id, $showtraffic);
-		$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
-		$result .= cgmp_draw_kml($id, $kml);
-		$result .= cgmp_end_map_init();
 		echo $result;
-		
+
+		//$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
+		//$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $addmarkermashup, $geomashupbubble, $kml);
+		//$result .= cgmp_draw_map_bikepath($id, $showbike);
+		//$result .= cgmp_draw_map_traffic($id, $showtraffic);
+		//$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
+		//$result .= cgmp_draw_kml($id, $kml);
+		//$result .= cgmp_end_map_init();
+
+		$map_settings = array();
+		$map_settings['id'] = $id;
+		$map_settings['zoom'] = $zoom;
+		$map_settings['maptype'] = $maptype;
+		$map_settings['bubbleautopan'] = $bubbleautopan;
+		$map_settings['maptypecontrol'] = $controlOpts['m_aptypecontrol'];
+		$map_settings['pancontrol'] = $controlOpts['pancontrol'];
+		$map_settings['zoomcontrol'] = $controlOpts['z_oomcontrol'];
+		$map_settings['scalecontrol'] = $controlOpts['scalecontrol'];
+		$map_settings['streetviewcontrol'] = $controlOpts['streetviewcontrol'];
+		$map_settings['scrollwheelcontrol'] = $controlOpts['scrollwheelcontrol'];
+		$map_settings['markerlist'] = $hiddenmarkers;
+		$map_settings['addmarkermashup'] = $addmarkermashup;
+		$map_settings['geomashupbubble'] = $geomashupbubble;
+		$map_settings['kml'] = cgmp_clean_kml($kml);
+		$map_settings['showbike'] = $showbike;
+		$map_settings['showtraffic'] = $showtraffic;
+		$map_settings['showpanoramio'] = $showpanoramio;
+		$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
+		$map_json = json_encode($map_settings);
+		cgmp_map_data_injector($map_json);
+
 		echo $after_widget;
 
 	}
 
 	function update( $new_instance, $old_instance ) {
-			$instance = $old_instance;
-		
+		$instance = $old_instance;
+
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['width'] = strip_tags($new_instance['width']);
 		$instance['height'] = strip_tags($new_instance['height']);
