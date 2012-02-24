@@ -202,9 +202,70 @@ jQueryCgmp.LayerBuilder = function (map) {
         	return false;
         }
     	var kmlLayer = new google.maps.KmlLayer(url);
-		//kmlLayer.preserveViewport = true;
-    	kmlLayer.setMap(googleMap);
-    }
+
+		google.maps.event.addListener(kmlLayer, "status_changed", function() {
+			kmlLayerStatusEventCallback(kmlLayer);
+		});
+		kmlLayer.setMap(googleMap);
+	}
+
+	function kmlLayerStatusEventCallback(kmlLayer)  {
+		
+			var kmlStatus = kmlLayer.getStatus();
+
+     		if (kmlStatus == google.maps.KmlLayerStatus.OK) {
+				//Hmmm...
+			} else {
+
+				var msg = '';
+
+				switch(kmlStatus) {
+    		
+						case google.maps.KmlLayerStatus.DOCUMENT_NOT_FOUND:
+							msg = 'The KML file could not be found. Most likely it is an invalid URL, or the document is not publicly available.';
+						break;
+
+						case google.maps.KmlLayerStatus.DOCUMENT_TOO_LARGE:
+							msg = 'The KML file exceeds the file size limits of KmlLayer.';
+						break;
+
+						case google.maps.KmlLayerStatus.FETCH_ERROR:
+							msg = 'The KML file could not be fetched.';
+						break;
+
+						case google.maps.KmlLayerStatus.INVALID_DOCUMENT:
+							msg = 'The KML file is not a valid KML, KMZ or GeoRSS document.';
+						break;
+
+						case google.maps.KmlLayerStatus.INVALID_REQUEST:
+							msg = 'The KmlLayer is invalid.';
+						break;
+
+						case google.maps.KmlLayerStatus.LIMITS_EXCEEDED:
+							msg = 'The KML file exceeds the feature limits of KmlLayer.';
+						break;
+
+						case google.maps.KmlLayerStatus.TIMED_OUT:
+							msg = 'The KML file could not be loaded within a reasonable amount of time.';
+						break;
+
+						case google.maps.KmlLayerStatus.UNKNOWN:
+							msg = 'The KML file failed to load for an unknown reason.';
+						break;
+
+					}
+
+			if (msg != '') {
+    			alert("ATTENTION!" +
+					"\n\nDear blog/website owner,\nGoogle returned the following error when trying to load KML file:" +
+					"\n\n" + msg + " (" + kmlStatus + ")");
+
+				Logger.error("Google returned KML error: " + msg + " (" + kmlStatus + ")");
+				Logger.error("KML file: " + kmlLayer.getUrl());
+    		}
+		}
+	}
+
 }
 
 jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
@@ -950,6 +1011,7 @@ jQueryCgmp(document).ready(function() {
 	var orcHolder = new jQueryCgmp.OrchestratorHub();
 
 	jQueryCgmp.each(CGMPGlobal.maps, function(index, json) {
+
 
 		if (typeof google == "undefined" || !google) {
 			alert("ATTENTION!" +

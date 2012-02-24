@@ -91,7 +91,7 @@
 			<tbody>
 
 				<tr>	
-					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify a valid URL here to a remote KML file (Can be stored on your blog), thats starts with http(s). Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
+					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify a valid URL here to a remote KML file (Can be stored on your blog), thats starts with http(s). The Google Maps API supports the KML and GeoRSS data formats for displaying geographic information. These data formats are displayed on a map from a publicly accessible KML or GeoRSS file. Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
 					<td colspan="3">INPUT_KML</td>
 				</tr>
 
