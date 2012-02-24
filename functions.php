@@ -21,7 +21,7 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 
 			$toploading = ceil($height / 2) - 50;
 
-	$result = '<div align="'.$align.'"><div style="padding: 3px 0 3px 0; width:' .$width . 'px; background-color: #efefef; border: 1px #cecece solid;">For directions, click on map marker(s)</div><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
+	$result = '<div align="'.$align.'"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
 			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="map-loading" style="position: relative; top: '.$toploading.'px !important;"></div></div>';
 
 			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="background: white; width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
