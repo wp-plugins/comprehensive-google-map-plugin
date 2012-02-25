@@ -49,6 +49,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'addmarkerlist' => '',
 		'kml' => '',
 		'markerdirections' => 'true',
+		'directionhint' => 'false',
 		'mapalign' => 'center',
 		'panoramiouid' => '',
 		'addmarkermashup' => 'false',
@@ -98,6 +99,18 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
 	}
 
+	/*
+		if ($language != 'default') {
+
+			$api = CGMP_GOOGLE_API_URL;
+			$api .= "&language=".$language;
+
+			wp_deregister_script( 'cgmp-google-map-api' );
+			wp_register_script('cgmp-google-map-api', $api, array('jquery'), false);
+    		wp_enqueue_script('cgmp-google-map-api');
+		}
+ */
+
 	$map_settings = array();
 	$map_settings['id'] = $id;
 	$map_settings['zoom'] = $zoom;
@@ -117,20 +130,15 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	$map_settings['showtraffic'] = $showtraffic;
 	$map_settings['showpanoramio'] = $showpanoramio;
 	$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
-	$map_json = json_encode($map_settings);
-	cgmp_map_data_injector($map_json);
+
+	global $global_all_map_json_data;
+	
+	$global_all_map_json_data[$id]  = json_encode($map_settings);
+	cgmp_map_data_injector();
 
 	
 	$result = '';
-	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
-	/*$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
-	$result .= cgmp_draw_map_marker_v2($id, $addmarkerlist, $addmarkermashup, $addmarkermashupbubble, $kml);
-	$result .= cgmp_draw_map_bikepath($id, $showbike);
-	$result .= cgmp_draw_map_traffic($id, $showtraffic);
-	$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
-	$result .= cgmp_draw_kml($id, $kml);
-	$result .= cgmp_end_map_init();
-	 */
+	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
 	return $result;
 }
 endif;
