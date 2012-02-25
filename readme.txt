@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.13
+Stable tag: 6.0.14
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -92,11 +92,18 @@ Just click once somewhere on the map
 
 == Changelog ==
 
+= 6.0.14 =
+* Enhancement: Forcing map data JSON objects to be written into the footer area  
+* Enhancement: Added config option to display direction hint above the map. ATM its in English, sorry :( Localisation will come soon!
+* Enhancement: Refined user error dialog messages
+
 = 6.0.13 =
-* Reverted 6.0.12 , sorry!!
+* Reverted 6.0.12 -  sorry for the inconvenience 
 
 = 6.0.12 =
-* Some cool stuff that were reverted until 6.0.14
+* Enhancement: Forcing map data JSON objects to be written into the footer area  
+* Enhancement: Added config option to display direction hint above the map. ATM its in English, sorry :( Localisation will come soon!
+* Enhancement: Refined user error dialog messages
 
 = 6.0.11 =
 * Enhancement: User informative error messages around KML functionality 

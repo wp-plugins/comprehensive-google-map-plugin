@@ -102,6 +102,11 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
 
 		$template_values["LABEL_MAPALIGN"] = "<b>Alignment</b>";
 		$template_values["SELECT_MAPALIGN"] = "Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER. Whats actually aligned is the placeholder DIV HTML element which wraps the generated map.";
+
+		$template_values["LABEL_DIRECTIONHINT"] = "<b>Direction&nbsp;Hint</b>";
+		$template_values["SELECT_DIRECTIONHINT"] = "Hint message displayed above the map, telling users if they want to get directions, they should click on map markers. ATM its in English, sorry :( Localization will come soon!";
+
+
 		$template_values["LABEL_PANORAMIOUID"] = "<b>User&nbsp;ID&nbsp;(Opt.)</b>";
 		$template_values["INPUT_PANORAMIOUID"] = "If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID";
 
