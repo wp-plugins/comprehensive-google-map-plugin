@@ -96,6 +96,7 @@ Just click once somewhere on the map
 * Reverted 6.0.12 , sorry!!
 
 = 6.0.12 =
+* Some cool stuff that were reverted until 6.0.14
 
 = 6.0.11 =
 * Enhancement: User informative error messages around KML functionality 
