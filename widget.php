@@ -63,7 +63,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$mapalign = empty($instance['mapalign']) ? 'center' : $instance['mapalign'];
 		$panoramiouid = empty($instance['panoramiouid']) ? '' : $instance['panoramiouid'];
-		$directionhint = empty($instance['directionhint']) ? 'false' : $instance['directionhint'];
 
 
 		$controlOpts = array();
@@ -89,21 +88,17 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 			$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
 		}
 
-/*
-		if ($language != 'default') {
-
-			$api = CGMP_GOOGLE_API_URL;
-			$api .= "&language=".$language;
-
-			wp_deregister_script( 'cgmp-google-map-api' );
-			wp_register_script('cgmp-google-map-api', $api, array('jquery'), false);
-    		wp_enqueue_script('cgmp-google-map-api');
-		}
- */
-
 		$result = '';
-		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
+		$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign);
 		echo $result;
+
+		//$result .= cgmp_begin_map_init_v2($id, $zoom, $maptype, $bubbleautopan, $controlOpts);
+		//$result .= cgmp_draw_map_marker_v2($id, $hiddenmarkers, $addmarkermashup, $geomashupbubble, $kml);
+		//$result .= cgmp_draw_map_bikepath($id, $showbike);
+		//$result .= cgmp_draw_map_traffic($id, $showtraffic);
+		//$result .= cgmp_draw_panoramio($id, $showpanoramio, $panoramiouid);
+		//$result .= cgmp_draw_kml($id, $kml);
+		//$result .= cgmp_end_map_init();
 
 		$map_settings = array();
 		$map_settings['id'] = $id;
@@ -123,12 +118,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_settings['showbike'] = $showbike;
 		$map_settings['showtraffic'] = $showtraffic;
 		$map_settings['showpanoramio'] = $showpanoramio;
-		$map_settings['directionhint'] = $directionhint;
 		$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
-
-		global $global_all_map_json_data;
-		$global_all_map_json_data[$id]  = json_encode($map_settings);
-		cgmp_map_data_injector();
+		$map_json = json_encode($map_settings);
+		cgmp_map_data_injector($map_json);
 
 		echo $after_widget;
 
@@ -166,8 +158,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$instance['markerdirections'] = strip_tags($new_instance['markerdirections']);
 		$instance['mapalign'] = strip_tags($new_instance['mapalign']);
 		$instance['panoramiouid'] = strip_tags($new_instance['panoramiouid']);
-		$instance['directionhint'] = strip_tags($new_instance['directionhint']);
-
 
 		
 		return $instance;
@@ -182,7 +172,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
-		$languages = array("Default" => "default", "Arabic" => "ar", "Basque" => "eu", "Bulgarian" => "bg", "Bengali" => "bn", "Catalan" => "ca", "Czech" => "cs", "Danish" => "da", "English" => "en", "German" => "de", "Greek" => "el", "Spanish" => "es", "Farsi" => "fa", "Finnish" => "fi", "Filipino" => "fil", "French" => "fr", "Galician" => "gl", "Gujarati" => "gu", "Hindi" => "hi", "Croatian" => "hr", "Hungarian" => "hu", "Indonesian" => "id", "Italian" => "it", "Hebrew" => "iw", "Japanese" => "ja", "Kannada" => "kn", "Korean" => "ko", "Lithuanian" => "lt", "Latvian" => "lv", "Malayalam" => "ml", "Marathi" => "mr", "Dutch" => "nl", "Norwegian" => "no", "Oriya" => "or", "Polish" => "pl", "Portuguese" => "pt", "Romanian" => "ro", "Russian" => "ru", "Slovak" => "sk", "Slovenian" => "sl", "Serbian" => "sr", "Swedish" => "sv", "Tagalog" => "tl", "Tamil" => "ta", "Telugu" => "te", "Thai" => "th", "Turkish" => "tr", "Ukrainian" => "uk", "Vietnamese" => "vi", "Chinese (simpl)" => "zh-CN", "Chinese (tradi)" => "zh-TW");
 
 
 		$title = isset($instance['title']) ? esc_attr($instance['title']) : 'Google Map';
@@ -216,7 +205,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$markerdirections = !empty($instance['markerdirections']) ? esc_attr($instance['markerdirections']) : 'true';
 		$mapalign = !empty($instance['mapalign']) ? esc_attr($instance['mapalign']) : 'center';
 		$panoramiouid = !empty($instance['panoramiouid']) ? esc_attr($instance['panoramiouid']) : '';
-		$directionhint = !empty($instance['directionhint']) ? esc_attr($instance['directionhint']) : 'false';
 
 
 		$hiddenmarkers = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $hiddenmarkers);
@@ -257,12 +245,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$v = "maptype";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Map type")); 
 		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $maptype, "options" => $types)); 
-
-
-		$v = "directionhint";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Directions Hint")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $directionhint, "options" => $bools3)); 
-
 
 
 		$v = "showmarker";
@@ -381,6 +363,16 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $panoramiouid, "class" => "widefat", "style" => "width: 85px !important;"));
 
 		
+
+
+
+		/*
+			$id = $attr['id'];
+		$name = $attr['name'];
+		$value = $attr['value'];
+		$class = $attr['class'];
+		$style = $attr['style'];
+		*/
 
 		$template_values = cgmp_build_template_values($settings);
 

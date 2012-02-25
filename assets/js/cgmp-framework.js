@@ -806,7 +806,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
             		msg += "\t" + (1 + index) + ". " + addy + "\n";
             	});
 
-				alert("ATTENTION!\n\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
+				alert("ATTENTION!\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
 			}
         	badAddresses = [];
 		}
@@ -1017,7 +1017,7 @@ jQueryCgmp(document).ready(function() {
 			alert("ATTENTION!" +
 					"\n\nDear blog/website owner,\nIt looks like Google map API could not be reached. " + 
 					"Map generation was aborted!" + 
-					"\n\nPlease check that Google API script was loaded in the HTML source of your web page");
+					"\n\nPlease check that Google API script was loaded in the HEAD section of your web page");
 
     		Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
     		return false;
@@ -1059,9 +1059,7 @@ jQueryCgmp(document).ready(function() {
 			if (!isBuildAddressMarkersCalled) {
     			alert("ATTENTION!" +
 					"\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!" +
-					"\n\nPlease check the following when adding marker locations: " +
-					"\n[a] \tIn the shortcode builder, did you click the \"Add Marker\" button before clicking \"Send to Editor\"?" +
-					"\n[b] \tIn the widget, did you click the \"Add Marker\" button before clicking \"Save\"?" +
+					"\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?" +
 					"\n\nPlease revisit and reconfigure your widget or shortcode configuration." +
 					"\n\nThe map requires at least one marker location to be added..");
     		}

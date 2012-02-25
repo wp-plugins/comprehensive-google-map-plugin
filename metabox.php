@@ -39,9 +39,6 @@ function cgmp_render_shortcode_builder_form() {
 		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
 
-		$languages = array("Default" => "default", "Arabic" => "ar", "Basque" => "eu", "Bulgarian" => "bg", "Bengali" => "bn", "Catalan" => "ca", "Czech" => "cs", "Danish" => "da", "English" => "en", "German" => "de", "Greek" => "el", "Spanish" => "es", "Farsi" => "fa", "Finnish" => "fi", "Filipino" => "fil", "French" => "fr", "Galician" => "gl", "Gujarati" => "gu", "Hindi" => "hi", "Croatian" => "hr", "Hungarian" => "hu", "Indonesian" => "id", "Italian" => "it", "Hebrew" => "iw", "Japanese" => "ja", "Kannada" => "kn", "Korean" => "ko", "Lithuanian" => "lt", "Latvian" => "lv", "Malayalam" => "ml", "Marathi" => "mr", "Dutch" => "nl", "Norwegian" => "no", "Oriya" => "or", "Polish" => "pl", "Portuguese" => "pt", "Romanian" => "ro", "Russian" => "ru", "Slovak" => "sk", "Slovenian" => "sl", "Serbian" => "sr", "Swedish" => "sv", "Tagalog" => "tl", "Tamil" => "ta", "Telugu" => "te", "Thai" => "th", "Turkish" => "tr", "Ukrainian" => "uk", "Vietnamese" => "vi", "Chinese (simpl)" => "zh-CN", "Chinese (tradi)" => "zh-TW");
-
-
 		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
 
 		$v = "width";
@@ -67,11 +64,8 @@ function cgmp_render_shortcode_builder_form() {
 
 		$v = "maptype";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map type")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $types));
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $types)); 
 
-		$v = "directionhint";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Direction Hint")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
 
 		$v = "showmarker";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Marker")); 

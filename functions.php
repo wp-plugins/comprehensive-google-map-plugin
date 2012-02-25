@@ -17,17 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
 if ( !function_exists('cgmp_draw_map_placeholder') ):
-		function cgmp_draw_map_placeholder($id, $width, $height, $align, $hint) {
+		function cgmp_draw_map_placeholder($id, $width, $height, $align) {
 
-				$toploading = ceil($height / 2) - 50;
+			$toploading = ceil($height / 2) - 50;
 
-				$hintdiv = "";
-
-				if ($hint == "true") {
-					$hintdiv = "<div style='padding: 3px 0 3px 0; width:".$width."px; background-color: #efefef; border: 1px #cecece solid; font-size:12px;'><strong>Click on map markers to get directions</strong></div>";
-				}
-
-	$result = '<div align="'.$align.'">'.$hintdiv.'<div class="google-map-placeholder" id="' .$id . '" style="width:' . 
+	$result = '<div align="'.$align.'"><div class="google-map-placeholder" id="' .$id . '" style="width:' . 
 			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="map-loading" style="position: relative; top: '.$toploading.'px !important;"></div></div>';
 
 			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="background: white; width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
@@ -116,40 +110,22 @@ endif;
 
 
 if ( !function_exists('cgmp_map_data_injector') ):
-	function cgmp_map_data_injector() {
-		add_action('wp_footer', function() { cgmp_map_data_hook_function();  }, 15);
+	function cgmp_map_data_injector( $map_json ) {
+		cgmp_map_data_hook_function( $map_json );
+		//do_action('cgmp_map_data_injector_hook', $map_json);
+		//add_action('cgmp_map_data_injector_hook', 'cgmp_map_data_hook_function');
 	}
 endif;
 
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
-	function cgmp_map_data_hook_function() {
+	function cgmp_map_data_hook_function( $map_json ) {
 
-		//defined in comprehensive-google-map-plugin.php
-		global $global_all_map_json_data;
-
-		if (is_array($global_all_map_json_data) && sizeof($global_all_map_json_data) > 0) {
-
-				echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
-				echo "/* <![CDATA[ */".PHP_EOL;
-				echo "  var notified = false;".PHP_EOL;
-				foreach($global_all_map_json_data as $mapId => $map_json) {
-
-						if (isset($global_all_map_json_data[$mapId])) {
-						echo "  if (typeof CGMPGlobal != 'undefined') {".PHP_EOL;
-						echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
-						echo "	}".PHP_EOL;
-						unset($global_all_map_json_data[$mapId]);
-					}
-				}
-				echo " if (typeof CGMPGlobal == 'undefined' && !notified) { ".PHP_EOL;
-				echo "     notified = true;".PHP_EOL;
-				echo "     alert('ATTENTION!\\n\\nSomething went wrong during Comprehensive Google Map activation,\\nPlease contact the plugin author ASAP!');".PHP_EOL;
-				echo " }".PHP_EOL;
-
-				echo "/* ]]> */".PHP_EOL;
-				echo "</script>".PHP_EOL;
-		}
+		echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
+		echo "/* <![CDATA[ */".PHP_EOL;
+		echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
+		echo "/* ]]> */".PHP_EOL;
+		echo "</script>".PHP_EOL;
 
 	}
 endif;
