@@ -521,7 +521,6 @@ img {
 }
 
 /** Override styles */
-
 .google-map-placeholder img {
     max-width: none !important;
     max-height: none !important;
@@ -530,6 +529,11 @@ img {
 	margin: 0px !important;
     visibility: inherit !important;
 }
+
+.google-map-placeholder div {
+    overflow: none !important;
+}
+/** Override styles */
 
 .google-map-placeholder .bubble-content h4 {
     text-align: left !important;

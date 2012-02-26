@@ -256,7 +256,7 @@ jQueryCgmp.LayerBuilder = function (map) {
 					}
 
 			if (msg != '') {
-    			alert("ATTENTION!" +
+    			alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
 					"\n\nDear blog/website owner,\nGoogle returned the following error when trying to load KML file:" +
 					"\n\n" + msg + " (" + kmlStatus + ")");
 
@@ -806,7 +806,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
             		msg += "\t" + (1 + index) + ". " + addy + "\n";
             	});
 
-				alert("ATTENTION!\n\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
+				alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
 			}
         	badAddresses = [];
 		}
@@ -860,7 +860,7 @@ jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
 
             var addressPoint = results[0].geometry.location;
 			
-			element.address = results[0].formatted_address; /* + "<br />" + buildLatLongBubbleInfo(element, addressPoint); */
+			//element.address = results[0].formatted_address; /* + "<br />" + buildLatLongBubbleInfo(element, addressPoint); */
             instrumentMarker(addressPoint, element);
             timeout = setTimeout(function() { queryGeocoderService(); }, 330);
         } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -1014,12 +1014,20 @@ jQueryCgmp(document).ready(function() {
 
 
 		if (typeof google == "undefined" || !google) {
-			alert("ATTENTION!" +
+			alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
 					"\n\nDear blog/website owner,\nIt looks like Google map API could not be reached. " + 
 					"Map generation was aborted!" + 
 					"\n\nPlease check that Google API script was loaded in the HTML source of your web page");
 
     		Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
+    		return false;
+		} else if (typeof GMap2 != "undefined" && GMap2) {
+			alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
+					"\n\nDear blog/website owner,\nIt looks like your webpage has reference to the older Google API v2, in addition to the API v3 used by Comprehensive Google Map! " + 
+					"An example of plugin using the older API v2, can be 'jquery.gmap plugin'. " + 
+					"\n\nPlease disable conflicting plugin(s). In the meanwhile, map generation is aborted!");
+
+    		Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
     		return false;
 		}
 
@@ -1057,7 +1065,7 @@ jQueryCgmp(document).ready(function() {
 
 			var isBuildAddressMarkersCalled = orc.isBuildAddressMarkersCalled();
 			if (!isBuildAddressMarkersCalled) {
-    			alert("ATTENTION!" +
+    			alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
 					"\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!" +
 					"\n\nPlease check the following when adding marker locations: " +
 					"\n[a] \tIn the shortcode builder, did you click the \"Add Marker\" button before clicking \"Send to Editor\"?" +

@@ -144,7 +144,7 @@ if ( !function_exists('cgmp_map_data_hook_function') ):
 				}
 				echo " if (typeof CGMPGlobal == 'undefined' && !notified) { ".PHP_EOL;
 				echo "     notified = true;".PHP_EOL;
-				echo '     alert("ATTENTION!\n\nSomething went wrong during Comprehensive Google Map activation,\nPlease contact the plugin author ASAP!");'.PHP_EOL;
+				echo '     alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nSomething went wrong during Comprehensive Google Map activation,\nPlease contact the plugin author ASAP!");'.PHP_EOL;
 				echo " }".PHP_EOL;
 
 				echo "/* ]]> */".PHP_EOL;
@@ -226,86 +226,6 @@ if ( !function_exists('update_markerlist_from_legacy_locations') ):
 	}
 endif;
 
-if ( !function_exists('cgmp_begin_map_init_v2') ):
-	function cgmp_begin_map_init_v2($id, $zoom, $type, $bubbleAutoPan, $controlOpts) {
-		$result =  '<script type="text/javascript">'.PHP_EOL;
-		//$result .= '    jQueryCgmp(document).ready(function() {'.PHP_EOL;
-		//$result .= '    if (typeof google == "undefined") { alert("ATTENTION!\n\nDear user, the Google API could not be reached! Aborting map generation..");  } '.PHP_EOL;
-		$result .= '    var map_'.$id.' = new google.maps.Map(document.getElementById("'.$id.'"));'.PHP_EOL;
-		$result .= '    var orc_'.$id.' = new jQueryCgmp.GoogleMapOrchestrator(map_'.$id.', {bubbleAutoPan: "'.$bubbleAutoPan.'", zoom : '.$zoom.', mapType: google.maps.MapTypeId.'.$type.'});'.PHP_EOL;
-		$result	.= '    orcHolder.push({mapId: "'.$id.'", orchestrator: orc_'.$id.'});'.PHP_EOL;
-		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['m_aptypecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);'.PHP_EOL;
-        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['pancontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);'.PHP_EOL;
-        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['z_oomcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);'.PHP_EOL;
-		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['scalecontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);'.PHP_EOL;
-		$result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['scrollwheelcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL);'.PHP_EOL;
-        $result .= '    orc_'.$id.'.switchMapControl('.$controlOpts['streetviewcontrol'].', jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);'.PHP_EOL;
-
-		return $result;
-	}
-endif;
-
-
-if ( !function_exists('cgmp_draw_map_marker_v2') ):
-	function cgmp_draw_map_marker_v2($id, $extramarkers, $addmarkermashup, $geomarkerbubble, $kml) {
-
-		$result = "";
-
-		if ((!isset($kml) || $kml == "")) {
-
-			if (isset($extramarkers) && $extramarkers != '') {
-				$result .= '    orc_'.$id.'.buildAddressMarkers(\''.$extramarkers.'\', "'.$addmarkermashup.'", "'.$geomarkerbubble.'");'.PHP_EOL;
-			}
-			
-			$result .= '    var isBuildAddressMarkersCalled = orc_'.$id.'.isBuildAddressMarkersCalled();'.PHP_EOL;
-			$result .= '    if (!isBuildAddressMarkersCalled) {'.PHP_EOL;
-			$result .= '    	alert("ATTENTION!\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!\n\nWhen adding marker locations in the widget or shortcode builder,\ndid you clicked the \"Add Marker\" button?\n\nPlease revisit and reconfigure your widget or shortcode configuration.\n\nThe map requires at least one marker location to be added..");'.PHP_EOL;
-			$result .= '    }'.PHP_EOL;
-		}
-
-		return $result;
-	}
-endif;
-
-
-if ( !function_exists('cgmp_draw_map_bikepath') ):
-	function cgmp_draw_map_bikepath($id, $showbikepath) {
-		$result = '';
-		if (isset($showbikepath) && strtolower(trim($showbikepath)) == 'true') {
-			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);'.PHP_EOL;
-		}
-		return $result;
-	}
-endif;
-
-if ( !function_exists('cgmp_draw_map_traffic') ):
-	function cgmp_draw_map_traffic($id, $showtraffic) {
-		$result = '';
-		if (isset($showtraffic) && strtolower(trim($showtraffic)) == 'true') {
-			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);'.PHP_EOL;
-		}
-		return $result;
-	}
-endif;
-
-
-if ( !function_exists('cgmp_draw_kml') ):
-	function cgmp_draw_kml($id, $kml) {
-		$result = '';
-		if (isset($kml) && $kml != "") {
-
-			$kml = strtolower(trim($kml));
-			$pos = strpos($kml, "http");
-
-			if ($pos !== false && $pos == "0") {
-				$kml = strip_tags($kml);
-				$kml = str_replace("&#038;", "&", $kml);
-				$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, "'.$kml.'");'.PHP_EOL;
-			}
-		}
-		return $result;
-	}
-endif;
 
 
 if ( !function_exists('cgmp_clean_kml') ):
@@ -313,13 +233,14 @@ if ( !function_exists('cgmp_clean_kml') ):
 		$result = '';
 		if (isset($kml) && $kml != "") {
 
-			$kml = strtolower(trim($kml));
-			$pos = strpos($kml, "http");
+			$lowerkml = strtolower(trim($kml));
+			$pos = strpos($lowerkml, "http");
 
 			if ($pos !== false && $pos == "0") {
 				$kml = strip_tags($kml);
 				$kml = str_replace("&#038;", "&", $kml);
-				$result = $kml;
+				$kml = str_replace("&amp;", "&", $kml);
+				$result = trim($kml);
 			}
 		}
 		return $result;
@@ -340,30 +261,6 @@ if ( !function_exists('cgmp_clean_panoramiouid') ):
 endif;
 
 
-
-if ( !function_exists('cgmp_draw_panoramio') ):
-	function cgmp_draw_panoramio($id, $showpanoramio, $userId) {
-		$result = '';
-		if (isset($showpanoramio) && strtolower(trim($showpanoramio)) == 'true') {
-			if (isset($userId) && $userId != "") {
-				$userId = strtolower(trim($userId));
-				$userId = strip_tags($userId);
-			}
-			$result = 'orc_'.$id.'.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, "'.$userId.'");'.PHP_EOL;
-		}
-		return $result;
-	}
-endif;
-
-
-
-if ( !function_exists('cgmp_end_map_init') ):
-	function cgmp_end_map_init() {
-			//$result =  '});';
-			$result =  '</script>';
-		return 	$result;
-	}
-endif;
 
 
 if ( !function_exists('cgmp_create_html_select') ):
