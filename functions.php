@@ -116,22 +116,37 @@ endif;
 
 
 if ( !function_exists('cgmp_map_data_injector') ):
-	function cgmp_map_data_injector() {
-		add_action('wp_footer', 'cgmp_map_data_hook_function', 15);
+	function cgmp_map_data_injector($map_json) {
+			//add_action('wp_footer', 'cgmp_map_data_hook_function', 15);
+			cgmp_map_data_hook_function( $map_json );
 	}
 endif;
 
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
-	function cgmp_map_data_hook_function() {
+	function cgmp_map_data_hook_function( $map_json ) {
 
-		//defined in comprehensive-google-map-plugin.php
+			echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
+			echo "//<![CDATA[".PHP_EOL;
+			echo "  if (typeof CGMPGlobal != 'undefined' && CGMPGlobal && CGMPGlobal.maps != null) {".PHP_EOL;
+			echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
+			echo "	}".PHP_EOL;
+			echo "//]]>".PHP_EOL;
+			echo "</script>".PHP_EOL;
+	}
+endif;
+
+
+/*
+if ( !function_exists('cgmp_map_data_hook_function') ):
+	function cgmp_map_data_hook_function($map_json) {
+
 		global $global_all_map_json_data;
 
 		if (is_array($global_all_map_json_data) && sizeof($global_all_map_json_data) > 0) {
 
 				echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
-				echo "/* <![CDATA[ */".PHP_EOL;
+				echo "//<![CDATA[ ".PHP_EOL;
 				echo "  var notified = false;".PHP_EOL;
 				foreach($global_all_map_json_data as $mapId => $map_json) {
 
@@ -147,13 +162,13 @@ if ( !function_exists('cgmp_map_data_hook_function') ):
 				echo '     alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nSomething went wrong during Comprehensive Google Map activation,\nPlease contact the plugin author ASAP!");'.PHP_EOL;
 				echo " }".PHP_EOL;
 
-				echo "/* ]]> */".PHP_EOL;
+				echo "// ]]> ".PHP_EOL;
 				echo "</script>".PHP_EOL;
 		}
 
 	}
 endif;
-
+ */
 
 if ( !function_exists('is_map_shortcode_present') ):
 	function is_map_shortcode_present($posts)
@@ -567,9 +582,6 @@ endif;
 
 
 
-
-
-
 if ( !function_exists('cgmp_cleanup_markers_from_published_posts') ):
 
 		function cgmp_cleanup_markers_from_published_posts()  {
@@ -578,7 +590,22 @@ if ( !function_exists('cgmp_cleanup_markers_from_published_posts') ):
 		}
 endif;
 
+if ( !function_exists('cgmp_plugin_row_meta') ):
+	function cgmp_plugin_row_meta($links, $file) {
+		$plugin =  plugin_basename(CGMP_PLUGIN_BOOTSTRAP);
 
+		if ($file == $plugin) {
+
+			$links = array_merge( $links,
+				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Documentation'), 'cgmp' ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('FAQ'), 'cgmp' ) ),
+				array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">' . __('Donate') . '</a>' )
+			);
+		}
+		return $links;
+}
+
+endif;
 
 
 

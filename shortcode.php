@@ -131,10 +131,11 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	$map_settings['showpanoramio'] = $showpanoramio;
 	$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
 
-	global $global_all_map_json_data;
+	//global $global_all_map_json_data;
 	
-	$global_all_map_json_data[$id]  = json_encode($map_settings);
-	cgmp_map_data_injector();
+	//$global_all_map_json_data[$id]  = json_encode($map_settings);
+	//cgmp_map_data_injector();
+	cgmp_map_data_injector(json_encode($map_settings));
 
 	
 	$result = '';

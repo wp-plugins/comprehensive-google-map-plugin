@@ -126,9 +126,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_settings['directionhint'] = $directionhint;
 		$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
 
-		global $global_all_map_json_data;
-		$global_all_map_json_data[$id]  = json_encode($map_settings);
-		cgmp_map_data_injector();
+		//global $global_all_map_json_data;
+		//$global_all_map_json_data[$id]  = json_encode($map_settings);
+		cgmp_map_data_injector(json_encode($map_settings));
 
 		echo $after_widget;
 
