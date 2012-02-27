@@ -115,6 +115,14 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 endif;
 
 
+if ( !function_exists('cgmp_load_plugin_textdomain') ):
+	function cgmp_load_plugin_textdomain() {
+		load_plugin_textdomain(CGMP_NAME, false, dirname(CGMP_PLUGIN_BOOTSTRAP) . '/languages/');
+	}
+endif;
+
+
+
 if ( !function_exists('cgmp_map_data_injector') ):
 	function cgmp_map_data_injector($map_json) {
 			//add_action('wp_footer', 'cgmp_map_data_hook_function', 15);
