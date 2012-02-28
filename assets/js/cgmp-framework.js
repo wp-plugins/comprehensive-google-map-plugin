@@ -14,18 +14,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+CGMPGlobal.maps = [];
 var jQueryCgmp = jQuery.noConflict();
 jQueryCgmp.getScript("http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false&async=2&callback=kickIn", function () {});
 
 function kickIn() {
 
-	(function () {
-		jQueryCgmp.GoogleMapOrchestrator = function (map, options) {
+	(function ($) {
+
+
+		GoogleMapOrchestrator = function (map, options) {
 			
-			jQueryCgmp.extend(this, jQueryCgmp.GoogleMapOrchestrator.defaultOptions);
-			jQueryCgmp.GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
-			jQueryCgmp.GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
-			jQueryCgmp.GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4, SCROLLWHEEL: 5};
+			$.extend(this, GoogleMapOrchestrator.defaultOptions);
+			GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
+			GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
+			GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4, SCROLLWHEEL: 5};
 			
 			var options = options || {};
 			var placeHolder = options.placeHolder || "map";
@@ -50,8 +53,8 @@ function kickIn() {
 					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
 			});
 
-			var layerBuilder = new jQueryCgmp.LayerBuilder(googleMap);
-			var builder = new jQueryCgmp.MarkerBuilder(googleMap, bubbleAutoPan);
+			var layerBuilder = new LayerBuilder(googleMap);
+			var builder = new MarkerBuilder(googleMap, bubbleAutoPan);
 
 			this.isBuildAddressMarkersCalled = function() {
 				return builder.isBuildAddressMarkersCalled();
@@ -61,36 +64,21 @@ function kickIn() {
 				builder.shiftMapToOriginalZoomAndLocation();
 			});
 
-			function sanityCheck() {
-				if (typeof googleMap == "undefined" || !googleMap || googleMap == null ) {
-					Logger.fatal("We do not have instance of the Google API object. Aborting..");
-					return false;
-				}
-				return true;
-			}
-			
-				
 			this.buildAddressMarkers = function (additionalMarkerLocations, isGeoMashap, isBubbleContainsPostLink) {
-				if (!sanityCheck()) {
-					return false;
-				}
 				builder.buildAddressMarkers(additionalMarkerLocations, isGeoMashap, isBubbleContainsPostLink);
 			}
 			
 			this.buildLayer = function (type, kml, panoramiouid) {
-				if (!sanityCheck()) {
-					return false;
-				}
 				switch (type) {
-					case jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC:
+					case GoogleMapOrchestrator.LayerType.TRAFFIC:
 						layerBuilder.buildTrafficLayer();
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE:
+					case GoogleMapOrchestrator.LayerType.BIKE:
 						layerBuilder.buildBikeLayer();
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO:
+					case GoogleMapOrchestrator.LayerType.PANORAMIO:
 						if (panoramiouid != null && panoramiouid != "") {
 							Logger.info("Going to filter Panoramio images by " + panoramiouid);
 							layerBuilder.buildPanoramioLayer(panoramiouid);
@@ -99,7 +87,7 @@ function kickIn() {
 						}
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.LayerType.KML:
+					case GoogleMapOrchestrator.LayerType.KML:
 						if (kml == null || kml == "") {
 							Logger.error("KML URL must be passed for the KML Layer. Aborting..");
 							return false;
@@ -114,33 +102,30 @@ function kickIn() {
 			
 			this.switchMapControl = function(isOn, mapControlType) {
 
-				if (!sanityCheck()) {
-					return false;
-				}
-				
+							
 				switch (mapControlType) {
 
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL:
+					case GoogleMapOrchestrator.ControlType.SCROLLWHEEL:
 						googleMap.setOptions({scrollwheel: (isOn == "false" ? false : true) });
 					break;
 
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE:
+					case GoogleMapOrchestrator.ControlType.MAPTYPE:
 						googleMap.setOptions({mapTypeControl: (isOn == "false" ? false : true) });
 					break;
 				
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN:
+					case GoogleMapOrchestrator.ControlType.PAN:
 						googleMap.setOptions({panControl: (isOn == "false" ? false : true) });
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM:
+					case GoogleMapOrchestrator.ControlType.ZOOM:
 						googleMap.setOptions({zoomControl: (isOn == "false" ? false : true) });
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE:
+					case GoogleMapOrchestrator.ControlType.SCALE:
 						googleMap.setOptions({scaleControl: (isOn == "false" ? false : true) });
 					break;
 					
-					case jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW:
+					case GoogleMapOrchestrator.ControlType.STREETVIEW:
 						googleMap.setOptions({streetViewControl: (isOn == "false" ? false : true) });
 					break;
 					
@@ -150,23 +135,19 @@ function kickIn() {
 			}
 		}
 
-		jQueryCgmp.Utils = function () {
-			jQueryCgmp.extend(this, jQueryCgmp.Utils.defaultOptions);
-
-			var addressRegex = /^([a-zA-Z0-9?(/\-.,\s{1,})]+)$/;
-			var numericRegex = /^([0-9?(\-.,\s{1,})]+)$/;
-
-			this.isNumeric = function (subject) {
+		Utils = {
+			isNumeric: function isNumeric(subject) {
+				var numericRegex = /^([0-9?(\-.,\s{1,})]+)$/;
 				return numericRegex.test(subject);
-			}
-
-			this.isAlphaNumeric = function (subject) {
+			},
+			isAlphaNumeric: function isAlphaNumeric(subject) {
+			    var addressRegex = /^([a-zA-Z0-9?(/\-.,\s{1,})]+)$/;
 				return addressRegex.test(subject);
 			}
 		}
 
-		jQueryCgmp.LayerBuilder = function (map) {
-			jQueryCgmp.extend(this, jQueryCgmp.LayerBuilder.defaultOptions);
+		LayerBuilder = function (map) {
+			$.extend(this, LayerBuilder.defaultOptions);
 
 			var googleMap = map;
 			
@@ -268,8 +249,8 @@ function kickIn() {
 
 		}
 
-		jQueryCgmp.MarkerBuilder = function (map, bubbleAutoPan) {
-			jQueryCgmp.extend(this, jQueryCgmp.MarkerBuilder.defaultOptions);
+		MarkerBuilder = function (map, bubbleAutoPan) {
+			$.extend(this, MarkerBuilder.defaultOptions);
 
 			var markers = [];
 			var storedAddresses = [];
@@ -284,7 +265,6 @@ function kickIn() {
 			var originalMapCenter = null;
 			var updatedZoom = 5;
 			var mapDivId = googleMap.getDiv().id;
-			var utils = new jQueryCgmp.Utils();
 			var geocoder = new google.maps.Geocoder();
 			var bounds = new google.maps.LatLngBounds();
 			var infowindow = new google.maps.InfoWindow();
@@ -312,27 +292,27 @@ function kickIn() {
 			}
 
 			function resetDirectionAddressFields(dirDivId)  {
-				jQueryCgmp(dirDivId + ' input#a_address').val('');
-				jQueryCgmp(dirDivId + ' input#b_address').val('');
-				jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
-				jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
+				$(dirDivId + ' input#a_address').val('');
+				$(dirDivId + ' input#b_address').val('');
+				$(dirDivId + ' input#a_address').removeClass('d_error');
+				$(dirDivId + ' input#b_address').removeClass('d_error');
 			}
 
 			function attachEventlistener(marker, markersElement) {
 
 				var localBubbleData = buildBubble(marker.content, markersElement);
 				var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
-				var targetDiv = jQueryCgmp("div#rendered-directions-placeholder-" + mapDivId);
+				var targetDiv = $("div#rendered-directions-placeholder-" + mapDivId);
 
 				google.maps.event.addListener(marker, 'click', function () {
 
 					resetDirectionAddressFields(dirDivId);
 
-					jQueryCgmp(dirDivId).fadeOut();
+					$(dirDivId).fadeOut();
 					directionsRenderer.setMap(null);
 					targetDiv.html("");
 					targetDiv.hide();
-					jQueryCgmp(dirDivId + ' button#print_sub').hide();
+					$(dirDivId + ' button#print_sub').hide();
 
 					infowindow.setContent(localBubbleData.bubbleContent);
 					infowindow.setOptions({disableAutoPan: bubbleAutoPan == "true" ? false : true });
@@ -353,35 +333,35 @@ function kickIn() {
 				*/
 				addy = addy.replace("Lat/Long: ", "");
 
-				jQueryCgmp(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
+				$(parentInfoBubble + ' a.dirToHereTrigger').live("click", function() {
 					var thisId = this.id;
 					if (thisId == 'toHere-' + localBubbleData.bubbleHolderId) {
-						jQueryCgmp(dirDivId).fadeIn();
-						jQueryCgmp(dirDivId + ' input#a_address').val('');
-						jQueryCgmp(dirDivId + ' input#b_address').val(addy);
-						jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
+						$(dirDivId).fadeIn();
+						$(dirDivId + ' input#a_address').val('');
+						$(dirDivId + ' input#b_address').val(addy);
+						$(dirDivId + ' input#radio_miles').attr("checked", "checked");
 					}
 				});
 
-				jQueryCgmp(parentInfoBubble + ' a.dirFromHereTrigger').live("click", function() {
+				$(parentInfoBubble + ' a.dirFromHereTrigger').live("click", function() {
 					var thisId = this.id;
 					if (thisId == 'fromHere-' + localBubbleData.bubbleHolderId) {
-						jQueryCgmp(dirDivId).fadeIn();
-						jQueryCgmp(dirDivId + ' input#a_address').val(addy);
-						jQueryCgmp(dirDivId + ' input#b_address').val('');
-						jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
+						$(dirDivId).fadeIn();
+						$(dirDivId + ' input#a_address').val(addy);
+						$(dirDivId + ' input#b_address').val('');
+						$(dirDivId + ' input#radio_miles').attr("checked", "checked");
 					}
 				});
 
-				jQueryCgmp(dirDivId + ' div.d_close-wrapper').live("click", function(event) {
+				$(dirDivId + ' div.d_close-wrapper').live("click", function(event) {
 
 						resetDirectionAddressFields(dirDivId);
 
-						jQueryCgmp(this).parent().fadeOut();
+						$(this).parent().fadeOut();
 						directionsRenderer.setMap(null);
 						targetDiv.html("");
 						targetDiv.hide();
-						jQueryCgmp(dirDivId + ' button#print_sub').hide();
+						$(dirDivId + ' button#print_sub').hide();
 						resetMap();
 
 						return false;
@@ -393,7 +373,7 @@ function kickIn() {
 				streetViewService.getPanoramaByLocation(marker.position, 50, function (streetViewPanoramaData, status) {
 					if (status === google.maps.StreetViewStatus.OK) {
 						// ok
-							jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function() {
+							$('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function() {
 
 								var panoramaOptions = {
 										navigationControl: true,
@@ -418,7 +398,7 @@ function kickIn() {
 								google.maps.event.addListener(infowindow, 'closeclick', function() {
 
 									resetDirectionAddressFields(dirDivId);
-									jQueryCgmp(dirDivId).fadeOut();
+									$(dirDivId).fadeOut();
 
 									if (pano != null) {
 										pano.unbind("position");
@@ -432,7 +412,7 @@ function kickIn() {
 									if (pano != null) {
 										pano.unbind("position");
 										pano.setVisible(false);
-										jQueryCgmp('div#bubble-' + localBubbleData.bubbleHolderId).css("background", "none");
+										$('div#bubble-' + localBubbleData.bubbleHolderId).css("background", "none");
 									}
 
 									pano = null;
@@ -443,14 +423,14 @@ function kickIn() {
 					} else {
 						// no street view available in this range, or some error occurred
 						Logger.warn("There is not street view available for this marker location: " + marker.position + " status: " + status);
-						jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
+						$('a#trigger-' + localBubbleData.bubbleHolderId).live("click", function(e) {
 							e.preventDefault();
 						});
-						jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
+						$('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
 
 						google.maps.event.addListener(infowindow, 'domready', function () {
-							jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).removeAttr("href");
-							jQueryCgmp('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
+							$('a#trigger-' + localBubbleData.bubbleHolderId).removeAttr("href");
+							$('a#trigger-' + localBubbleData.bubbleHolderId).attr("style", "text-decoration: none !important; color: #ddd !important");
 						});
 					}
 				});
@@ -460,62 +440,62 @@ function kickIn() {
 			function bindDirectionControlsToEvents()  {
 
 				var dirDivId = 'div#direction-controls-placeholder-' + mapDivId;
-				var targetDiv = jQueryCgmp("div#rendered-directions-placeholder-" + mapDivId);
+				var targetDiv = $("div#rendered-directions-placeholder-" + mapDivId);
 
-				jQueryCgmp(dirDivId + ' a#reverse-btn').live("click", function(e) {
+				$(dirDivId + ' a#reverse-btn').live("click", function(e) {
 
-						var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
-						var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
+						var old_a_addr = $(dirDivId + ' input#a_address').val();
+						var old_b_addr = $(dirDivId + ' input#b_address').val();
 
-						jQueryCgmp(dirDivId + ' input#a_address').val(old_b_addr);
-						jQueryCgmp(dirDivId + ' input#b_address').val(old_a_addr);
+						$(dirDivId + ' input#a_address').val(old_b_addr);
+						$(dirDivId + ' input#b_address').val(old_a_addr);
 						return false;
 				});
 
-				jQueryCgmp(dirDivId + ' a#d_options_show').live("click", function() {
-						jQueryCgmp(dirDivId + ' a#d_options_hide').show();
-						jQueryCgmp(dirDivId + ' a#d_options_show').hide();
-						jQueryCgmp(dirDivId + ' div#d_options').show();
+				$(dirDivId + ' a#d_options_show').live("click", function() {
+						$(dirDivId + ' a#d_options_hide').show();
+						$(dirDivId + ' a#d_options_show').hide();
+						$(dirDivId + ' div#d_options').show();
 						return false;
 				});
 
-				jQueryCgmp(dirDivId + ' a#d_options_hide').live("click", function() {
-						jQueryCgmp(dirDivId + ' a#d_options_hide').hide();
-						jQueryCgmp(dirDivId + ' a#d_options_show').show();
-						jQueryCgmp(dirDivId + ' div#d_options').hide();
-						jQueryCgmp(dirDivId + ' input#avoid_hway').removeAttr("checked");
-						jQueryCgmp(dirDivId + ' input#avoid_tolls').removeAttr("checked");
-						jQueryCgmp(dirDivId + ' input#radio_km').removeAttr("checked");
-						jQueryCgmp(dirDivId + ' input#radio_miles').attr("checked", "checked");
+				$(dirDivId + ' a#d_options_hide').live("click", function() {
+						$(dirDivId + ' a#d_options_hide').hide();
+						$(dirDivId + ' a#d_options_show').show();
+						$(dirDivId + ' div#d_options').hide();
+						$(dirDivId + ' input#avoid_hway').removeAttr("checked");
+						$(dirDivId + ' input#avoid_tolls').removeAttr("checked");
+						$(dirDivId + ' input#radio_km').removeAttr("checked");
+						$(dirDivId + ' input#radio_miles').attr("checked", "checked");
 						return false;
 				});
 		//
-				jQueryCgmp(dirDivId + ' button#d_sub').live("click", function() {
-						var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
-						var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
+				$(dirDivId + ' button#d_sub').live("click", function() {
+						var old_a_addr = $(dirDivId + ' input#a_address').val();
+						var old_b_addr = $(dirDivId + ' input#b_address').val();
 						var halt = false;
 						if (old_a_addr == null || old_a_addr == '') {
-							jQueryCgmp(dirDivId + ' input#a_address').addClass('d_error');
+							$(dirDivId + ' input#a_address').addClass('d_error');
 							halt = true;
 						}
 			
 						if (old_b_addr == null || old_b_addr == '') {
-							jQueryCgmp(dirDivId + ' input#b_address').addClass('d_error');
+							$(dirDivId + ' input#b_address').addClass('d_error');
 							halt = true;
 						}
 
 						if (!halt) {
 
-							jQueryCgmp(dirDivId + ' button#d_sub').attr('disabled', 'disabled').html("Please wait..");
+							$(dirDivId + ' button#d_sub').attr('disabled', 'disabled').html("Please wait..");
 							// Query direction service
 							var travelMode = google.maps.DirectionsTravelMode.DRIVING;
-							if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+							if ($(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 								travelMode = google.maps.DirectionsTravelMode.WALKING;
 							}
 
-							var is_avoid_hway = jQueryCgmp(dirDivId + ' input#avoid_hway').is(":checked");
-							var is_avoid_tolls = jQueryCgmp(dirDivId + ' input#avoid_tolls').is(":checked");
-							var is_miles = jQueryCgmp(dirDivId + ' input#radio_miles').is(":checked");
+							var is_avoid_hway = $(dirDivId + ' input#avoid_hway').is(":checked");
+							var is_avoid_tolls = $(dirDivId + ' input#avoid_tolls').is(":checked");
+							var is_miles = $(dirDivId + ' input#radio_miles').is(":checked");
 							var unitSystem = google.maps.DirectionsUnitSystem.METRIC;
 
 							var request = {
@@ -546,32 +526,32 @@ function kickIn() {
 									targetDiv.show();
 									directionsRenderer.setMap(googleMap);
 									directionsRenderer.setDirections(response);
-									jQueryCgmp(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
-									jQueryCgmp(dirDivId + ' button#print_sub').fadeIn();
+									$(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
+									$(dirDivId + ' button#print_sub').fadeIn();
 									infowindow.close();
 
 								} else {
 									Logger.error('Could not route directions from "' + old_a_addr + '" to "' + old_b_addr + '", got result from Google: ' + status);
 									targetDiv.html("<span style='font-size: 12px; font-weight: bold; color: red'>Could not route directions from<br />'" + old_a_addr + "' to<br />'" + old_b_addr + "'<br />Got result from Google: [" + status + "]</span>");
 
-									jQueryCgmp(dirDivId + ' button#print_sub').hide();
-									jQueryCgmp(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
+									$(dirDivId + ' button#print_sub').hide();
+									$(dirDivId + ' button#d_sub').removeAttr('disabled').html("Get directions");
 								}
 							});
 						}
 				});
 
-				jQueryCgmp(dirDivId + ' button#print_sub').live("click", function() {
-					var old_a_addr = jQueryCgmp(dirDivId + ' input#a_address').val();
-					var old_b_addr = jQueryCgmp(dirDivId + ' input#b_address').val();
+				$(dirDivId + ' button#print_sub').live("click", function() {
+					var old_a_addr = $(dirDivId + ' input#a_address').val();
+					var old_b_addr = $(dirDivId + ' input#b_address').val();
 
 					var dirflag = "d";
-					if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+					if ($(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 						dirflag = "w";
 					}
 
 					var url = "http://maps.google.com/?saddr=" + old_a_addr + "&daddr=" + old_b_addr + "&dirflg=" + dirflag + "&pw=2";
-					var is_miles = jQueryCgmp(dirDivId + ' input#radio_miles').is(":checked");
+					var is_miles = $(dirDivId + ' input#radio_miles').is(":checked");
 					if (is_miles) {
 						url += "&doflg=ptm";
 					}
@@ -580,42 +560,42 @@ function kickIn() {
 					return false;
 				});
 
-				jQueryCgmp(dirDivId + ' input#a_address').live("change", function() {
-					jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
+				$(dirDivId + ' input#a_address').live("change", function() {
+					$(dirDivId + ' input#a_address').removeClass('d_error');
 					return false;
 				});
 
-				jQueryCgmp(dirDivId + ' input#b_address').live("change", function() {
-					jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
+				$(dirDivId + ' input#b_address').live("change", function() {
+					$(dirDivId + ' input#b_address').removeClass('d_error');
 					return false;
 				});
 
-				jQueryCgmp(dirDivId + ' input#a_address').live("focus", function() {
-					jQueryCgmp(dirDivId + ' input#a_address').removeClass('d_error');
+				$(dirDivId + ' input#a_address').live("focus", function() {
+					$(dirDivId + ' input#a_address').removeClass('d_error');
 					return false;
 				});
 
-				jQueryCgmp(dirDivId + ' input#b_address').live("focus", function() {
-					jQueryCgmp(dirDivId + ' input#b_address').removeClass('d_error');
+				$(dirDivId + ' input#b_address').live("focus", function() {
+					$(dirDivId + ' input#b_address').removeClass('d_error');
 					return false;
 				});
 
-				jQueryCgmp(dirDivId + ' .kd-button').live("click", function() {
+				$(dirDivId + ' .kd-button').live("click", function() {
 					var thisId = this.id;
 
 					if (thisId == 'dir_d_btn') {
-						if (jQueryCgmp(dirDivId + ' a#dir_d_btn').hasClass('selected')) {
+						if ($(dirDivId + ' a#dir_d_btn').hasClass('selected')) {
 							Logger.warn("Driving travel mode is already selected");
 						} else {
-							jQueryCgmp(dirDivId + ' a#dir_d_btn').addClass('selected');
-							jQueryCgmp(dirDivId + ' a#dir_w_btn').removeClass('selected');
+							$(dirDivId + ' a#dir_d_btn').addClass('selected');
+							$(dirDivId + ' a#dir_w_btn').removeClass('selected');
 						}
 					} else 	if (thisId == 'dir_w_btn') {
-						if (jQueryCgmp(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
+						if ($(dirDivId + ' a#dir_w_btn').hasClass('selected')) {
 							Logger.warn("Walking travel mode is already selected");
 						} else {
-							jQueryCgmp(dirDivId + ' a#dir_w_btn').addClass('selected');
-							jQueryCgmp(dirDivId + ' a#dir_d_btn').removeClass('selected');
+							$(dirDivId + ' a#dir_w_btn').addClass('selected');
+							$(dirDivId + ' a#dir_d_btn').removeClass('selected');
 						}
 					}
 
@@ -672,14 +652,14 @@ function kickIn() {
 			function parseJsonStructure(json, infoBubbleContainPostLink)  {
 
 				var index = 1;
-				jQueryCgmp.each(json, function() {
+				$.each(json, function() {
 					Logger.info("Looping over JSON object:\n\tTitle: " + this.title + "\n\tAddy: " + this.addy + "\n\tLink: " + this.permalink + "\n\tExcerpt: " + this.excerpt);
 
 					var targetArr = this.addy.split(CGMPGlobal.sep);
 
-					if (utils.isNumeric(targetArr[0])) {
+					if (Utils.isNumeric(targetArr[0])) {
 						addGeoPoint(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
-					} else if (utils.isAlphaNumeric(targetArr[0])) {
+					} else if (Utils.isAlphaNumeric(targetArr[0])) {
 						storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
 					} else {
 						storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
@@ -693,9 +673,9 @@ function kickIn() {
 
 				 var targetArr = target.split(CGMPGlobal.sep);
 
-				 if (utils.isNumeric(targetArr[0])) {
+				 if (Utils.isNumeric(targetArr[0])) {
 					 addGeoPoint(targetArr[0], index, targetArr[1], '', '', '', false);
-				 } else if (utils.isAlphaNumeric(targetArr[0])) {
+				 } else if (Utils.isAlphaNumeric(targetArr[0])) {
 					 storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
 				 } else {
 					 storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
@@ -762,7 +742,7 @@ function kickIn() {
 				if (isGeoMashap == "true") {
 					//Logger.info("Got Geo mashup JSON: ");
 					additionalMarkerLocations = additionalMarkerLocations.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-					var json = jQueryCgmp.parseJSON(additionalMarkerLocations);
+					var json = $.parseJSON(additionalMarkerLocations);
 					//Logger.raw(json);
 
 					if (isBubbleContainsPostLink == "true") {
@@ -802,11 +782,11 @@ function kickIn() {
 
 					if (badAddresses.length > 0) {
 						var msg = "";
-						jQueryCgmp.each(badAddresses, function (index, addy) {
+						$.each(badAddresses, function (index, addy) {
 							msg += "\t" + (1 + index) + ". " + addy + "\n";
 						});
 
-						alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nGoogle could not match given address(es):\n\n" + msg + "\nConsider revising the address(es), alternatively use Google web to validate the address(es) ");
+						alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nGoogle found the following address(es) as NON-geographic and could not find them:\n\n" + msg + "\nConsider revising the address(es). Did you make a mistake when creating marker locations or did not provide a full geo-address? Alternatively use Google web to validate the address(es) ");
 					}
 					badAddresses = [];
 				}
@@ -815,7 +795,7 @@ function kickIn() {
 			function setBounds() {
 
 				if (markers.length > 1) {
-					jQueryCgmp.each(markers, function (index, marker) {
+					$.each(markers, function (index, marker) {
 						if (!bounds.contains(marker.position)) {
 							bounds.extend(marker.position);
 						}
@@ -899,12 +879,12 @@ function kickIn() {
 						var defaultMarkers = ['1-default.png', '2-default.png'];
 						var defaultPins = ['4-default.png', '5-default.png', '6-default.png', '7-default.png'];
 
-						if (jQueryCgmp.inArray(markerIcon, defaultMarkers) != -1) {
+						if ($.inArray(markerIcon, defaultMarkers) != -1) {
 							shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
 							new google.maps.Size(59, 32),
 							new google.maps.Point(0,0),
 							new google.maps.Point(16, 33));
-						} else 	if (jQueryCgmp.inArray(markerIcon, defaultPins) != -1) {
+						} else 	if ($.inArray(markerIcon, defaultPins) != -1) {
 							shadow = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/msmarker.shadow.png",
 							new google.maps.Size(59, 32),
 							new google.maps.Point(0,0),
@@ -941,8 +921,8 @@ function kickIn() {
 			}
 		}
 
-		jQueryCgmp.OrchestratorHub = function () {
-			jQueryCgmp.extend(this, jQueryCgmp.OrchestratorHub.defaultOptions);
+		OrchestratorHub = function () {
+			$.extend(this, OrchestratorHub.defaultOptions);
 
 			var orcs = [];
 			
@@ -956,7 +936,7 @@ function kickIn() {
 
 			this.getOrc = function(mapId) {
 				var found = {};
-				jQueryCgmp.map(jQueryCgmp(orcs), function(element) {
+				$.map($(orcs), function(element) {
 					if (element.mapId == mapId) {
 						found = element.orchestrator;
 					}
@@ -993,24 +973,24 @@ function kickIn() {
 			},
 
 			print: function(message) {
-				if ( jQueryCgmp.browser.msie ) {
+				if ( $.browser.msie ) {
 					//Die... die... die.... why dont you just, die???
 				 } else {
-					if (jQueryCgmp.browser.mozilla && parseInt(jQueryCgmp.browser.version) >= 3 ) {
+					if ($.browser.mozilla && parseInt($.browser.version) >= 3 ) {
 						console.log(message);
 					} else {
-						console.log("Logger could not print because browser is Mozilla [" + jQueryCgmp.browser.mozilla + "] and its version is [" + parseInt(jQueryCgmp.browser.version) + "]");
+						console.log("Logger could not print because browser is Mozilla [" + $.browser.mozilla + "] and its version is [" + parseInt($.browser.version) + "]");
 					}
 				 }
 			}
 		}
 
 
-		jQueryCgmp(document).ready(function() {
+		$(document).ready(function() {
 
-			var orcHolder = new jQueryCgmp.OrchestratorHub();
+			var orcHolder = new OrchestratorHub();
 
-			jQueryCgmp.each(CGMPGlobal.maps, function(index, json) {
+			$.each(CGMPGlobal.maps, function(index, json) {
 
 				if (typeof google == "undefined" || !google) {
 					alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
@@ -1030,48 +1010,53 @@ function kickIn() {
 					return false;
 				}
 
-				var googleMap = new google.maps.Map(document.getElementById(json.id));
-				var orc = new jQueryCgmp.GoogleMapOrchestrator(googleMap, {bubbleAutoPan: json.bubbleautopan, zoom : parseInt(json.zoom), mapType: json.maptype});
+				if ($('div#' + json.id).length > 0) {
 
-				orcHolder.push({mapId: json.id, orchestrator: orc});
+						var googleMap = new google.maps.Map(document.getElementById(json.id));
+						var orc = new GoogleMapOrchestrator(googleMap, {bubbleAutoPan: json.bubbleautopan, zoom : parseInt(json.zoom), mapType: json.maptype});
 
-				orc.switchMapControl(json.maptypecontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.MAPTYPE);
-				orc.switchMapControl(json.pancontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.PAN);
-				orc.switchMapControl(json.zoomcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.ZOOM);
-				orc.switchMapControl(json.scalecontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.SCALE);
-				orc.switchMapControl(json.scrollwheelcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.SCROLLWHEEL);
-				orc.switchMapControl(json.streetviewcontrol, jQueryCgmp.GoogleMapOrchestrator.ControlType.STREETVIEW);
+						orcHolder.push({mapId: json.id, orchestrator: orc});
+
+						orc.switchMapControl(json.maptypecontrol, GoogleMapOrchestrator.ControlType.MAPTYPE);
+						orc.switchMapControl(json.pancontrol, GoogleMapOrchestrator.ControlType.PAN);
+						orc.switchMapControl(json.zoomcontrol, GoogleMapOrchestrator.ControlType.ZOOM);
+						orc.switchMapControl(json.scalecontrol, GoogleMapOrchestrator.ControlType.SCALE);
+						orc.switchMapControl(json.scrollwheelcontrol, GoogleMapOrchestrator.ControlType.SCROLLWHEEL);
+						orc.switchMapControl(json.streetviewcontrol, GoogleMapOrchestrator.ControlType.STREETVIEW);
 
 
-				if (json.showpanoramio == "true") {
-					orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.PANORAMIO, null, json.panoramiouid);
-				}
+						if (json.showpanoramio == "true") {
+							orc.buildLayer(GoogleMapOrchestrator.LayerType.PANORAMIO, null, json.panoramiouid);
+						}
 
-				if (json.showbike == "true") {
-					orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.BIKE);
-				}
-				if (json.showtraffic == "true") {
-					orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.TRAFFIC);
-				}
+						if (json.showbike == "true") {
+							orc.buildLayer(GoogleMapOrchestrator.LayerType.BIKE);
+						}
+						if (json.showtraffic == "true") {
+							orc.buildLayer(GoogleMapOrchestrator.LayerType.TRAFFIC);
+						}
 
-				if (json.kml != null && json.kml != '') {
-					orc.buildLayer(jQueryCgmp.GoogleMapOrchestrator.LayerType.KML, json.kml);
+						if (json.kml != null && json.kml != '') {
+							orc.buildLayer(GoogleMapOrchestrator.LayerType.KML, json.kml);
+						} else {
+
+							if (json.markerlist != null && json.markerlist != '') {
+								orc.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.geomashupbubble);
+							}
+
+							var isBuildAddressMarkersCalled = orc.isBuildAddressMarkersCalled();
+							if (!isBuildAddressMarkersCalled) {
+								alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
+									"\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!" +
+									"\n\nPlease check the following when adding marker locations: " +
+									"\n[a] \tIn the shortcode builder, did you click the \"Add Marker\" button before clicking \"Send to Editor\"?" +
+									"\n[b] \tIn the widget, did you click the \"Add Marker\" button before clicking \"Save\"?" +
+									"\n\nPlease revisit and reconfigure your widget or shortcode configuration." +
+									"\n\nThe map requires at least one marker location to be added..");
+							}
+						}
 				} else {
-
-					if (json.markerlist != null && json.markerlist != '') {
-						orc.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.geomashupbubble);
-					}
-
-					var isBuildAddressMarkersCalled = orc.isBuildAddressMarkersCalled();
-					if (!isBuildAddressMarkersCalled) {
-						alert("ATTENTION! (by Comprehensive Google Map Plugin)" +
-							"\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!" +
-							"\n\nPlease check the following when adding marker locations: " +
-							"\n[a] \tIn the shortcode builder, did you click the \"Add Marker\" button before clicking \"Send to Editor\"?" +
-							"\n[b] \tIn the widget, did you click the \"Add Marker\" button before clicking \"Save\"?" +
-							"\n\nPlease revisit and reconfigure your widget or shortcode configuration." +
-							"\n\nThe map requires at least one marker location to be added..");
-					}
+					Logger.fatal("It looks like the map DIV placeholder ID [" + json.id + "] does not exist in the page!");
 				}
 			});
 		});

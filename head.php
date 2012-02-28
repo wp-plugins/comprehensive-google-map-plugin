@@ -24,16 +24,14 @@ endif;
 
 
 if ( !function_exists('cgmp_google_map_admin_add_script') ):
-                function cgmp_google_map_admin_add_script()  {
+   		function cgmp_google_map_admin_add_script()  {
 
 				wp_enqueue_script('jquery-ui-core');
 				wp_enqueue_script('jquery-ui-tabs');
-
-				wp_enqueue_script('jquery-ui-slider', CGMP_PLUGIN_JS.'/jquery-ui-slider-1.8.16.min.js', array('jquery', 'jquery-ui-core'), '1.8.16');
               	wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5.a', true);
 				wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput.js', array('jquery'), CGMP_VERSION, true);
-              	wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/admin.js', array('jquery', 'jquery-ui-core', 'jquery-ui-slider', 'jquery-ui-tabs'), CGMP_VERSION, true);
-
+				wp_localize_script('cgmp-jquery-tokeninput', 'CGMPGlobal', array('maps' => array(), 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
+              	wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/admin.js', array('jquery', 'jquery-ui-core', 'jquery-ui-tabs'), CGMP_VERSION, true);
         }
 endif;
 
@@ -46,11 +44,12 @@ endif;
 if ( !function_exists('cgmp_google_map_init_scripts') ):
 		function cgmp_google_map_init_scripts()  {
 
+			if (!is_admin()) {
 				wp_enqueue_style('cgmp-google-map-styles', CGMP_PLUGIN_URI . 'style.css', false, CGMP_VERSION, "screen");
-				//wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false);
 				//wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp-framework.js', array('jquery'), CGMP_VERSION, false);
 				wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp-framework.min.js', array('jquery'), CGMP_VERSION, false);
 				wp_localize_script('cgmp-google-map-wrapper-framework-final', 'CGMPGlobal', array('maps' => array(), 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/"));
+			}
 
 		}
 endif;

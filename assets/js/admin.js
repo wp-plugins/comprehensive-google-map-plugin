@@ -362,7 +362,7 @@ function initMarkerIconEvents() {
 jQueryCgmp(document).ready(function() {
 
 	initTokenHoldersAndEvent();
-	initSliders(); 
+	//initSliders(); 
 	initTooltips();
 	initMarkerIconEvents();
 	initGeoMashupEvent() ;
@@ -386,7 +386,7 @@ jQueryCgmp(document).ajaxSuccess(
 
 					if (indexOf > 0) {
 						initTokenHoldersAndEvent();
-						initSliders();
+						//initSliders();
 						initTooltips();
 						initMarkerIconEvents();
 						initGeoMashupEvent() ;
