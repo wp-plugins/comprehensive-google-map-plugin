@@ -16,16 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 CGMPGlobal.maps = [];
 var jQueryCgmp = jQuery.noConflict();
-jQueryCgmp.getScript("http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false&async=2&callback=kickIn", function () {});
 
-function kickIn() {
 
 	(function ($) {
 
 
 		GoogleMapOrchestrator = function (map, options) {
 			
-			$.extend(this, GoogleMapOrchestrator.defaultOptions);
 			GoogleMapOrchestrator.AnimationType = {DROP : 0, BOUNCE : 1};
 			GoogleMapOrchestrator.LayerType = {TRAFFIC : 0, BIKE : 1, KML : 2, PANORAMIO: 3};
 			GoogleMapOrchestrator.ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4, SCROLLWHEEL: 5};
@@ -143,12 +140,16 @@ function kickIn() {
 			isAlphaNumeric: function isAlphaNumeric(subject) {
 			    var addressRegex = /^([a-zA-Z0-9?(/\-.,\s{1,})]+)$/;
 				return addressRegex.test(subject);
+			},
+			trim: function trim(subject) {
+				var leftTrimRegex = /^\s\s*/;
+				var rightTrimRegex = /\s\s*$/;
+				var trimRegex = /^\s+|\s+$/g;
+				return subject.replace(trimRegex, '');
 			}
 		}
 
 		LayerBuilder = function (map) {
-			$.extend(this, LayerBuilder.defaultOptions);
-
 			var googleMap = map;
 			
 			this.buildTrafficLayer = function () {
@@ -639,7 +640,7 @@ function kickIn() {
 				for (var i = 0; i < locations.length; i++) {
 					var target = locations[i];
 					if (target != null && target != "") {
-						target = target.replace(/^\s+|\s+$/g, '');
+						target = Utils.trim(target);
 						if (target == "") {
 							Logger.warn("Given extra marker address is empty");
 							continue;
@@ -719,8 +720,8 @@ function kickIn() {
 							return false;
 						}
 
-						latlngStr[0] = latlngStr[0].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-						latlngStr[1] = latlngStr[1].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+						latlngStr[0] = 	Utils.trim(latlngStr[0]);
+						latlngStr[1] = 	Utils.trim(latlngStr[1]);
 
 						if (latlngStr[0] == '' || latlngStr[1] == '') {
 							Logger.warn("Lat or Long are empty string");
@@ -1061,4 +1062,3 @@ function kickIn() {
 			});
 		});
 	}(jQueryCgmp));
-}
