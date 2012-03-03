@@ -145,38 +145,7 @@ if ( !function_exists('cgmp_map_data_hook_function') ):
 endif;
 
 
-/*
-if ( !function_exists('cgmp_map_data_hook_function') ):
-	function cgmp_map_data_hook_function($map_json) {
 
-		global $global_all_map_json_data;
-
-		if (is_array($global_all_map_json_data) && sizeof($global_all_map_json_data) > 0) {
-
-				echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
-				echo "//<![CDATA[ ".PHP_EOL;
-				echo "  var notified = false;".PHP_EOL;
-				foreach($global_all_map_json_data as $mapId => $map_json) {
-
-						if (isset($global_all_map_json_data[$mapId])) {
-						echo "  if (typeof CGMPGlobal != 'undefined') {".PHP_EOL;
-						echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
-						echo "	}".PHP_EOL;
-						unset($global_all_map_json_data[$mapId]);
-					}
-				}
-				echo " if (typeof CGMPGlobal == 'undefined' && !notified) { ".PHP_EOL;
-				echo "     notified = true;".PHP_EOL;
-				echo '     alert("ATTENTION! (by Comprehensive Google Map Plugin)\n\nSomething went wrong during Comprehensive Google Map activation,\nPlease contact the plugin author ASAP!");'.PHP_EOL;
-				echo " }".PHP_EOL;
-
-				echo "// ]]> ".PHP_EOL;
-				echo "</script>".PHP_EOL;
-		}
-
-	}
-endif;
- */
 
 if ( !function_exists('is_map_shortcode_present') ):
 	function is_map_shortcode_present($posts)
@@ -465,11 +434,16 @@ if ( !function_exists('cgmp_create_html_custom') ):
 						sort($files);
 						closedir($dir);
 
-						foreach ($files as $file) {
-							//echo "filename: $file : filetype: " . filetype($dir . $file) . "\n";
-							$pos = strrpos($file, ".png");
+						$extensions = array("png", "jpg", "gif", "jpeg");
 
-							if ($pos !== false && $file != "shadow.png") {
+						foreach ($files as $file) {
+							$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+							if (!in_array($ext, $extensions)) {
+								continue;
+							}
+
+							if ($file != "shadow.png") {
 									$class = "";
 									$style = "";
 									$sel = "";
@@ -486,7 +460,6 @@ if ( !function_exists('cgmp_create_html_custom') ):
 											$class = "nomarker";
 									}
 
-									//$items .= "<li><a href='javascript:void(0);'><img id='".$iconId."' style='".$style."' class='".$class."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$src."' style='margin-right: 15px' name='custom-icons-radio' /></li>";
 									$items .= "<div style='float: left; text-align: center; margin-right: 8px;'><a href='javascript:void(0);'><img id='".$iconId."' style='".$style."' class='".$class."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$file."' style='' name='custom-icons-radio' /></div>";
 
 							}
@@ -494,9 +467,7 @@ if ( !function_exists('cgmp_create_html_custom') ):
 					}
 				}
 
-
 			return $items."</div>";
-			//return $start.$items."</ul>";
 	}
 endif;
 
@@ -606,6 +577,7 @@ if ( !function_exists('cgmp_plugin_row_meta') ):
 
 			$links = array_merge( $links,
 				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Documentation'), 'cgmp' ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcode Builder'), 'cgmp' ) ),
 				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('FAQ'), 'cgmp' ) ),
 				array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">' . __('Donate') . '</a>' )
 			);

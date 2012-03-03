@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 6.0.19
+Version: 6.0.20
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,7 +31,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '6.0.19');
+define('CGMP_VERSION', '6.0.20');
 define('CGMP_NAME', 'cgmp');
 define('CGMP_SEP', '{}');
 define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
@@ -73,7 +73,7 @@ $global_fieldset_names["LEGEND_PANORAMIO"] = CGMP_FIELDSETNAME_PANORAMIO;
 
 $global_all_map_json_data = array();
 
-$doc_url = get_option('siteurl')."/wp-admin/admin.php?page=menu.php";
+$doc_url = get_option('siteurl')."/wp-admin/admin.php?page=cgmp-documentation";
 $global_fieldset_names["DOC_URL"] = $doc_url;
 
 $notices = '<span style="font-size: 9px;"><a href="'.$doc_url.'">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8">Support</a></span>';
@@ -82,7 +82,6 @@ $global_fieldset_names["FOOTER_NOTICES"] = $notices;
 require_once (CGMP_PLUGIN_DIR . '/functions.php');
 require_once (CGMP_PLUGIN_DIR . '/widget.php');
 require_once (CGMP_PLUGIN_DIR . '/shortcode.php');
-require_once (CGMP_PLUGIN_DIR . '/metabox.php');
 require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
@@ -93,7 +92,6 @@ add_action('init', 'cgmp_load_plugin_textdomain');
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
 add_action('admin_init', 'cgmp_google_map_admin_add_script');
 
-add_action('admin_menu', 'cgmp_google_map_meta_boxes');
 add_action('admin_menu', 'cgmp_google_map_plugin_menu');
 add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
 add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');

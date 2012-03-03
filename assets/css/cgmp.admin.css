@@ -102,7 +102,7 @@ ul.custom-icons-placeholder li img:hover {
 }
 
 .tools-tabs .documentation fieldset,
-#google_map_shortcode_builder fieldset,
+.tools-tabs .shortcodebuilder fieldset,
 .widget-google-map-container fieldset {
         border-top: 1px solid #D1D1D1;
         border-left: 1px solid #D1D1D1;
@@ -125,7 +125,7 @@ ul.custom-icons-placeholder li img:hover {
         /*border: 1px solid black;*/
 }
 
-#google_map_shortcode_builder table td ,
+.tools-tabs .shortcodebuilder table td ,
 .widget-google-map-container table td {
 		text-align: right;
         padding-right: 5px;
@@ -142,11 +142,11 @@ ul.custom-icons-placeholder li img:hover {
 		width: 95px !important; /* 4*95 + 4*5(padding) == 460px */
 }
 
-#google_map_shortcode_builder fieldset table {
+.tools-tabs .shortcodebuilder fieldset table {
 		width: 602px !important;
 }
 
-#google_map_shortcode_builder table td {
+.tools-tabs .shortcodebuilder table td {
 		width: 145px !important; /* 4*145 + 4*5(padding) == 660px */
 }
 
@@ -155,13 +155,13 @@ ul.custom-icons-placeholder li img:hover {
 }
 
 .tools-tabs .documentation fieldset label,
-#google_map_shortcode_builder fieldset label,
+.tools-tabs .shortcodebuilder fieldset label,
 .widget-google-map-container fieldset label {
         color: #333333;
 }    
 
 .tools-tabs .documentation legend,        
-#google_map_shortcode_builder legend,
+.tools-tabs .shortcodebuilder legend,
 .widget-google-map-container legend {
 		padding: 0.2em;
 		color:gray;
@@ -170,7 +170,7 @@ ul.custom-icons-placeholder li img:hover {
 }
 
 .tools-tabs .documentation input,
-#google_map_shortcode_builder input,
+.tools-tabs .shortcodebuilder input,
 .widget-google-map-container input {
 		margin-bottom: 3px;
 }
@@ -184,23 +184,23 @@ ul.custom-icons-placeholder li img:hover {
     width: 85px;
 }
 
-#google_map_shortcode_builder select,
-#google_map_shortcode_builder input[type="text"] {
+.tools-tabs .shortcodebuilder select,
+.tools-tabs .shortcodebuilder input[type="text"] {
 		width: 180px;
 }
 
-#google_map_shortcode_builder select {
+.tools-tabs .shortcodebuilder select {
     width: 115px;
 }
 
-#google_map_shortcode_builder select,
+.tools-tabs .shortcodebuilder select,
 .widget-google-map-container select {
 		height: 1.8em !important;
         padding: none !important;
 }
 
-#google_map_shortcode_builder select,
-#google_map_shortcode_builder input[type="text"],
+.tools-tabs .shortcodebuilder select,
+.tools-tabs .shortcodebuilder input[type="text"],
 .widget-google-map-container select,
 .widget-google-map-container input[type="text"] {
     border-color: #B8B8B8;
@@ -268,7 +268,7 @@ span.sep {
     width: 50px;
 }
 
-#google_map_shortcode_builder div.slider {
+.tools-tabs .shortcodebuilder div.slider {
     margin-left: 7px;
     margin-top: 7px;
     width: 60px;
@@ -413,7 +413,7 @@ li.token-input-token p {
     padding-top: 10px !important;
 }
 
-div#google_map_shortcode_builder li.token-input-token p {
+.tools-tabs .shortcodebuilder div#google_map_shortcode_builder li.token-input-token p {
     margin: -1px 0 0 !important;
 }
 
@@ -547,17 +547,17 @@ fieldset.collapsible {
 
 }
 
-#google_map_shortcode_builder fieldset.collapsed,
+.tools-tabs .shortcodebuilder fieldset.collapsed,
 .widget-google-map-container  fieldset.collapsed {
     border: 1px solid #777 !important;
 }
 
-#google_map_shortcode_builder legend.collapsible,
+.tools-tabs .shortcodebuilder legend.collapsible,
 .widget-google-map-container legend.collapsible {
     color:gray !important;
 }
 
-#google_map_shortcode_builder legend.collapsed,
+.tools-tabs .shortcodebuilder legend.collapsed,
 .widget-google-map-container legend.collapsed {
     color: #333 !important;
 }

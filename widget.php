@@ -30,7 +30,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$cops = array('width' => 570);
 		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
 
-		if ( is_active_widget(false, false, $this->id_base) ) {
+		if ( is_active_widget(false, false, $this->id_base, true) ) {
 				//cgmp_google_map_init_scripts(); 
 		}
 	}

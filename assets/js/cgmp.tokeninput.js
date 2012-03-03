@@ -34,7 +34,7 @@ var jQueryCgmp = jQuery.noConflict();
    		    inputToken: "token-input-input-token",
    		    highlightedToken: "token-input-highlighted-token",
 			hidden: "marker-destinations",
-   		    tokenDelete: "token-input-delete-token",
+   		    tokenDelete: "token-input-delete-token"
    		};
 		
 		var methods = {

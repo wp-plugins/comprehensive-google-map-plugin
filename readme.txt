@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.19
+Stable tag: 6.0.20
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -91,6 +91,15 @@ Just click once somewhere on the map
 11. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 6.0.20 =
+* Enhancement: Important: the short code builder is now located on its dedicated page instead of under post/page editor. After plugin installation look for the 'Google Map' menu item on the left hand side of your WP admin. This makes sure that post/page edit page is loaded quicker. The downside for now, is that you have to manually copy the generated shortage into your target page/post.
+* Enhancement: All JS is now loaded minified, including plugin admin side scripts
+* Enhancement: Revisited and cleaned up plugin admin JS
+* Enhancement: Removed explicit call to 'jquery-core' module when WP admin is active
+* Enhancement: Not loading client side JS and Google API scripts in WP admin anymore, only on client side
+* Enhancement: Accepting GIF and JPG/JPEG files as custom marker icons (in addition to PNG)
+
 
 = 6.0.19 =
 * Reverted Injecting Google API on the client side. Causes problems in Opera on Mac
