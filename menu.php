@@ -18,9 +18,209 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 if ( !function_exists('cgmp_google_map_plugin_menu') ):
       function cgmp_google_map_plugin_menu() {
-            add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', basename(__FILE__), 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
-      }
+      		$hook = add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', CGMP_HOOK, 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
+	  		add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+			$hook = add_submenu_page(CGMP_HOOK, 'Shortcode Builder', 'Shortcode Builder', 'activate_plugins', 'cgmp-shortcodebuilder', 'cgmp_shortcodebuilder_callback' );
+		   	add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+
+	  }
 endif;
+
+if ( !function_exists('cgmp_shortcodebuilder_callback') ):
+
+	function cgmp_shortcodebuilder_callback() {
+
+		if (!current_user_can('activate_plugins'))  {
+             	wp_die( __('You do not have sufficient permissions to access this page.') );
+        }
+
+		$bools = array("Show" => "true", "Hide" => "false");
+		$bools2 = array("Enable" => "false", "Disable" => "true");
+		$bools3 = array("Enable" => "true", "Disable" => "false");
+		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
+		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
+		$aligns = array("Center"=>"center", "Right"=>"right", "Left" => "left");
+
+		$languages = array("Default" => "default", "Arabic" => "ar", "Basque" => "eu", "Bulgarian" => "bg", "Bengali" => "bn", "Catalan" => "ca", "Czech" => "cs", "Danish" => "da", "English" => "en", "German" => "de", "Greek" => "el", "Spanish" => "es", "Farsi" => "fa", "Finnish" => "fi", "Filipino" => "fil", "French" => "fr", "Galician" => "gl", "Gujarati" => "gu", "Hindi" => "hi", "Croatian" => "hr", "Hungarian" => "hu", "Indonesian" => "id", "Italian" => "it", "Hebrew" => "iw", "Japanese" => "ja", "Kannada" => "kn", "Korean" => "ko", "Lithuanian" => "lt", "Latvian" => "lv", "Malayalam" => "ml", "Marathi" => "mr", "Dutch" => "nl", "Norwegian" => "no", "Oriya" => "or", "Polish" => "pl", "Portuguese" => "pt", "Romanian" => "ro", "Russian" => "ru", "Slovak" => "sk", "Slovenian" => "sl", "Serbian" => "sr", "Swedish" => "sv", "Tagalog" => "tl", "Tamil" => "ta", "Telugu" => "te", "Thai" => "th", "Turkish" => "tr", "Ukrainian" => "uk", "Vietnamese" => "vi", "Chinese (simpl)" => "zh-CN", "Chinese (tradi)" => "zh-TW");
+
+
+		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
+
+		$v = "width";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Width (px)")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "350", "class" => "widefat", "style" => "")); 
+
+
+		$v = "height";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Height (px)")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "350", "class" => "widefat", "style" => "")); 
+
+		$v = "latitude";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Latitude")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
+
+		$v = "longitude";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Longitude")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
+
+		$v = "zoom";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Zoom")); 
+		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => 12, "class" => "widefat", "style" => "")); 
+
+		$v = "maptype";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map type")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $types));
+
+		$v = "directionhint";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Direction Hint")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3));
+
+		$v = "language";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map Language")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $languages)); 
+
+
+		$v = "showmarker";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Marker")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+		
+		$v = "animation";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Animation")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $animations)); 
+
+
+		$v = "m_aptypecontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "MapType")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+		$v = "pancontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Pan")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+
+		$v = "z_oomcontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Zoom")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+		
+		$v = "scalecontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Scale")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+		$v = "streetviewcontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "StreetView")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
+
+
+		$v = "scrollwheelcontrol";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "ScrollWheel")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
+
+
+
+		$v = "infobubblecontent";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Content Text")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
+
+
+		$v = "addresscontent";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Address Text")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
+
+
+		$v = "showbike";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bike Paths")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+		$v = "showtraffic";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Traffic Info")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+		$v = "bubbleautopan";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bubble Auto-Pan")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "true", "options" => $bools3)); 
+
+
+		$v = "kml";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "KML/GeoRSS URL")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
+
+		$v = "showpanoramio";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Panoramio")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools)); 
+
+			$m = "addmarker";
+		$settings[] = array("type" => "button", "token" => $m, "attr"=> array("id" => $m, "name" => $m, "value" => "Add Marker", "class" => "button-primary add-additonal-location", "style" => ""));
+
+
+		$v = $m."input";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Location")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => '', "class" => "widefat marker-location-text default-marker-icon notshortcodeitem", "style" => "width: 100% !important;"));
+
+		$v = $m."icons";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
+		$settings[] = array("type" => "custom", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "custom-icons-placeholder", "style" => ""));
+
+		$v = $m."mashup";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Make this map a Marker Geo Mashup")); 
+		$settings[] = array("type" => "geo", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-geo-mashup", "style" => ""));
+
+		$v = $m."mashupbubble";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "")); 
+		$settings[] = array("type" => "geobubble", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "shortcodeitem marker-bubble-geo-mashup", "style" => ""));
+
+
+		$v = $m."mashuphidden";
+		$settings[] = array("type" => "geohidden", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "notshortcodeitem", "style" => ""));
+
+		
+		$v = $m."list";
+		$settings[] = array("type" => "list", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "token-input-list", "style" => ""));
+
+		$v = $v."hidden";
+		$settings[] = array("type" => "hidden", "token" => $v, "attr"=> array("id" => $v, "name" => $v, "class" => "shortcodeitem", "value" => "", "style" => ""));
+
+
+		$v = "mapalign";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Alignment")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $aligns)); 
+
+		$v = "panoramiouid";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "User ID (Opt.)")); 
+		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => ""));
+
+	
+		$template_values = cgmp_build_template_values($settings);
+
+		global $global_fieldset_names;
+		$template = cgmp_replace_template_tokens($global_fieldset_names, $template);
+		$template = cgmp_replace_template_tokens($template_values, $template);
+
+		$res = 
+				"<input type='button' onclick='return sendShortcodeToEditor(\"google-map-container-metabox\");' 
+		class='button-primary' tabindex='4' value=' GENERATE SHORTCODE ' id='send-to-editor' name='send-to-editor' /><br />
+				<div id='google-map-container-metabox' style='margin-top: 20px'>
+				{$template}
+		</div>
+		<input type='button' onclick='return sendShortcodeToEditor(\"google-map-container-metabox\");' 
+		class='button-primary' tabindex='4' value=' GENERATE SHORTCODE ' id='send-to-editor' name='send-to-editor' />";
+
+
+		$template = file_get_contents(CGMP_PLUGIN_HTML."/shortcodebuilder.plug");
+
+		$template_values = array();
+        $template_values["SHORTCODEBUILDER_TOKEN"] = $res;
+
+        $template = cgmp_replace_template_tokens($template_values, $template);
+        echo $template;
+
+
+		//echo $res;
+
+	}
+endif;
+
 
 if ( !function_exists('cgmp_parse_menu_html') ):
 function cgmp_parse_menu_html() {
@@ -41,15 +241,16 @@ function cgmp_parse_menu_html() {
         $template_values["LABEL_LONGITUDE"] = "<b>Longitude</b>:";
         $template_values["INPUT_LONGITUDE"] =  "Together with Latitude, makes a geographic coordinate of a location displayed on the Google map. The longitude coordinate value is measured in degrees";
         $template_values["LABEL_ZOOM"] = "<b>Zoom</b>:";
-        $template_values["INPUT_ZOOM"] = "Each map also contains a zoom level, which defines the resolution of the current view. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 19 (the highest zoom level, down to individual buildings) are possible within the normal maps view. Zoom levels vary depending on where in the world you're looking, as data in some parts of the globe is more defined than in others. Zoom levels up to 20 are possible within satellite view.";
-        $template_values["LABEL_MAPTYPE"] = "<b>Map type</b>:";
+        $template_values["INPUT_ZOOM"] = "Each map also contains a zoom level, which defines the resolution of the current view. Zoom levels between 0 (the lowest zoom level, in which the entire world can be seen on one map) to 19 (the highest zoom level, down to individual buildings) are possible within the normal maps view. Zoom levels vary depending on where in the world you're looking, as data in some parts of the globe is more defined than in others. Zoom levels up to 20 are possible within satellite view. Please note: when using KML, the KML zoom needs to be set within the KML file. Zoom config option does not affect zoom of the map generated from KML.";
+        $template_values["LABEL_MAPTYPE"] = "<b>Map&nbsp;type</b>:";
         $template_values["SELECT_MAPTYPE"] = "There are many types of maps available within the Google Maps. In addition to the familiar 'painted' road map tiles, the Google Maps API also supports other maps types. The following map types are available in the Google Maps API:
 ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information.";
-        
-        $template_values["LABEL_SHOWMARKER"] = "<b>Marker</b>";
+		$template_values["LABEL_LANGUAGE"] = "<b>Map&nbsp;Language</b>";
+		$template_values["SELECT_LANGUAGE"] = "The Google Maps API uses the browser's preferred language setting when displaying textual information such as the names for controls, copyright notices, driving directions and labels on maps. In most cases, this is preferable; you usually do not wish to override the user's preferred language setting. However, if you wish to change the Maps API to ignore the browser's language setting and force it to display information in a particular language, you can by selecting on of the available languages in this setting";
+        $template_values["LABEL_SHOWMARKER"] = "<b>Primary&nbsp;Marker</b>";
         $template_values["SELECT_SHOWMARKER"] = "If a map is specified, the marker is added to the map upon construction. Note that the position must be set for the marker to display."; 
         $template_values["LABEL_ANIMATION"] = "<b>Animation</b>";
-        $template_values["SELECT_ANIMATION"]    = "Animations can be played on a marker. Currently two types of animations supported: BOUNCE makes marker to bounce until animation is stopped, DROP makes marker to fall from the top of the map ending with a small bounce.";
+        $template_values["SELECT_ANIMATION"]    = "Animations can be played on a primary marker. Currently two types of animations supported: BOUNCE makes marker to bounce until animation is stopped, DROP makes primary marker to fall from the top of the map ending with a small bounce.";
         $template_values["LABEL_M_APTYPECONTROL"] = "<b>MapType</b>";
         $template_values["SELECT_M_APTYPECONTROL"] = "The MapType control lets the user toggle between map types (such as ROADMAP and SATELLITE). This control appears by default in the top right corner of the map";
 	$template_values["LABEL_PANCONTROL"] = "<b>Pan</b>";
@@ -59,20 +260,57 @@ ROADMAP displays the default road map view, SATELLITE displays Google Earth sate
         $template_values["LABEL_SCALECONTROL"] = "<b>Scale</b>"; 
         $template_values["SELECT_SCALECONTROL"] = "The Scale control displays a map scale element. This control is not enabled by default.";
         $template_values["LABEL_STREETVIEWCONTROL"] = "<b>StreetView</b>";
-        $template_values["SELECT_STREETVIEWCONTROL"] = "The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map";
+		$template_values["SELECT_STREETVIEWCONTROL"] = "The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map";
 
-        $template_values["LABEL_INFOBUBBLECONTENT"] = "<b>Content Text</b>"; 
+		$template_values["LABEL_SCROLLWHEELCONTROL"] = "<b>ScrollWheel</b>";
+        $template_values["SELECT_SCROLLWHEELCONTROL"] = "The Scroll Wheel control enables user to zoom in/out on mouse wheel scroll. This setting has 'disable' setting by default";
+
+
+        $template_values["LABEL_INFOBUBBLECONTENT"] = "<b>Content&nbsp;Text</b>"; 
         $template_values["INPUT_INFOBUBBLECONTENT"] = "Text to be displayed inside info bubble (info window).";
 
-        $template_values["LABEL_ADDRESSCONTENT"] = "<b>Address Text</b>"; 
+        $template_values["LABEL_ADDRESSCONTENT"] = "<b>Address&nbsp;Text</b>"; 
         $template_values["INPUT_ADDRESSCONTENT"] = "Geographical gestination address string. The address supersedes longitude and latitude configuration. If the address provided cannot be parsed (eg: invalid address) by Google, the map will display error message in the info bubble over default location (New York, USA). Please note, address configuration *supersedes* latitude/longitude settings";
 
-        $template_values["LABEL_SHOWBIKE"] = "<b>Bike Paths</b>";
+        $template_values["LABEL_SHOWBIKE"] = "<b>Bike&nbsp;Paths</b>";
         $template_values["SELECT_SHOWBIKE"] = "A layer showing bike lanes and paths as overlays on a Google Map.";
-        $template_values["LABEL_SHOWTRAFFIC"] = "<b>Traffic Info</b>";
+        $template_values["LABEL_SHOWTRAFFIC"] = "<b>Traffic&nbsp;Info</b>";
         $template_values["SELECT_SHOWTRAFFIC"] = "A layer showing vehicle traffic as overlay on a Google Map.";
-        $template_values["LABEL_KML"] = "<b>KML/GeoRSS URL</b>";
-        $template_values["INPUT_KML"] = "KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. A KML file is processed in much the same way that HTML (and XML) files are processed by web browsers. Like HTML, KML has a tag-based structure with names and attributes used for specific display purposes. Thus, Google Earth and Maps act as browsers for KML files. Please note, KML configuration *supersedes* address and latitude/longitude settings";
+        $template_values["LABEL_KML"] = "<b>KML/GeoRSS&nbsp;URL</b>";
+		$template_values["INPUT_KML"] = "KML is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. A KML file is processed in much the same way that HTML (and XML) files are processed by web browsers. Like HTML, KML has a tag-based structure with names and attributes used for specific display purposes. Thus, Google Earth and Maps act as browsers for KML files. Please note, KML configuration *supersedes* address and latitude/longitude settings";
+		$template_values["LABEL_ADDMARKERINPUT"] = "<b>Location</b>";
+		$template_values["INPUT_ADDMARKERINPUT"] = "You can eneter either latitude and longitude, comma seperated or a full geographical address. The generated marker will have an info bubble attached to it, with marker's address as a bubble content. If latitude/longitude was provided as a marker location, the bubble content will contain location geographical address instead of the latitude/longitude. You can enter either latitude/longitude seperated by comma, or a fully qualified geographical address. You can also select a custom icon for your marker. If none is selected, default Google marker icon is used - the red pin with black dot. Please note that markers do not support animation at the moment.";
+		$template_values["BUTTON_ADDMARKER"] = "";
+		$template_values["CUSTOM_ADDMARKERICONS"] = "";
+		$template_values["LIST_ADDMARKERLIST"] = "";
+		$template_values["HIDDEN_ADDMARKERLISTHIDDEN"] = "";
+
+		$template_values["GEO_ADDMARKERMASHUP"] = "";
+
+
+		$template_values["GEOBUBBLE_ADDMARKERMASHUPBUBBLE"] = "When selecting a marker Geo mashup, you are also given an option to select what will appear in the marker info bubble window when marker is clicked. There are two options: to display marker's address and latitude/longitude or to display marker's original blog post title that is linked to the post and few words from post content as an excerpt. If the original blog post already has an excerpt set, then the latter will be used for the info bubble content.";
+		$template_values["GEOHIDDEN_ADDMARKERMASHUPHIDDEN"] = "";
+		$template_values["LABEL_ADDMARKERMASHUP"] = "If selected, the generated map will aggregate all markers from other maps created by you in your public published posts. In other words, you get a Geo marker mashup in one map! At the moment, the mashup does not include markers from maps on pages and widgets, posts ONLY. When Geo mashup is enabled, the KML and custom marker sections become hidden, in order to reduce the confusion for the user.";
+
+
+		$template_values["LABEL_SHOWPANORAMIO"] = "<b>Panoramio</b>";
+		$template_values["SELECT_SHOWPANORAMIO"] = "Panoramio (http://www.panoramio.com) is a geolocation-oriented photo sharing website. Accepted photos uploaded to the site can be accessed as a layer in Google Earth and Google Maps, with new photos being added at the end of every month. The site's goal is to allow Google Earth users to learn more about a given area by viewing the photos that other users have taken at that place.";
+
+
+		$template_values["LABEL_BUBBLEAUTOPAN"] = "<b>Bubble&nbsp;Auto-Pan</b>";
+		$template_values["SELECT_BUBBLEAUTOPAN"] = "Enables bubble auto-pan on marker click. By default, the info bubble will pan the map so that it is fully visible when it opens.";
+
+		$template_values["LABEL_MAPALIGN"] = "<b>Alignment</b>";
+		$template_values["SELECT_MAPALIGN"] = "Controls alignment of the generated map on the screen: LEFT, RIGHT or CENTER. Whats actually aligned is the placeholder DIV HTML element which wraps the generated map.";
+
+		$template_values["LABEL_DIRECTIONHINT"] = "<b>Direction&nbsp;Hint</b>";
+		$template_values["SELECT_DIRECTIONHINT"] = "Hint message displayed above the map, telling users if they want to get directions, they should click on map markers. ATM its in English, sorry :( Localization will come soon!";
+
+
+		$template_values["LABEL_PANORAMIOUID"] = "<b>User&nbsp;ID&nbsp;(Opt.)</b>";
+		$template_values["INPUT_PANORAMIOUID"] = "If specified, the Panoramio photos displayed on the map, will be filtered based on the specified user ID";
+
+		$template_values["FOOTER_NOTICES"] = "";
 
 	global $global_fieldset_names;
         $template_content = cgmp_replace_template_tokens($global_fieldset_names, $template_content);
