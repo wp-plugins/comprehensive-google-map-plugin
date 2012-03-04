@@ -926,7 +926,7 @@ var jQueryCgmp = jQuery.noConflict();
 
 	
 
-		$(document).ready(function() {
+		//$(document).ready(function() {
 
 			if (typeof CGMPGlobal != "undefined" && CGMPGlobal.maps) {
 				Logger.info("The CGMPGlobal object has [" + CGMPGlobal.maps.length + "] map JSONs inside");
@@ -991,6 +991,6 @@ var jQueryCgmp = jQuery.noConflict();
 				} else {
 					Logger.fatal("It looks like the map DIV placeholder ID [" + json.id + "] does not exist in the page!");
 				}
-			});
+			//});
 		});
 	}(jQueryCgmp));

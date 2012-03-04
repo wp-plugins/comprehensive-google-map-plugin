@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.21
+Stable tag: 6.0.22
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -51,30 +51,20 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 
 == Frequently Asked Questions ==
 
-1. Where can I find send to editor button?<br />
-Send to editor button is located at the bottom of the short code builder
-
-2. Where can I find the short code builder?<br />
+1. Where can I find the short code builder?<br />
 After plugin installation look for the 'Google Map' menu item on the left hand side of your WP admin. The 'Shortcode builder' item is just there. After generating the short code, copy the contents of the popup and paste int your post/page.
 
-3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?<br />
-Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. Also, if jQuery lib is loaded twice by some other plugins, it also messes with Javascrip. 
-
-4. When I activate the plugin, some other plugin's admin menu or plugin itself does not load/work , why?<br />
-Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. 
-
-5. How do I fix the one of the problems above?<br />
-I need to have a look at your site and the page where the intended map is or/and log into your WP admin (I understand that the latter is not something that most of the people can be comfortable with, but I already helped two people this way).
-
-6. When I activate the plugin and build the map, there is only gray box on the page. Why?<br />
-One of the reasons is that a bad address or wrong lat/long were given. Try to check it using Google map on the web first.
-
-7. How fast can you have a look at my bug?<br />
+2. How fast can you have a look at my bug?<br />
 Well, I always check emails on the go, so my response times are amazingly short and fast. I always try to reply. Having said that, not always I can dive into the code. It can take me up to a few hours when I reach my laptop and Internet connection :)
 
-8. I have dragged/scrolled/pulled my map to a direction, messed up my zoom view, how can I get get all my markers in view again with the original zoom?<br />
+3. I have dragged/scrolled/pulled my map to a direction, messed up my zoom view, how can I get get all my markers in view again with the original zoom?<br />
 Just click once somewhere on the map
 
+4. The map appears empty with "loading" image or just gray square why is that?
+Please check the following when adding marker locations: 
+[a] In the shortcode builder, did you click the 'Add Marker' button before clicking 'Send to Editor'?
+[b] In the widget, did you click the 'Add Marker' button before clicking 'Save'?
+Please revisit and reconfigure your widget or shortcode configuration. The map requires at least one marker location to be added.
 
 == Screenshots ==
 
@@ -92,11 +82,15 @@ Just click once somewhere on the map
 
 == Changelog ==
 
+= 6.0.22 =
+* Enhancement: Replaced native browser popup with jQuery popup when generating short code.  
+* Enhancement: User error messages refined.
+* Removed document.ready from map generating logic
+
 = 6.0.21 =
-* Enhancement: Text widget now can parse the map shortcode
+* Enhancement: Text widget bow can parse the map short code
 * Enhancement: Client JS scripts now loaded on demand if widget or short code are active. In other words, page that does not contain map won't load the JS
-* Enhancement: Added config option to set the map language by adding the 'language' to the Google map API. Please refer to config tooltip or dock.
-* Bug: The geo mashup checkbox is not ticked when widget page is loaded, assuming it has a backbend value
+* Enhancement: Added setting to set the map language by adding the 'language' to the Google map API
 
 = 6.0.20 =
 * Enhancement: Important: the short code builder is now located on its dedicated page instead of under post/page editor. After plugin installation look for the 'Google Map' menu item on the left hand side of your WP admin. This makes sure that post/page edit page is loaded quicker. The downside for now, is that you have to manually copy the generated shortage into your target page/post.

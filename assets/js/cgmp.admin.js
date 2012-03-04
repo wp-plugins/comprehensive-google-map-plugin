@@ -20,7 +20,49 @@ var jQueryCgmp = jQuery.noConflict();
 function sendShortcodeToEditor(container_id) {
 	var id = '#' + container_id;
 	var code = buildShortcode(id, jQueryCgmp);
-	alert("Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:\n\n" + code + "\n\nPaste the copied text into your post/page");
+
+	(function ($, code) {
+
+		var mask = $('<div id="mask"/>');
+		var shortcode_dialog = $('<div id="shortcode-dialog" class="window" />');
+		shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:<br /><br /><div id='inner-shortcode-dialog'><b>" + code + "</b></div><br /><br />Paste the copied text into your post/page</p><div align='center'><input type='button' class='close' value='Close' /></div>");
+
+		$('body').append(mask);
+		$('body').append(shortcode_dialog);
+
+		var maskHeight = $(document).height();
+		var maskWidth = $(window).width();
+		$('#mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.1});
+		$('#mask').show();	
+		$('#mask').show();	
+		var winH = $(window).height();
+		var winW = $(window).width();
+		$("div#shortcode-dialog").css('top',  winH/2-$("div#shortcode-dialog").height()/2);
+		$("div#shortcode-dialog").css('left', winW/2-$("div#shortcode-dialog").width()/2);
+		$("div#shortcode-dialog").fadeIn(500); 
+		$('.window .close').click(function (e) {
+			e.preventDefault();
+			$('#mask').remove();
+			$('.window').remove();
+		});
+		$('#mask').click(function () {
+			$(this).remove();
+			$('.window').remove();
+		});
+		$(window).resize(function () {
+ 			var box = $('#boxes .window');
+        	var maskHeight = $(document).height();
+        	var maskWidth = $(window).width();
+        	$('#mask').css({'width':maskWidth,'height':maskHeight});
+        	var winH = $(window).height();
+        	var winW = $(window).width();
+        	box.css('top',  winH/2 - box.height()/2);
+        	box.css('left', winW/2 - box.width()/2);
+		});
+
+	}(jQueryCgmp, code));
+
+	//alert("Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:\n\n" + code + "\n\nPaste the copied text into your post/page");
 }
 
 function buildShortcode(id, $) {
