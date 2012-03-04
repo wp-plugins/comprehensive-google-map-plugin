@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 6.0.20
+Stable tag: 6.0.21
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -55,7 +55,7 @@ Do you have a question or a feature request? Sure, drop me a line here: http://i
 Send to editor button is located at the bottom of the short code builder
 
 2. Where can I find the short code builder?<br />
-You know the place in Wordpress where you write new post/page? Under the post/page editor look for the short code builder.
+After plugin installation look for the 'Google Map' menu item on the left hand side of your WP admin. The 'Shortcode builder' item is just there. After generating the short code, copy the contents of the popup and paste int your post/page.
 
 3. I activated the plugin and generated the map using widget/shortcode. Instead the map on my blog, I see only black frame with no map, why?<br />
 Most probably there are some Javascript errors that broke my plugin's Javascript. This can happen due to bug(s) in other plugin(s) that were loaded before the Google map plugin or bug(s) in my plugin. Usually bug in some Javascript file, breaks subsequent Javascript files. Also, if jQuery lib is loaded twice by some other plugins, it also messes with Javascrip. 
@@ -91,6 +91,12 @@ Just click once somewhere on the map
 11. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 6.0.21 =
+* Enhancement: Text widget now can parse the map shortcode
+* Enhancement: Client JS scripts now loaded on demand if widget or short code are active. In other words, page that does not contain map won't load the JS
+* Enhancement: Added config option to set the map language by adding the 'language' to the Google map API. Please refer to config tooltip or dock.
+* Bug: The geo mashup checkbox is not ticked when widget page is loaded, assuming it has a backbend value
 
 = 6.0.20 =
 * Enhancement: Important: the short code builder is now located on its dedicated page instead of under post/page editor. After plugin installation look for the 'Google Map' menu item on the left hand side of your WP admin. This makes sure that post/page edit page is loaded quicker. The downside for now, is that you have to manually copy the generated shortage into your target page/post.

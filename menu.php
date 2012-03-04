@@ -73,7 +73,12 @@ if ( !function_exists('cgmp_shortcodebuilder_callback') ):
 
 		$v = "directionhint";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Direction Hint")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3)); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "false", "options" => $bools3));
+
+		$v = "language";
+		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map Language")); 
+		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $languages)); 
+
 
 		$v = "showmarker";
 		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Marker")); 
@@ -240,7 +245,8 @@ function cgmp_parse_menu_html() {
         $template_values["LABEL_MAPTYPE"] = "<b>Map&nbsp;type</b>:";
         $template_values["SELECT_MAPTYPE"] = "There are many types of maps available within the Google Maps. In addition to the familiar 'painted' road map tiles, the Google Maps API also supports other maps types. The following map types are available in the Google Maps API:
 ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information.";
-        
+		$template_values["LABEL_LANGUAGE"] = "<b>Map&nbsp;Language</b>";
+		$template_values["SELECT_LANGUAGE"] = "The Google Maps API uses the browser's preferred language setting when displaying textual information such as the names for controls, copyright notices, driving directions and labels on maps. In most cases, this is preferable; you usually do not wish to override the user's preferred language setting. However, if you wish to change the Maps API to ignore the browser's language setting and force it to display information in a particular language, you can by selecting on of the available languages in this setting";
         $template_values["LABEL_SHOWMARKER"] = "<b>Primary&nbsp;Marker</b>";
         $template_values["SELECT_SHOWMARKER"] = "If a map is specified, the marker is added to the map upon construction. Note that the position must be set for the marker to display."; 
         $template_values["LABEL_ANIMATION"] = "<b>Animation</b>";

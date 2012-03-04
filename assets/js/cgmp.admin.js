@@ -265,11 +265,27 @@ function hideShowCustomMarker(hiddenElemId) {
 			});
 		}
 
+		function checkedGeoMashupOnInit() {
+
+			$.each($("input.marker-geo-mashup"), function() {
+				var checkboxId = $(this).attr("id");
+				var hiddenIdVal = $("#" + checkboxId + "hidden").val();
+
+				if (hiddenIdVal == "true") {
+					$(this).attr("checked", "checked");
+				} else {
+					$(this).removeAttr("checked");
+				}
+			});
+		}
+
+
 		function initAll() {
 			initTokenHolders();
 			initAddLocationEevent();
 			initTooltips();
 			initMarkerIconEvents();
+			checkedGeoMashupOnInit();
 			initGeoMashupEvent() ;
 		}
 

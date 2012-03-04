@@ -14,9 +14,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-CGMPGlobal.maps = [];
+
 var jQueryCgmp = jQuery.noConflict();
 	(function ($) {
+
+		if (typeof CGMPGlobal != "undefined") {
+			if (!CGMPGlobal.maps instanceof Array) {
+				CGMPGlobal.maps = [];
+			}
+		}
 
 		var GoogleMapOrchestrator = (function() {
 
@@ -921,6 +927,13 @@ var jQueryCgmp = jQuery.noConflict();
 	
 
 		$(document).ready(function() {
+
+			if (typeof CGMPGlobal != "undefined" && CGMPGlobal.maps) {
+				Logger.info("The CGMPGlobal object has [" + CGMPGlobal.maps.length + "] map JSONs inside");
+			} else {
+				Logger.fatal("The CGMPGlobal object is undefined. Aborting map generation .. d[-_-]b");
+				return;
+			}
 
 			$.each(CGMPGlobal.maps, function(index, json) {
 

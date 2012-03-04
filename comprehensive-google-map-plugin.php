@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 6.0.20
+Version: 6.0.21
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,12 +31,13 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '6.0.20');
+define('CGMP_VERSION', '6.0.21');
 define('CGMP_NAME', 'cgmp');
 define('CGMP_SEP', '{}');
 define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
 define('CGMP_DB_POST_COUNT', 'cgmp_total_published_posts');
 define('CGMP_DB_PUBLISHED_POST_MARKERS', 'cgmp_published_post_markers');
+define('CGMP_DB_SELECTED_LANGUAGE', 'cgmp_selected_language');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_BOOTSTRAP', __FILE__ );
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
@@ -86,7 +87,7 @@ require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
 //add_action('the_posts', 'is_map_shortcode_present');
-add_action('init', 'cgmp_google_map_init_scripts');
+add_action('init', 'cgmp_google_map_init_global_js');
 add_action('init', 'cgmp_load_plugin_textdomain');
 
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
@@ -95,6 +96,7 @@ add_action('admin_init', 'cgmp_google_map_admin_add_script');
 add_action('admin_menu', 'cgmp_google_map_plugin_menu');
 add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
 add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
+add_filter('widget_text', 'do_shortcode');
 
 add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
 
@@ -103,6 +105,4 @@ register_activation_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_extract_markers_from_publ
 add_action('publish_post', 'cgmp_invalidate_published_post_marker' );
 
 add_filter( 'plugin_row_meta', 'cgmp_plugin_row_meta', 10, 2 );
-
-
 ?>

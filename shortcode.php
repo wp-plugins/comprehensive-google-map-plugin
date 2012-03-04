@@ -21,12 +21,9 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {
 
 	extract(shortcode_atts(array(
-		'width' => 250,
-		'height' => 250,
-		'zoom' => 5,
 		'latitude' => 0,
 		'longitude' => 0,
-		'zoom' => 5,
+		'zoom' => '7',
 		'width' => 400,
 		'height' => 400,
 		'maptype' => 'ROADMAP',
@@ -53,6 +50,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'mapalign' => 'center',
 		'panoramiouid' => '',
 		'addmarkermashup' => 'false',
+		'language' => 'default',
 		'addmarkermashupbubble' => 'false'
 	), $attr));
 	
@@ -99,17 +97,8 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
 	}
 
-	/*
-		if ($language != 'default') {
-
-			$api = CGMP_GOOGLE_API_URL;
-			$api .= "&language=".$language;
-
-			wp_deregister_script( 'cgmp-google-map-api' );
-			wp_register_script('cgmp-google-map-api', $api, array('jquery'), false);
-    		wp_enqueue_script('cgmp-google-map-api');
-		}
- */
+	cgmp_set_google_map_language($language);
+	cgmp_google_map_init_scripts();
 
 	$map_settings = array();
 	$map_settings['id'] = $id;
@@ -131,13 +120,8 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	$map_settings['showpanoramio'] = $showpanoramio;
 	$map_settings['panoramiouid'] = cgmp_clean_panoramiouid($panoramiouid);
 
-	//global $global_all_map_json_data;
-	
-	//$global_all_map_json_data[$id]  = json_encode($map_settings);
-	//cgmp_map_data_injector();
 	cgmp_map_data_injector(json_encode($map_settings));
 
-	
 	$result = '';
 	$result .= cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
 	return $result;
