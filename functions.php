@@ -122,6 +122,18 @@ if ( !function_exists('cgmp_load_plugin_textdomain') ):
 endif;
 
 
+if ( !function_exists('cgmp_show_message') ):
+
+function cgmp_show_message($message, $errormsg = false)
+{
+	if (!isset($message) || $message == '') {
+		return;
+	}
+	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+}
+endif;
+
+
 
 if ( !function_exists('cgmp_map_data_injector') ):
 	function cgmp_map_data_injector($map_json) {
@@ -166,7 +178,7 @@ if ( !function_exists('cgmp_google_map_init_global_js') ):
 
 			if (!is_admin()) {
 				wp_enqueue_script('cgmp-google-map-json-trigger', CGMP_PLUGIN_JS. '/cgmp.trigger.js', false, CGMP_VERSION, false);
-				wp_localize_script('cgmp-google-map-json-trigger', 'CGMPGlobal', array('maps' => array(), 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/", 'errors' => array('msgNoGoogle' => "ATTENTION! (by Comprehensive Google Map Plugin)\n\nDear blog/website owner,\nIt looks like Google map API could not be reached. Map generation was aborted!\n\nPlease check that Google API script was loaded in the HTML source of your web page", "msgApiV2" => "ATTENTION! (by Comprehensive Google Map Plugin)\n\nDear blog/website owner,\nIt looks like your webpage has reference to the older Google API v2, in addition to the API v3 used by Comprehensive Google Map! An example of plugin using the older API v2, can be 'jquery.gmap plugin'.\n\nPlease disable conflicting plugin(s). In the meanwhile, map generation is aborted!", "msgMissingMarkers" => "ATTENTION! (by Comprehensive Google Map Plugin)\n\nDear blog/website owner,\nIt looks like you did not specify any marker locations for the Google map!\n\nPlease check the following when adding marker locations: \n[a] \tIn the shortcode builder, did you click the 'Add Marker' button before clicking 'GENERATE SHORTCODE'?\n[b] \tIn the widget, did you click the 'Add Marker' button before clicking 'Save'?\n\nPlease revisit and reconfigure your widget or shortcode configuration.\n\nThe map requires at least one marker location to be added..", "badAddresses" => "ATTENTION! (by Comprehensive Google Map Plugin)\n\nGoogle found the following address(es) as NON-geographic and could not find them:\n\n[REPLACE]\nConsider revising the address(es). Did you make a mistake when creating marker locations or did not provide a full geo-address? Alternatively use Google web to validate the address(es)", "kmlNotFound" => "The KML file could not be found. Most likely it is an invalid URL, or the document is not publicly available.", "kmlTooLarge" => "The KML file exceeds the file size limits of KmlLayer.", "kmlFetchError" => "The KML file could not be fetched.", "kmlDocInvalid" => "The KML file is not a valid KML, KMZ or GeoRSS document.", "kmlRequestInvalid" => "The KmlLayer is invalid.", "kmlLimits" => "The KML file exceeds the feature limits of KmlLayer.", "kmlTimedOut" => "The KML file could not be loaded within a reasonable amount of time.", "kmlUnknown" => "The KML file failed to load for an unknown reason.", "kml" => "ATTENTION! (by Comprehensive Google Map Plugin)\n\nDear blog/website owner,\nGoogle returned the following error when trying to load KML file:\n\n[MSG] ([STATUS])")));
+				wp_localize_script('cgmp-google-map-json-trigger', 'CGMPGlobal', array('maps' => array(), 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/", 'errors' => array('msgNoGoogle' => "<span class='attention'>ATTENTION!</span>(by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />It looks like Google map API could not be reached. Map generation was aborted!<br /><br />Please check that Google API script was loaded in the HTML source of your web page", "msgApiV2" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />It looks like your webpage has reference to the older Google API v2, in addition to the API v3 used by Comprehensive Google Map! An example of plugin using the older API v2, can be 'jquery.gmap plugin'.<br /><br />Please disable conflicting plugin(s). In the meanwhile, map generation is aborted!", "msgMissingMarkers" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />You did not specify any marker locations for the Google map! Please check the following when adding marker locations:<br /><b>[a]</b> In the shortcode builder, did you click the 'Add Marker' before generating shortcode?<br /><b>[b]</b> In the widget, did you click the 'Add Marker' before clicking 'Save'?<br /><br />Please revisit and reconfigure your widget or shortcode configuration. The map requires at least one marker location to be added..", "badAddresses" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Google found the following address(es) as NON-geographic and could not find them:<br /><br />[REPLACE]<br />Consider revising the address(es). Did you make a mistake when creating marker locations or did not provide a full geo-address? Alternatively use Google web to validate the address(es)", "kmlNotFound" => "The KML file could not be found. Most likely it is an invalid URL, or the document is not publicly available.", "kmlTooLarge" => "The KML file exceeds the file size limits of KmlLayer.", "kmlFetchError" => "The KML file could not be fetched.", "kmlDocInvalid" => "The KML file is not a valid KML, KMZ or GeoRSS document.", "kmlRequestInvalid" => "The KmlLayer is invalid.", "kmlLimits" => "The KML file exceeds the feature limits of KmlLayer.", "kmlTimedOut" => "The KML file could not be loaded within a reasonable amount of time.", "kmlUnknown" => "The KML file failed to load for an unknown reason.", "kml" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />Google returned the following error when trying to load KML file:<br /><br />[MSG] ([STATUS])")));
 			}
 		}
 endif;
@@ -645,7 +657,7 @@ if ( !function_exists('cgmp_plugin_row_meta') ):
 			$links = array_merge( $links,
 				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Documentation'), 'cgmp' ) ),
 				array( sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcode Builder'), 'cgmp' ) ),
-				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('FAQ'), 'cgmp' ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-settings">%s</a>', __('Settings'), 'cgmp' ) ),
 				array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">' . __('Donate') . '</a>' )
 			);
 		}

@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 6.0.22
+Version: 6.0.23
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -31,16 +31,18 @@ if ( !function_exists( 'add_action' ) ) {
 
 define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?libraries=panoramio&sensor=false');
 
-define('CGMP_VERSION', '6.0.22');
+define('CGMP_VERSION', '6.0.23');
 define('CGMP_NAME', 'cgmp');
 define('CGMP_SEP', '{}');
 define('CGMP_DB_OPTION_NAME', 'cgmp_marker_locations');
 define('CGMP_DB_POST_COUNT', 'cgmp_total_published_posts');
 define('CGMP_DB_PUBLISHED_POST_MARKERS', 'cgmp_published_post_markers');
 define('CGMP_DB_SELECTED_LANGUAGE', 'cgmp_selected_language');
+define('CGMP_DB_SETTINGS_BUILDER_LOCATION', 'cgmp_settings_builder_location');
 define('CGMP_HOOK', 'cgmp-documentation');
 define('CGMP_PLUGIN_BOOTSTRAP', __FILE__ );
 define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
+define('CGMP_PLUGIN_INCLUDE_DIR', CGMP_PLUGIN_DIR.'/include');
 define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
 define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
 define('CGMP_PLUGIN_ASSETS_DIR', CGMP_PLUGIN_DIR.'/assets');
@@ -83,13 +85,14 @@ $global_fieldset_names["FOOTER_NOTICES"] = $notices;
 require_once (CGMP_PLUGIN_DIR . '/functions.php');
 require_once (CGMP_PLUGIN_DIR . '/widget.php');
 require_once (CGMP_PLUGIN_DIR . '/shortcode.php');
+require_once (CGMP_PLUGIN_DIR . '/metabox.php');
 require_once (CGMP_PLUGIN_DIR . '/menu.php');
 require_once (CGMP_PLUGIN_DIR . '/head.php');
 
 //add_action('the_posts', 'is_map_shortcode_present');
 add_action('init', 'cgmp_google_map_init_global_js');
 add_action('init', 'cgmp_load_plugin_textdomain');
-
+add_action('admin_notices', 'cgmp_show_message');
 add_action('admin_init', 'cgmp_google_map_admin_add_style');
 add_action('admin_init', 'cgmp_google_map_admin_add_script');
 

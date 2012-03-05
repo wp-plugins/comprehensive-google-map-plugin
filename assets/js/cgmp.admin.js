@@ -20,12 +20,24 @@ var jQueryCgmp = jQuery.noConflict();
 function sendShortcodeToEditor(container_id) {
 	var id = '#' + container_id;
 	var code = buildShortcode(id, jQueryCgmp);
+	send_to_editor('<br />' + code + '<br />');
+}
 
-	(function ($, code) {
+
+function displayShortcodeInPopup(container_id) {
+	var id = '#' + container_id;
+	var code = buildShortcode(id, jQueryCgmp);
+	var content = "Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:<br /><br /><div id='inner-shortcode-dialog'><b>" + code + "</b></div><br /><br />Paste the copied text into your post/page";
+	displayPopupWithContent(content);
+}
+
+function displayPopupWithContent(content)  {
+
+	(function ($, content) {
 
 		var mask = $('<div id="mask"/>');
 		var shortcode_dialog = $('<div id="shortcode-dialog" class="window" />');
-		shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:<br /><br /><div id='inner-shortcode-dialog'><b>" + code + "</b></div><br /><br />Paste the copied text into your post/page</p><div align='center'><input type='button' class='close' value='Close' /></div>");
+		shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close' value='Close' /></div>");
 
 		$('body').append(mask);
 		$('body').append(shortcode_dialog);
@@ -50,7 +62,7 @@ function sendShortcodeToEditor(container_id) {
 			$('.window').remove();
 		});
 		$(window).resize(function () {
- 			var box = $('#boxes .window');
+ 			var box = $('.window');
         	var maskHeight = $(document).height();
         	var maskWidth = $(window).width();
         	$('#mask').css({'width':maskWidth,'height':maskHeight});
@@ -60,9 +72,8 @@ function sendShortcodeToEditor(container_id) {
         	box.css('left', winW/2 - box.width()/2);
 		});
 
-	}(jQueryCgmp, code));
+	}(jQueryCgmp, content));
 
-	//alert("Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:\n\n" + code + "\n\nPaste the copied text into your post/page");
 }
 
 function buildShortcode(id, $) {

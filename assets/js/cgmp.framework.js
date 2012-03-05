@@ -168,7 +168,7 @@ var jQueryCgmp = jQuery.noConflict();
 					if (msg != '') {
 						var error = CGMPGlobal.errors.kml.replace("[MSG]", msg);
 						error = error.replace("[STATUS]", kmlStatus);
-						alert(error);
+						Errors.alertError(error);
 						Logger.error("Google returned KML error: " + msg + " (" + kmlStatus + ")");
 						Logger.error("KML file: " + kmlLayer.getUrl());
 					}
@@ -722,10 +722,10 @@ var jQueryCgmp = jQuery.noConflict();
 					if (badAddresses.length > 0) {
 						var msg = "";
 						$.each(badAddresses, function (index, addy) {
-							msg += "\t" + (1 + index) + ". " + addy + "\n";
+							msg += "&nbsp;&nbsp;&nbsp;<b>" + (1 + index) + ". " + addy + "</b><br />";
 						});
 
-						alert(CGMPGlobal.errors.badAddresses.replace('[REPLACE]', msg));
+						Errors.alertError(CGMPGlobal.errors.badAddresses.replace('[REPLACE]', msg));
 					}
 					badAddresses = [];
 				}
@@ -924,7 +924,65 @@ var jQueryCgmp = jQuery.noConflict();
   				}
 		})();
 
-	
+
+			var Errors = (function() {
+
+					var alertError = function alertError(content)  {
+
+						var mask = $('<div id="mask"/>');
+						var id = Math.random().toString(36).substring(3);
+						var shortcode_dialog = $('<div id="' + id + '" class="shortcode-dialog window" />');
+						shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
+
+						$('body').append(mask);
+						$('body').append(shortcode_dialog);
+
+						var maskHeight = $(document).height();
+						var maskWidth = $(window).width();
+						$('#mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.3});
+
+						if ($("#mask").length == 1) {
+							$('#mask').show();
+						}
+
+						var winH = $(window).height();
+						var winW = $(window).width();
+						$("div#" + id).css('top',  winH/2-$("div#" + id).height()/2);
+						$("div#" + id).css('left', winW/2-$("div#" + id).width()/2);
+						$("div#" + id).fadeIn(500); 
+						$('.window .close-dialog').click(function (e) {
+							e.preventDefault();
+
+							var parentDialog = $(this).closest("div.shortcode-dialog");
+							if (parentDialog) {
+								$(parentDialog).remove();
+							}
+
+							if ($("div.shortcode-dialog").length == 0) {
+								$('#mask').remove();
+							}
+						});
+						$('#mask').click(function () {
+							$(this).remove();
+							$('.window').remove();
+						});
+						$(window).resize(function () {
+							var box = $('.window');
+							var maskHeight = $(document).height();
+							var maskWidth = $(window).width();
+							$('#mask').css({'width':maskWidth,'height':maskHeight});
+							var winH = $(window).height();
+							var winW = $(window).width();
+							box.css('top',  winH/2 - box.height()/2);
+							box.css('left', winW/2 - box.width()/2);
+						});
+					}
+
+				return {
+    				alertError: alertError
+				}
+			})();
+
 
 		//$(document).ready(function() {
 
@@ -938,11 +996,11 @@ var jQueryCgmp = jQuery.noConflict();
 			$.each(CGMPGlobal.maps, function(index, json) {
 
 				if (typeof google == "undefined" || !google) {
-					alert(CGMPGlobal.errors.msgNoGoogle);
+					Errors.alertError(CGMPGlobal.errors.msgNoGoogle);
 					Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
 					return false;
 				} else if (typeof GMap2 != "undefined" && GMap2) {
-					alert(CGMPGlobal.errors.msgApiV2);
+					Errors.alertError(CGMPGlobal.errors.msgApiV2);
 					Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
 					return false;
 				}
@@ -985,7 +1043,7 @@ var jQueryCgmp = jQuery.noConflict();
 
 							var isBuildAddressMarkersCalled = markerBuilder.isBuildAddressMarkersCalled();
 							if (!isBuildAddressMarkersCalled) {
-								alert(CGMPGlobal.errors.msgMissingMarkers);
+								Errors.alertError(CGMPGlobal.errors.msgMissingMarkers);
 							}
 						}
 				} else {

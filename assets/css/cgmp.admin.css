@@ -101,6 +101,8 @@ ul.custom-icons-placeholder li img:hover {
 	width: 445px;
 }
 
+#google-map-container-metabox fieldset,
+#google-map-container-settings fieldset,
 .tools-tabs .documentation fieldset,
 .tools-tabs .shortcodebuilder fieldset,
 .widget-google-map-container fieldset {
@@ -125,10 +127,17 @@ ul.custom-icons-placeholder li img:hover {
         /*border: 1px solid black;*/
 }
 
+#google-map-container-metabox table td,
 .tools-tabs .shortcodebuilder table td ,
 .widget-google-map-container table td {
 		text-align: right;
         padding-right: 5px;
+        /*border: 1px solid black;*/
+}
+
+#google-map-container-settings table td {
+		text-align: left;
+        padding: 5px;
         /*border: 1px solid black;*/
 }
 
@@ -142,10 +151,14 @@ ul.custom-icons-placeholder li img:hover {
 		width: 95px !important; /* 4*95 + 4*5(padding) == 460px */
 }
 
+#google-map-container-settings fieldset table,
+#google-map-container-metabox fieldset table,
 .tools-tabs .shortcodebuilder fieldset table {
 		width: 602px !important;
 }
 
+#google-map-container-settings table td,
+#google-map-container-metabox table td,
 .tools-tabs .shortcodebuilder table td {
 		width: 145px !important; /* 4*145 + 4*5(padding) == 660px */
 }
@@ -154,12 +167,21 @@ ul.custom-icons-placeholder li img:hover {
         width: 99% !important;
 }
 
+#google-map-container-settings fieldset label,
+#google-map-container-metabox fieldset label,
 .tools-tabs .documentation fieldset label,
 .tools-tabs .shortcodebuilder fieldset label,
 .widget-google-map-container fieldset label {
         color: #333333;
 }    
 
+#google-map-container-settings fieldset label {
+    padding: 5px;
+    vertical-align: top;
+}
+
+#google-map-container-settings legend,
+#google-map-container-metabox legend,
 .tools-tabs .documentation legend,        
 .tools-tabs .shortcodebuilder legend,
 .widget-google-map-container legend {
@@ -169,6 +191,8 @@ ul.custom-icons-placeholder li img:hover {
 		text-align:right;
 }
 
+#google-map-container-settings input,
+#google-map-container-metabox input,
 .tools-tabs .documentation input,
 .tools-tabs .shortcodebuilder input,
 .widget-google-map-container input {
@@ -189,6 +213,8 @@ ul.custom-icons-placeholder li img:hover {
 		width: 180px;
 }
 
+#google-map-container-settings select,
+#google-map-container-metabox select,
 .tools-tabs .shortcodebuilder select {
     width: 115px;
 }
@@ -199,6 +225,8 @@ ul.custom-icons-placeholder li img:hover {
         padding: none !important;
 }
 
+#google-map-container-metabox select,
+#google-map-container-metabox input[type="text"],
 .tools-tabs .shortcodebuilder select,
 .tools-tabs .shortcodebuilder input[type="text"],
 .widget-google-map-container select,
@@ -547,16 +575,19 @@ fieldset.collapsible {
 
 }
 
+#google-map-container-metabox fieldset.collapsed,
 .tools-tabs .shortcodebuilder fieldset.collapsed,
 .widget-google-map-container  fieldset.collapsed {
     border: 1px solid #777 !important;
 }
 
+#google-map-container-metabox legend.collapsible,
 .tools-tabs .shortcodebuilder legend.collapsible,
 .widget-google-map-container legend.collapsible {
     color:gray !important;
 }
 
+#google-map-container-metabox legend.collapsed,
 .tools-tabs .shortcodebuilder legend.collapsed,
 .widget-google-map-container legend.collapsed {
     color: #333 !important;
