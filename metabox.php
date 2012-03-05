@@ -17,6 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$setting_builder_location = get_option(CGMP_DB_SETTINGS_BUILDER_LOCATION);
+
+if (isset($setting_builder_location) && $setting_builder_location == "true") {
+	add_action('admin_menu', 'cgmp_google_map_meta_boxes');
+}
+
 
 if ( !function_exists('cgmp_google_map_meta_boxes') ):
 function cgmp_google_map_meta_boxes() {
@@ -32,99 +38,7 @@ endif;
 if ( !function_exists('cgmp_render_shortcode_builder_form') ):
 function cgmp_render_shortcode_builder_form() {
 
-		$bools = array("Show" => "true", "Hide" => "false");
-		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
-		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
-
-		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
-
-		$v = "width";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Width (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
-
-
-		$v = "height";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Height (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
-
-		$v = "latitude";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Latitude")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
-
-		$v = "longitude";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Longitude")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
-
-		$v = "zoom";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Zoom")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "")); 
-
-		$v = "maptype";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Map type")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $types)); 
-
-
-		$v = "showmarker";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Marker")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		
-		$v = "animation";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Animation")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $animations)); 
-
-
-		$v = "m_aptypecontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "MapType")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		$v = "pancontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Pan")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-
-		$v = "z_oomcontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Zoom")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		
-		$v = "scalecontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Scale")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		$v = "streetviewcontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "StreetView")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-
-		$v = "infobubblecontent";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Content Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
-
-
-		$v = "addresscontent";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Address Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
-
-
-		$v = "showbike";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Bike Paths")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		$v = "showtraffic";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "Traffic Info")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "options" => $bools)); 
-
-		$v = "kml";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $v, "value" => "URL")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $v, "name" => $v, "value" => "", "class" => "widefat", "style" => "width: 100% !important;"));
-
-	
-		$template_values = cgmp_build_template_values($settings);
-
-		global $global_fieldset_names;
-		$template = cgmp_replace_template_tokens($global_fieldset_names, $template);
-		$template = cgmp_replace_template_tokens($template_values, $template);
+		include_once(CGMP_PLUGIN_INCLUDE_DIR.'/_shortcode_builder_form.php');
 
   		$res = "<div id='google-map-container-metabox'>
 				{$template}
