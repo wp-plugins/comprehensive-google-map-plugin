@@ -96,7 +96,7 @@ endif;
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
 	function cgmp_map_data_hook_function( $map_json ) {
-		echo PHP_EOL."<object class='map-data-placeholder'><param name='json-string' value='".$map_json."' /></object> ".PHP_EOL;
+		echo "<object class='map-data-placeholder'><param name='json-string' value='".$map_json."' /></object> ".PHP_EOL;
 	}
 endif;
 
