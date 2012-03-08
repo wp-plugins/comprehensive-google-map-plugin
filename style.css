@@ -733,3 +733,11 @@ img {
     font-weight: bold;
     color: red;
 }
+
+object.map-data-placeholder,
+object.global-data-placeholder {
+    min-width: 0px !important; 
+    width: 0px !important; 
+    min-height: 0px !important; 
+    height: 0px !important
+}

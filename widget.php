@@ -43,9 +43,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 				"latitude", "longitude", "addresscontent", "addmarkerlisthidden", "addmarkermashuphidden", "addmarkerinput", 
 				"showmarker", "animation", "infobubblecontent", "markerdirections");
 
-		$json_default_values_string = file_get_contents(CGMP_PLUGIN_DATA_DIR."/".CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
-		$json_default_values = json_decode($json_default_values_string, true);
-		$json_default_values = $json_default_values [0];
+		$json_default_values = cgmp_fetch_json_data_file(CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
 
 		foreach ($instance as $key => $value) {
 				$value = trim($value);
@@ -101,12 +99,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 		$settings = array();
 
-		$json_html_elems_string = file_get_contents(CGMP_PLUGIN_DATA_DIR."/".CGMP_JSON_DATA_HTML_ELEMENTS_FORM_PARAMS);
-		$json_html_elems = json_decode($json_html_elems_string, true);
-
-		$json_default_values_string = file_get_contents(CGMP_PLUGIN_DATA_DIR."/".CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
-		$json_default_values = json_decode($json_default_values_string, true);
-		$json_default_values = $json_default_values[0];
+		$json_html_elems = cgmp_fetch_json_data_file(CGMP_JSON_DATA_HTML_ELEMENTS_FORM_PARAMS);
+		$json_default_values = cgmp_fetch_json_data_file(CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
 
 		if (is_array($json_html_elems)) {
 

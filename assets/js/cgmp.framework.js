@@ -905,8 +905,10 @@ var jQueryCgmp = jQuery.noConflict();
 				 } else {
 					if ($.browser.mozilla && parseInt($.browser.version) >= 3 ) {
 						console.log(message);
+					} else if ($.browser.webkit) {
+						console.log(message);
 					} else {
-						console.log("Logger could not print because browser is Mozilla [" + $.browser.mozilla + "] and its version is [" + parseInt($.browser.version) + "]");
+						console.log("Logger could not print because browser is not webkit nor mozilla, and its version is [" + parseInt($.browser.version) + "]");
 					}
 				 }
 			}

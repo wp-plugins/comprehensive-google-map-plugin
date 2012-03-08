@@ -54,6 +54,18 @@ if ( !function_exists('cgmp_render_template_with_values') ):
 endif;
 
 
+if ( !function_exists('cgmp_fetch_json_data_file') ):
+	function cgmp_fetch_json_data_file($filename) {
+
+		$json_html_string = file_get_contents(CGMP_PLUGIN_DATA_DIR."/".$filename);
+		$json_html = json_decode($json_html_string, true);
+		if (sizeof($json_html) == 1) {
+			$json_html = $json_html[0];
+		}
+		return $json_html;
+	}
+endif;
+
 
 if ( !function_exists('cgmp_load_plugin_textdomain') ):
 	function cgmp_load_plugin_textdomain() {
