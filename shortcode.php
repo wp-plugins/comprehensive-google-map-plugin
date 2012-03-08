@@ -18,53 +18,68 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
-function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {
-	
-	extract(shortcode_atts(array(
-		'width' => 250,
-		'height' => 250,
-		'zoom' => 5,
-		'latitude' => 40.69847032728747,
-		'longitude' => -73.9514422416687,
-		'zoom' => 5,
+	function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {
+
+	$shortcode_attribs = shortcode_atts(array(
+		'latitude' => 0,
+		'longitude' => 0,
+		'zoom' => '7',
 		'width' => 400,
 		'height' => 400,
 		'maptype' => 'ROADMAP',
-		'showmarker' => 'true',
-		'infobubblecontent' => '',
-		'animation' => 'DROP',
-		'm_aptypecontrol' => 'true',
+		'maptypecontrol' => 'true',
 		'pancontrol' => 'true',
-		'z_oomcontrol' => 'true',
+		'zoomcontrol' => 'true',
 		'scalecontrol' => 'true',
 		'streetviewcontrol' => 'true',
-		'addresscontent' => '',
+		'scrollwheelcontrol' => 'false',
 		'showbike' => 'false',
+		'bubbleautopan' => 'false',
 		'showtraffic' => 'false',
-		'kml' => ''
-	), $attr));
-	
+		'showpanoramio' => 'false',
+		'addmarkerlist' => '',
+		'kml' => '',
+		'directionhint' => 'false',
+		'mapalign' => 'center',
+		'panoramiouid' => '',
+		'addmarkermashup' => 'false',
+		'language' => 'default',
+		'addmarkermashupbubble' => 'false'), $attr);
 
+	extract($shortcode_attribs);
+	
 	$id = md5(time().' '.rand()); 
 
-	$controlOpts = array();
-	$controlOpts['m_aptypecontrol'] = $m_aptypecontrol;
-	$controlOpts['pancontrol'] = $pancontrol;
-	$controlOpts['z_oomcontrol'] = $z_oomcontrol;
-	$controlOpts['scalecontrol'] = $scalecontrol;
-	$controlOpts['streetviewcontrol'] = $streetviewcontrol;
+	if ($addmarkermashup == 'true') {
+		$addmarkerlist = make_marker_geo_mashup();
+	} else if ($addmarkermashup == 'false') {
+		$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
+	}
 
-	$result = '';
-	$result .= cgmp_draw_map_placeholder($id, $width, $height);
-	$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $controlOpts);
-	$result .= cgmp_draw_map_marker($id, $showmarker, $animation);
-	$result .= cgmp_draw_marker_infobubble($id, $infobubblecontent);
-	$result .= cgmp_draw_map_address($id, $addresscontent);
-	$result .= cgmp_draw_map_bikepath($id, $showbike);
-	$result .= cgmp_draw_map_traffic($id, $showtraffic);
-	$result .= cgmp_draw_kml($id, $kml);
-	$result .= cgmp_end_map_init();
-	return $result;
+	cgmp_set_google_map_language($language);
+	cgmp_google_map_init_scripts();
+
+	$map_data_properties = array();
+	$not_map_data_properties = array("title", "latitude", "longitude", "addresscontent", "addmarkerlist", "showmarker", "animation", "infobubblecontent", "markerdirections");
+
+	foreach ($shortcode_attribs as $key => $value) {
+		$value = trim($value);
+		$value = (!isset($value) || empty($value)) ? '' : esc_attr(strip_tags($value));
+
+		if (!in_array($key, $not_map_data_properties)) {
+			$key = str_replace("hidden", "", $key);
+			$key = str_replace("_", "", $key);
+			$map_data_properties[$key] = $value;
+		}
+	}
+
+	$map_data_properties['id'] = $id;
+	$map_data_properties['markerlist'] = $addmarkerlist;
+	$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
+	$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
+
+	cgmp_map_data_injector(json_encode($map_data_properties));
+	return cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
 }
 endif;
 
