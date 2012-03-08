@@ -21,98 +21,38 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 
 				$toploading = ceil($height / 2) - 50;
 
-				$hintdiv = "";
+				$map_marker_directions_hint_template = "";
 
 				if ($hint == "true") {
-					$hintdiv = "<div style='padding: 3px 0 3px 0; width:".$width."px; background-color: #efefef; border: 1px #cecece solid; font-size:12px;'><strong>Click on map markers to get directions</strong></div>";
+					$tokens_with_values = array();
+					$tokens_with_values['MARKER_DIRECTIONS_HINT_WIDTH_TOKEN'] = $width;
+					$map_marker_directions_hint_template = cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_MAP_MARKER_DIRECTION_HINT);
 				}
 
-	$result = '<div align="'.$align.'">'.$hintdiv.'<div class="google-map-placeholder" id="' .$id . '" style="width:' . 
-			$width . 'px;height:' . $height . 'px; border:1px solid #333333;"><div class="map-loading" style="position: relative; top: '.$toploading.'px !important;"></div></div>';
+				$tokens_with_values = array();
+				$tokens_with_values['MAP_PLACEHOLDER_ID_TOKEN'] = $id;
+				$tokens_with_values['MAP_PLACEHOLDER_WIDTH_TOKEN'] = $width;
+				$tokens_with_values['MAP_PLACEHOLDER_HEIGHT_TOKEN'] = $height;
+				$tokens_with_values['LOADING_INDICATOR_TOP_POS_TOKEN'] = $toploading;
+				$tokens_with_values['MAP_ALIGN_TOKEN'] = $align;
+				$tokens_with_values['MARKER_DIRECTIONS_HINT_TOKEN'] = $map_marker_directions_hint_template;
+				$tokens_with_values['IMAGES_DIRECTORY_URI'] = CGMP_PLUGIN_IMAGES;
+				$tokens_with_values['DIRECTIONS_WIDTH_TOKEN'] = ($width - 10);
 
-			$result .= '<div class="direction-controls-placeholder" id="direction-controls-placeholder-' .$id . '" style="background: white; width: '.$width.'px; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
-			<div class="d_close-wrapper">
-				<a id="d_close" href="javascript:void(0)"> 
-					<img src="'.CGMP_PLUGIN_IMAGES.'/transparent.png" class="close"> 
-				</a>
-			</div>
-
-			<div style="" id="travel_modes_div" class="dir-tm kd-buttonbar">
-				<a tabindex="3" class="kd-button kd-button-left selected" href="javascript:void(0)" id="dir_d_btn" title="By car"> 
-					<img class="dir-tm-d" src="'.CGMP_PLUGIN_IMAGES.'/transparent.png" /> 
-				</a>
-				<a tabindex="3" class="kd-button kd-button-right" href="javascript:void(0)" id="dir_w_btn" title="Walking"> 
-					<img class="dir-tm-w" src="'.CGMP_PLUGIN_IMAGES.'/transparent.png"> 
-				</a>
-			</div>
-			<div class="dir-clear"></div>
-			<div id="dir_wps">
-				<div id="dir_wp_0" class="dir-wp">
-					<div class="dir-wp-hl">
-						<div id="dir_m_0" class="dir-m" style="cursor: -moz-grab;">
-							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img style="position: absolute; left: 0px; top: -141px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
-							</div>
-						</div>
-						<div class="dir-input">
-							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value="" name="a_address" id="a_address" title="Start address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="dir-rev-wrapper">
-					<div id="dir_rev" title="Get reverse directions">
-						<a id="reverse-btn" href="javascript:void(0)" class="kd-button"> 
-							<img class="dir-reverse" src="'.CGMP_PLUGIN_IMAGES.'/transparent.png"> 
-						</a>
-					</div>
-				</div>
-				<div id="dir_wp_1" class="dir-wp">
-					<div class="dir-wp-hl">
-						<div id="dir_m_1" class="dir-m" style="cursor: -moz-grab;">
-							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img style="position: absolute; left: 0px; top: -72px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="'.CGMP_PLUGIN_IMAGES.'/directions.png">
-							</div>
-						</div>
-						<div class="dir-input">
-							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value="" name="b_address" id="b_address" title="End address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="dir_controls">
-				<div class="d_links">
-					<span id="d_options_toggle">
-						<a id="d_options_show" class="no-wrap" href="javascript:void(0)" style="display: none !important;">Show options</a> 
-						<a id="d_options_hide" class="no-wrap" href="javascript:void(0)" style="display: none !important;">Hide options</a>
-					   	<b><span style="color: blue">Additional options</span></b>
-					</span>
-				</div>
-				<div id="d_options" style="background-color: #ddd; margin-bottom: 3px; text-align: left; padding: 3px;">
-					<input type="checkbox" tabindex="5" name="avoid_hway" id="avoid_hway" />
-					<label for="avoid_hway">Avoid highways</label>
-					<input type="checkbox" tabindex="5" name="avoid_tolls" id="avoid_tolls" />
-					<label for="avoid_tolls">Avoid tolls</label>
-					<input type="radio" name="travel_mode" id="radio_km" />
-					<label for="radio_km">KM</label>
-					<input type="radio" name="travel_mode" id="radio_miles" checked="checked" />
-					<label for="radio_miles">'.__('Miles').'</label>
-				</div>
-				<div class="dir-sub-cntn">
-					<button tabindex="6" name="btnG" type="submit" id="d_sub" class="kd-button kd-button-submit">'.__('Get Directions').'</button>
-					<button tabindex="6" name="btnG" type="button" style="display: none;" id="print_sub" class="kd-button kd-button-submit">Print Directions</button>
-				</div>
-			</div>
-		</div>
-		<div id="rendered-directions-placeholder-' .$id . '" style="display: none; border: 1px solid #ddd; width: '.($width - 10).'px; margin-top: 10px; direction: ltr; overflow: auto; height: 180px; padding: 5px;" class="rendered-directions-placeholder"></div>
-	</div>';
-
-        return $result;
+				return cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_MAP_PLACEHOLDER_AND_DIRECTIONS);
  	}
 endif;
+
+
+if ( !function_exists('cgmp_render_template_with_values') ):
+	function cgmp_render_template_with_values($tokens_with_values, $template_name) {
+
+		$map_shortcode_builder_metabox_template = file_get_contents(CGMP_PLUGIN_HTML."/".$template_name);
+  		$map_shortcode_builder_metabox_template = cgmp_replace_template_tokens($tokens_with_values, $map_shortcode_builder_metabox_template);
+		return $map_shortcode_builder_metabox_template;
+	}
+endif;
+
 
 
 if ( !function_exists('cgmp_load_plugin_textdomain') ):
@@ -137,7 +77,6 @@ endif;
 
 if ( !function_exists('cgmp_map_data_injector') ):
 	function cgmp_map_data_injector($map_json) {
-			//add_action('wp_footer', 'cgmp_map_data_hook_function', 15);
 			cgmp_map_data_hook_function( $map_json );
 	}
 endif;
@@ -145,42 +84,8 @@ endif;
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
 	function cgmp_map_data_hook_function( $map_json ) {
-
-			echo PHP_EOL."<script type='text/javascript'>".PHP_EOL;
-			echo "//<![CDATA[".PHP_EOL;
-			echo "  if (typeof CGMPGlobal != 'undefined' && CGMPGlobal && CGMPGlobal.maps != null) {".PHP_EOL;
-			echo "		CGMPGlobal.maps.push(".$map_json.");".PHP_EOL;
-			echo "	}".PHP_EOL;
-			echo "//]]>".PHP_EOL;
-			echo "</script>".PHP_EOL;
+		echo PHP_EOL."<object class='map-data-placeholder'><param name='json-string' value='".$map_json."' /></object> ".PHP_EOL;
 	}
-endif;
-
-
-if ( !function_exists('cgmp_google_map_init_scripts') ):
-		function cgmp_google_map_init_scripts()  {
-
-			if (!is_admin()) {
-				wp_enqueue_style('cgmp-google-map-styles', CGMP_PLUGIN_URI . 'style.css', false, CGMP_VERSION, "screen");
-				$whitelist = array('localhost', '127.0.0.1');
-				if (!in_array($_SERVER['HTTP_HOST'], $whitelist)) {
-					wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework.min.js', array('jquery'), CGMP_VERSION, true);
-				} else {
-					wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework.js', array('jquery'), CGMP_VERSION, true);
-				}
-			}
-		}
-endif;
-
-
-if ( !function_exists('cgmp_google_map_init_global_js') ):
-		function cgmp_google_map_init_global_js()  {
-
-			if (!is_admin()) {
-				wp_enqueue_script('cgmp-google-map-json-trigger', CGMP_PLUGIN_JS. '/cgmp.trigger.js', false, CGMP_VERSION, false);
-				wp_localize_script('cgmp-google-map-json-trigger', 'CGMPGlobal', array('maps' => array(), 'sep' => CGMP_SEP, 'customMarkersUri' => CGMP_PLUGIN_IMAGES."/markers/", 'errors' => array('msgNoGoogle' => "<span class='attention'>ATTENTION!</span>(by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />It looks like Google map API could not be reached. Map generation was aborted!<br /><br />Please check that Google API script was loaded in the HTML source of your web page", "msgApiV2" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />It looks like your webpage has reference to the older Google API v2, in addition to the API v3 used by Comprehensive Google Map! An example of plugin using the older API v2, can be 'jquery.gmap plugin'.<br /><br />Please disable conflicting plugin(s). In the meanwhile, map generation is aborted!", "msgMissingMarkers" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />You did not specify any marker locations for the Google map! Please check the following when adding marker locations:<br /><b>[a]</b> In the shortcode builder, did you click the 'Add Marker' before generating shortcode?<br /><b>[b]</b> In the widget, did you click the 'Add Marker' before clicking 'Save'?<br /><br />Please revisit and reconfigure your widget or shortcode configuration. The map requires at least one marker location to be added..", "badAddresses" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Google found the following address(es) as NON-geographic and could not find them:<br /><br />[REPLACE]<br />Consider revising the address(es). Did you make a mistake when creating marker locations or did not provide a full geo-address? Alternatively use Google web to validate the address(es)", "kmlNotFound" => "The KML file could not be found. Most likely it is an invalid URL, or the document is not publicly available.", "kmlTooLarge" => "The KML file exceeds the file size limits of KmlLayer.", "kmlFetchError" => "The KML file could not be fetched.", "kmlDocInvalid" => "The KML file is not a valid KML, KMZ or GeoRSS document.", "kmlRequestInvalid" => "The KmlLayer is invalid.", "kmlLimits" => "The KML file exceeds the feature limits of KmlLayer.", "kmlTimedOut" => "The KML file could not be loaded within a reasonable amount of time.", "kmlUnknown" => "The KML file failed to load for an unknown reason.", "kml" => "<span class='attention'>ATTENTION!</span> (by Comprehensive Google Map Plugin)<br /><br />Dear blog/website owner,<br />Google returned the following error when trying to load KML file:<br /><br />[MSG] ([STATUS])")));
-			}
-		}
 endif;
 
 
@@ -224,32 +129,6 @@ if ( !function_exists('cgmp_deregister_and_enqueue_google_api') ):
 		}
 	}
 endif;
-
-
-if ( !function_exists('is_map_shortcode_present') ):
-	function is_map_shortcode_present($posts)
-	{
-		if ( empty($posts) ) {
-			return $posts;
-		}
-
-    	$found = false;
-
-    	foreach ($posts as $post) {
-        	if ( stripos($post->post_content, '[google-map-v3') !== false) {
-            	$found = true;
-				break;
-			}
-        }
-
-		if ($found) {
-			cgmp_google_map_init_scripts();
-		}
-
-		return $posts;
-	}
-endif;
-
 
 
 if ( !function_exists('trim_marker_value') ):
@@ -333,17 +212,10 @@ endif;
 
 
 
-
 if ( !function_exists('cgmp_create_html_select') ):
 	function cgmp_create_html_select($attr) {
-		$role = $attr['role'];
-		$id = $attr['id'];
-		$name = $attr['name'];
-		$value = $attr['value'];
-		$options = $attr['options'];
-				
-		return "<select role='".$role."' id='".$id."' style='' class='shortcodeitem' name='".$name."'>".
-				cgmp_create_html_select_options($options, $value)."</select>";
+		return "<select role='".$attr['role']."' id='".$attr['id']."' style='' class='shortcodeitem' name='".$attr['name']."'>".
+				cgmp_create_html_select_options($attr['options'], $attr['value'])."</select>";
 	}
 endif;
 
@@ -365,128 +237,49 @@ endif;
 
 if ( !function_exists('cgmp_create_html_input') ):
 	function cgmp_create_html_input($attr) {
-		$role = $attr['role'];
-		$id = $attr['id'];
-		$name = $attr['name'];
-		$value = $attr['value'];
-		$class = $attr['class'];
-		$style = $attr['style'];
-		$elem_type = 'text';
+		$type = 'text';
 
-		if (isset($attr['elem_type'])) {
-			$elem_type = $attr['elem_type'];
-		}
-		$steps = "";
-		$slider = "";
-		if ($elem_type == "range") {
-				$slider = "<div id='".$role."' class='slider'></div>";
-				$class .= " slider-output";
+		if (isset($attr['type'])) {
+			$type = $attr['type'];
 		}
 
-		if (strpos($class, "notshortcodeitem") === false) {
-			$class = $class." shortcodeitem";
+		if (strpos($attr['class'], "notshortcodeitem") === false) {
+			$attr['class'] = $attr['class']." shortcodeitem";
 		}
-		return $slider."<input role='".$role."' {$steps} class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' />";
-	}
-endif;
-
-if ( !function_exists('cgmp_create_html_hidden') ):
-		function cgmp_create_html_hidden($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$value = $attr['value'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-			return "<input class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' type='hidden' />";
-	}
-endif;
-
-
-if ( !function_exists('cgmp_create_html_button') ):
-		function cgmp_create_html_button($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$value = $attr['value'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-			return "<input class='".$class."' id='".$id."' name='".$name."' value='".$value."' style='".$style."' type='button' />";
+		return "<input type='".$type ."' id='".$attr['id']."' name='".$attr['name']."' value='".$attr['value']."' 
+				role='".$attr['role']."' class='".$attr['class']."' style='".$attr['style']."' />";
 	}
 endif;
 
 if ( !function_exists('cgmp_create_html_list') ):
-		function cgmp_create_html_list($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-			return "<ul class='".$class."' id='".$id."' name='".$name."' style='".$style."'></ul>";
+	function cgmp_create_html_list($attr) {
+		return "<ul class='".$attr['class']."' id='".$attr['id']."' name='".$attr['name']."' style='".$attr['style']."'></ul>";
 	}
 endif;
 
 
 
 if ( !function_exists('cgmp_create_html_label') ):
-		function cgmp_create_html_label($attr) {
-			$for = $attr['for'];
-			$value = $attr['value'];
-		 	return "<label for=".$for.">".$value."</label>";
+	function cgmp_create_html_label($attr) {
+		 return "<label for=".$attr['for'].">".$attr['value']."</label>";
 	}
-endif;
-
-
-if ( !function_exists('cgmp_create_html_geo') ):
-		function cgmp_create_html_geo($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-
-				return  "<input type='checkbox' class='".$class."' id='".$id."' name='".$name."' style='".$style."' />";
-		}
-endif;
-
-
-
-if ( !function_exists('cgmp_create_html_geohidden') ):
-		function cgmp_create_html_geohidden($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-				$value = $attr['value'];
-
-				return "<script>
-								if (typeof jQueryCgmp != 'undefined') {
-									jQueryCgmp(document).ready(function() { 
-										return hideShowCustomMarker('".$id."'); 
-									});
-								}
-						</script>
-						<input type='hidden' class='' id='".$id."' name='".$name."' value='".$value ."' />";
-		}
 endif;
 
 
 if ( !function_exists('cgmp_create_html_geobubble') ):
 		function cgmp_create_html_geobubble($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-				$value = $attr['value'];
-
 				$falseselected = "checked";
 				$trueselected = "";
 
-				if ($value == "true") {
+				if ($attr['value'] == "true") {
 					$falseselected = "";
 					$trueselected = "checked";
 				}
 
-				$elem = "<input type='radio' class='".$class."' id='".$id."-false' role='".$name."' name='".$name."' ".$falseselected." value='false' />&nbsp;";
-				$elem .= "<label for='".$id."-false'>Display Geo address and lat/long in the marker info bubble</label><br />";
-				$elem .= "<input type='radio' class='".$class."' id='".$id."-true' role='".$name."' name='".$name."' ".$trueselected." value='true' />&nbsp;";
-				$elem .= "<label for='".$id."-true'>Display linked title and excerpt of the original blog post in the marker info bubble</label>";
+				$elem = "<input type='radio' class='".$attr['class']."' id='".$attr['id']."-false' role='".$attr['name']."' name='".$attr['name']."' ".$falseselected." value='false' />&nbsp;";
+				$elem .= "<label for='".$attr['id']."-false'>Display Geo address and lat/long in the marker info bubble</label><br />";
+				$elem .= "<input type='radio' class='".$attr['class']."' id='".$attr['id']."-true' role='".$attr['name']."' name='".$attr['name']."' ".$trueselected." value='true' />&nbsp;";
+				$elem .= "<label for='".$attr['id']."-true'>Display linked title and excerpt of the original blog post in the marker info bubble</label>";
 				return $elem;
 		}
 endif;
@@ -495,15 +288,11 @@ endif;
 
 if ( !function_exists('cgmp_create_html_custom') ):
 		function cgmp_create_html_custom($attr) {
-				$id = $attr['id'];
-				$name = $attr['name'];
-				$class = $attr['class'];
-				$style = $attr['style'];
-				$start =  "<ul class='".$class."' id='".$id."' name='".$name."' style='".$style."'>";
+				$start =  "<ul class='".$attr['class']."' id='".$attr['id']."' name='".$attr['name']."' style='".$attr['style']."'>";
 
 				$markerDir = CGMP_PLUGIN_IMAGES_DIR . "/markers/";
 
-				$items = "<div id='".$id."' class='".$class."' style='margin-bottom: 15px; padding-bottom: 10px; padding-top: 10px; padding-left: 30px; height: 200px; overflow: auto; border-radius: 4px 4px 4px 4px; border: 1px solid #C9C9C9;'>";
+				$items = "<div id='".$attr['id']."' class='".$attr['class']."' style='margin-bottom: 15px; padding-bottom: 10px; padding-top: 10px; padding-left: 30px; height: 200px; overflow: auto; border-radius: 4px 4px 4px 4px; border: 1px solid #C9C9C9;'>";
 				if (is_readable($markerDir)) {
 
 					if ($dir = opendir($markerDir)) {
@@ -523,23 +312,23 @@ if ( !function_exists('cgmp_create_html_custom') ):
 							}
 
 							if ($file != "shadow.png") {
-									$class = "";
-									$style = "";
+									$attr['class'] = "";
+									$attr['style'] = "";
 									$sel = "";
 									$iconId = "";
 									$radioId = "";
 									$src = CGMP_PLUGIN_IMAGES."/markers/".$file;
 									if ($file == "1-default.png") {
-											$class = "selected-marker-image nomarker";
-											$style = "cursor: default; ";
+											$attr['class'] = "selected-marker-image nomarker";
+											$attr['style'] = "cursor: default; ";
 											$sel = "checked='checked'";
 											$iconId = "default-marker-icon";
 											$radioId = $iconId."-radio";
 									} else if ($file == "2-default.png" || $file == "3-default.png") {
-											$class = "nomarker";
+											$attr['class'] = "nomarker";
 									}
 
-									$items .= "<div style='float: left; text-align: center; margin-right: 8px;'><a href='javascript:void(0);'><img id='".$iconId."' style='".$style."' class='".$class."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$file."' style='' name='custom-icons-radio' /></div>";
+									$items .= "<div style='float: left; text-align: center; margin-right: 8px;'><a href='javascript:void(0);'><img id='".$iconId."' style='".$attr['style']."' class='".$attr['class']."' src='".$src."' border='0' /></a><br /><input ".$sel." type='radio' id='".$radioId."' value='".$file."' style='' name='custom-icons-radio' /></div>";
 
 							}
         				}
@@ -563,26 +352,54 @@ endif;
 
 if ( !function_exists('cgmp_build_template_values') ):
 	function cgmp_build_template_values($settings) {
+
 		$template_values = array();
 
 		foreach($settings as $setting) {
-			$func_type = $setting['type'];
+			$function_type = $setting['type'];
 			$token = $setting['token'];
-			$attr = $setting['attr'];
+			$token_prefix = $setting['token_prefix'];
 
-			$pos = strrpos($func_type, "@");
-
-			if ($pos != 0) {
-				$pieces = explode("@", $func_type);
-				$func_type = $pieces[0];
-				$attr['elem_type'] = $pieces[1];
+			$function_name =  "cgmp_create_html_".$function_type;
+			$html_template_token_name = strtoupper((isset($token_prefix) && $token_prefix != '' ) ? $token_prefix : $function_type)."_".strtoupper($token);
+			$template_values[$html_template_token_name] = "COULD NOT RENDER HTML";
+			if (function_exists($function_name)) {
+				$template_values[$html_template_token_name] = $function_name($setting['attr']);
 			}
-
-
-			$func =  "cgmp_create_html_".$func_type;
-			$template_values[strtoupper($func_type)."_".strtoupper($token)] = $func($attr);
 		}
 		return $template_values;
+	}
+endif;
+
+
+if ( !function_exists('cgmp_set_values_for_html_rendering') ):
+	function cgmp_set_values_for_html_rendering(&$settings, $params) {
+
+		$html_element_select_options = array();
+		$html_element_select_options['show_hide'] = array("Show" => "true", "Hide" => "false");
+		$html_element_select_options['enable_disable_xor'] = array("Enable" => "false", "Disable" => "true");
+		$html_element_select_options['enable_disable'] = array("Enable" => "true", "Disable" => "false");
+		$html_element_select_options['map_types'] = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
+		$html_element_select_options['animation_types'] = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
+		$html_element_select_options['map_aligns'] = array("Center"=>"center", "Right"=>"right", "Left" => "left");
+		$html_element_select_options['languages'] = array("Default" => "default", "Arabic" => "ar", "Basque" => "eu", "Bulgarian" => "bg", "Bengali" => "bn", "Catalan" => "ca", "Czech" => "cs", "Danish" => "da", "English" => "en", "German" => "de", "Greek" => "el", "Spanish" => "es", "Farsi" => "fa", "Finnish" => "fi", "Filipino" => "fil", "French" => "fr", "Galician" => "gl", "Gujarati" => "gu", "Hindi" => "hi", "Croatian" => "hr", "Hungarian" => "hu", "Indonesian" => "id", "Italian" => "it", "Hebrew" => "iw", "Japanese" => "ja", "Kannada" => "kn", "Korean" => "ko", "Lithuanian" => "lt", "Latvian" => "lv", "Malayalam" => "ml", "Marathi" => "mr", "Dutch" => "nl", "Norwegian" => "no", "Oriya" => "or", "Polish" => "pl", "Portuguese" => "pt", "Romanian" => "ro", "Russian" => "ru", "Slovak" => "sk", "Slovenian" => "sl", "Serbian" => "sr", "Swedish" => "sv", "Tagalog" => "tl", "Tamil" => "ta", "Telugu" => "te", "Thai" => "th", "Turkish" => "tr", "Ukrainian" => "uk", "Vietnamese" => "vi", "Chinese (simpl)" => "zh-CN", "Chinese (tradi)" => "zh-TW");
+
+
+		if (isset($params['htmlLabelValue']) && trim($params['htmlLabelValue']) != "") {
+			$settings[] = array("type" => "label", "token" => $params['templateTokenNameSuffix'], 
+				"attr" => array("for" => $params['dbParameterId'], "value" => $params['htmlLabelValue'])); 
+		}
+
+		$settings[] = array("type" => $params['backendFunctionNameSuffix'], "token" => $params['templateTokenNameSuffix'], 
+				"token_prefix" => $params['templateTokenNamePrefix'],
+				"attr"=> array("role" => $params['templateTokenNameSuffix'],
+				"id" => $params['dbParameterId'],
+				"name" => $params['dbParameterName'],
+				"type" => $params['htmlInputElementType'],
+				"value" => (isset($params['dbParameterValue']) ? $params['dbParameterValue'] : ""),
+				"class" => (isset($params['cssClasses']) ? $params['cssClasses'] : ""),
+				"style" => (isset($params['inlineCss']) ? $params['inlineCss'] : ""),
+				"options" => (isset($params['htmlSelectOptionsKey']) ? $html_element_select_options[$params['htmlSelectOptionsKey']] : array()))); 
 	}
 endif;
 
@@ -939,11 +756,6 @@ function make_marker_geo_mashup()   {
 				}
 			}
 		}
-
-		//echo "Extracted list: " .print_r($filtered, true)."<br /><br />";
-		//exit;
-		//$addmarkerlist = implode("|", $filtered);
-		//$addmarkerlist = update_markerlist_from_legacy_locations(0, 0, "", $addmarkerlist);
 
 		return json_encode($filtered);
 	}
