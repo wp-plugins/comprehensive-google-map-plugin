@@ -59,6 +59,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		extract( $instance );
 		echo $before_widget;
 
+		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title'], $instance, $this->id_base);
+
 		if ( isset($title)) {
 			echo $before_title . $title . $after_title;
 		}
