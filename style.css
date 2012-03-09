@@ -520,6 +520,9 @@ img {
     text-transform: uppercase;
 }
 
+.google-map-placeholder {
+    margin-bottom: 15px !important;
+}
 /** Override styles */
 .google-map-placeholder img {
     max-width: none !important;

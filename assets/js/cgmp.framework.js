@@ -15,7 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var jQueryCgmp = jQuery.noConflict();
+	(function () {
+		if (typeof jQuery == "undefined" || jQuery == null ) {
+			alert("You dont have jQuery library loaded, aborting map generation :(");
+			return;
+		}
+	})();
+
+	var jQueryCgmp = jQuery.noConflict();
 	(function ($) {
 
 		var CGMPGlobal = {};
@@ -256,10 +263,10 @@ var jQueryCgmp = jQuery.noConflict();
 
 			function resetMap()  {
 				if (originalExtendedBounds != null) {
-					if (googleMap.setCenter() != originalExtendedBounds.getCenter()) {
-						Logger.info("Panning map back to its original bounds center: " + originalExtendedBounds.getCenter() + " and updated zoom: " + updatedZoom);
+					if (googleMap.getCenter() != originalExtendedBounds.getCenter()) {
+						Logger.info("Panning map back to its original bounds center: " + originalExtendedBounds.getCenter());
+						googleMap.fitBounds(originalExtendedBounds);
 						googleMap.setCenter(originalExtendedBounds.getCenter());
-						googleMap.setZoom(updatedZoom);
 					}
 				} else 	if (originalMapCenter != null) {
 					Logger.info("Panning map back to its original center: " + originalMapCenter  + " and updated zoom: " + updatedZoom);
@@ -616,6 +623,9 @@ var jQueryCgmp = jQuery.noConflict();
 
 				var index = 1;
 				$.each(json, function() {
+					if (this.excerpt == null) {
+						this.excerpt = '';
+					}
 					Logger.info("Looping over JSON object:\n\tTitle: " + this.title + "\n\tAddy: " + this.addy + "\n\tLink: " + this.permalink + "\n\tExcerpt: " + this.excerpt);
 
 					var targetArr = this.addy.split(CGMPGlobal.sep);
@@ -736,11 +746,13 @@ var jQueryCgmp = jQuery.noConflict();
 						}
 					});
 					originalExtendedBounds = bounds;
-					googleMap.fitBounds(bounds);
-					updatedZoom = googleMap.getZoom();
+					if (bounds != null) {
+						googleMap.fitBounds(bounds);
+					}
 				} else if (markers.length == 1) {
 					googleMap.setCenter(markers[0].position);
 					updatedZoom = googleMap.getZoom();
+					originalMapCenter = googleMap.getCenter();
 				}
 			}
 
@@ -753,10 +765,6 @@ var jQueryCgmp = jQuery.noConflict();
 			}
 
 			function buildLatLongBubbleInfo(element, addressPoint)  {
-				if (element.zIndex == 1) {
-					originalMapCenter = addressPoint;
-				}
-
 				var lat = addressPoint.lat();
 				lat = parseFloat(lat);
 				lat = lat.toFixed(5);
@@ -770,9 +778,7 @@ var jQueryCgmp = jQuery.noConflict();
 
 			function geocoderCallback(results, status, element) {
 				if (status == google.maps.GeocoderStatus.OK) {
-
 					var addressPoint = results[0].geometry.location;
-					
 					instrumentMarker(addressPoint, element);
 					timeout = setTimeout(function() { queryGeocoderService(); }, 330);
 				} else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -989,9 +995,9 @@ var jQueryCgmp = jQuery.noConflict();
 				return;
 			}
 
-			CGMPGlobal.sep = $("object#global-data-placeholder param#sep").attr("value");
-			CGMPGlobal.customMarkersUri = $("object#global-data-placeholder param#customMarkersUri").attr("value");
-			CGMPGlobal.errors = $("object#global-data-placeholder param#errors").attr("value");
+			CGMPGlobal.sep = $("object#global-data-placeholder").find("param#sep").val();
+			CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
+			CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
 			CGMPGlobal.errors = $.parseJSON(CGMPGlobal.errors);
 
 			$("object.map-data-placeholder").each(function (index, element) {
@@ -1006,7 +1012,7 @@ var jQueryCgmp = jQuery.noConflict();
 					return false;
 				}
 
-				var jsonString = $(element).find('param').attr("value");
+				var jsonString = $(element).find('param').val();
 				var json = $.parseJSON(jsonString);
 
 				if ($('div#' + json.id).length > 0) {

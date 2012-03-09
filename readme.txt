@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons, geo, geo mashup, marker geo mashup
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 7.0.1
+Stable tag: 7.0.2
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -40,9 +40,9 @@ Thanks!
 Licenses:
 The plugin uses wonderful custom marker icons from the <a href="http://mapicons.nicolasmollet.com" target="_blank">Maps Icons Collection</a> <img src="http://mapicons.nicolasmollet.com/wp-content/uploads/2011/03/miclogo-88x31.gif" border="0" /> project by Nicolas Mollet.
 
-Additional Contributors:
-1. Colin 'Logan' Campbell-McPherson (colin[{_}]logaan.net)
-2. Honza Rameš (ramejan[{_}]gmail.com)
+== Contributors ==
+* Colin 'Logan' Campbell-McPherson (colin_at_logaan.net)
+* Honza Rameš (ramejan_at_gmail_dot_com)
 
 == Installation ==
 
@@ -84,6 +84,11 @@ Please revisit and reconfigure your widget or shortcode configuration. The map r
 11. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 7.0.2 =
+* Bug: Setting zoom value when fitting map to its marker bounds 
+* Bug: When Geo mashup enabled, missing excerpt was appearing as NULL in the info bubble 
+* Spike: Trying to resolve IE8 and jQuery 1.6.2 .attr() problems
 
 = 7.0.1 =
 * Bug: Enforcing zero width and height on an OBJECT HTML element
