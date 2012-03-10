@@ -26,6 +26,7 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 				if ($hint == "true") {
 					$tokens_with_values = array();
 					$tokens_with_values['MARKER_DIRECTIONS_HINT_WIDTH_TOKEN'] = $width;
+					$tokens_with_values['LABEL_DIRECTIONS_HINT'] = __('Click on map markers to get directions');
 					$map_marker_directions_hint_template = cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_MAP_MARKER_DIRECTION_HINT);
 				}
 
@@ -38,6 +39,13 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 				$tokens_with_values['MARKER_DIRECTIONS_HINT_TOKEN'] = $map_marker_directions_hint_template;
 				$tokens_with_values['IMAGES_DIRECTORY_URI'] = CGMP_PLUGIN_IMAGES;
 				$tokens_with_values['DIRECTIONS_WIDTH_TOKEN'] = ($width - 10);
+				$tokens_with_values['LABEL_GET_DIRECTIONS'] = __('Get Directions');
+				$tokens_with_values['LABEL_PRINT_DIRECTIONS'] = __('Print Directions');
+				$tokens_with_values['LABEL_ADDITIONAL_OPTIONS'] = __('Additional options');
+				$tokens_with_values['LABEL_AVOID_TOLLS'] = __('Avoid tolls');
+				$tokens_with_values['LABEL_AVOID_HIGHWAYS'] = __('Avoid highways');
+				$tokens_with_values['LABEL_KM'] = __('KM');
+				$tokens_with_values['LABEL_MILES'] = __('Miles');
 
 				return cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_MAP_PLACEHOLDER_AND_DIRECTIONS);
  	}

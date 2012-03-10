@@ -585,7 +585,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				var	bubble = "<div id='bubble-" + randomNumber + "' style='height: 130px !important; width: 300px !important;' class='bubble-content'>";
 
 				if (!markersElement.geoMashup) {
-					bubble += "<h4>Address:</h4>";
+					bubble += "<h4>" + CGMPGlobal.translations.address + ":</h4>";
 					bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
 				} else {
 					var substr = markersElement.postTitle.substring(0, 30);
@@ -595,7 +595,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				}
 
 				bubble += "<hr />";
-				bubble += "<p style='text-align: left'>Directions: <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>To here</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>From here</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>Street View</a></p>";
+				bubble += "<p style='text-align: left'>" + CGMPGlobal.translations.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.streetView + "</a></p>";
 				bubble += "</div>";
 
 				return {bubbleHolderId : randomNumber, bubbleContent: bubble};
@@ -999,6 +999,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
 			CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
 			CGMPGlobal.errors = $.parseJSON(CGMPGlobal.errors);
+			CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
+			CGMPGlobal.translations = $.parseJSON(CGMPGlobal.translations);
 
 			$("object.map-data-placeholder").each(function (index, element) {
 
