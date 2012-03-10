@@ -29,6 +29,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		'maptype' => 'ROADMAP',
 		'maptypecontrol' => 'true',
 		'pancontrol' => 'true',
+		'addresscontent' => '',
 		'zoomcontrol' => 'true',
 		'scalecontrol' => 'true',
 		'streetviewcontrol' => 'true',
