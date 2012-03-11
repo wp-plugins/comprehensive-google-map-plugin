@@ -75,6 +75,33 @@ if ( !function_exists('cgmp_fetch_json_data_file') ):
 endif;
 
 
+if ( !function_exists('cgmp_parse_wiki_style_links') ):
+	function cgmp_parse_wiki_style_links($text) {
+
+		$pattern = "/\#[^\#]*\#/";
+		preg_match_all($pattern, $text, $wikilinks);
+
+		if (isset($wikilinks[0])) {
+			foreach ($wikilinks[0] as $wikilink)  {
+				$text = str_replace($wikilink, "[TOKEN]", $text);
+				$wikilink = preg_replace("/(\#)|(\#)/", "", $wikilink);
+				$url_data = preg_split("/[\s,]+/", $wikilink, 2);
+				$href = trim($url_data[0]);
+				$linkName = "Click Here";
+				if (isset($url_data[1])) {
+					$linkName = trim($url_data[1]);
+				}
+
+				$anchor = "<a href='".$href."'>".$linkName."</a>";
+				$text = str_replace("[TOKEN]", $anchor, $text);
+			}
+		}
+		return $text;
+	}
+endif;
+
+
+
 if ( !function_exists('cgmp_load_plugin_textdomain') ):
 	function cgmp_load_plugin_textdomain() {
 		load_plugin_textdomain(CGMP_NAME, false, dirname(CGMP_PLUGIN_BOOTSTRAP) . '/languages/');
@@ -104,6 +131,9 @@ endif;
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
 	function cgmp_map_data_hook_function( $map_json ) {
+		$naughty_stuff = array("'", "\r\n", "\n", "\r");
+		$map_json = str_replace($naughty_stuff, "", $map_json);
+		//$map_json = htmlentities($map_json, ENT_QUOTES);
 		echo "<object class='map-data-placeholder' style='width: 0px !important; height: 0px !important'><param name='json-string' value='".$map_json."' /></object> ".PHP_EOL;
 	}
 endif;
@@ -492,9 +522,9 @@ if ( !function_exists('cgmp_plugin_row_meta') ):
 		if ($file == $plugin) {
 
 			$links = array_merge( $links,
-				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Documentation'), 'cgmp' ) ),
-				array( sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcode Builder'), 'cgmp' ) ),
-				array( sprintf( '<a href="admin.php?page=cgmp-settings">%s</a>', __('Settings'), 'cgmp' ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Documentation') ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcode Builder') ) ),
+				array( sprintf( '<a href="admin.php?page=cgmp-settings">%s</a>', __('Settings') ) ),
 				array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">' . __('Donate') . '</a>' )
 			);
 		}

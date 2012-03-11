@@ -41,13 +41,13 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties = array();
 		$not_map_data_properties = array("title", "width", "height", "mapalign", "directionhint",
 				"latitude", "longitude", "addresscontent", "addmarkerlisthidden", "addmarkermashuphidden", "addmarkerinput", 
-				"showmarker", "animation", "infobubblecontent", "markerdirections");
+				"showmarker", "animation", "infobubblecontent", "markerdirections", "locationaddmarkerinput", "bubbletextaddmarkerinput");
 
 		$json_default_values = cgmp_fetch_json_data_file(CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
 
 		foreach ($instance as $key => $value) {
 				$value = trim($value);
-				$value = (!isset($value) || empty($value)) ? $json_default_values[$id] : esc_attr(strip_tags($value));
+				$value = (!isset($value) || empty($value)) ? $json_default_values[$key] : esc_attr(strip_tags($value));
 				$instance[$key] = $value;
 
 				if (!in_array($key, $not_map_data_properties)) {
@@ -57,17 +57,18 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 				}
 		}
 		extract( $instance );
-		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title'], $instance, $this->id_base);
 		echo $before_widget;
 
 		if ( isset($title)) {
-			echo $before_title . $title . $after_title;
+			echo $before_title . "<div class='cgmp-widget-title'><h3 class='widget-title'>".$title."</h3></div>" . $after_title;
 		}
 
 		if ($addmarkermashuphidden == 'true') {
 			$addmarkerlisthidden = make_marker_geo_mashup();
 		} else if ($addmarkermashuphidden == 'false') {
 			$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
+			$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
+			$addmarkerlisthidden = htmlspecialchars($addmarkerlisthidden);
 		}
 
 		cgmp_set_google_map_language($language);
@@ -81,6 +82,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties['addmarkermashup'] = $addmarkermashuphidden;
 		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
 		$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
+
 		cgmp_map_data_injector(json_encode($map_data_properties));
 
 		echo $after_widget;

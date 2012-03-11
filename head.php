@@ -75,6 +75,8 @@ if ( !function_exists('cgmp_google_map_init_global_admin_html_object') ):
 				echo "<object id='global-data-placeholder' style='width: 0px !important; height: 0px !important'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
+				echo "    <param id='defaultLocationText' name='defaultLocationText' value='Enter marker address or latitude,longitude here (required)' />".PHP_EOL;
+				echo "    <param id='defaultBubbleText' name='defaultBubbleText' value='Enter marker info bubble text here (optional)' />".PHP_EOL;
 				echo "</object> ".PHP_EOL;
 			}
 		}

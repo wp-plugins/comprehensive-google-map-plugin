@@ -587,6 +587,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				if (!markersElement.geoMashup) {
 					bubble += "<h4>" + CGMPGlobal.translations.address + ":</h4>";
 					bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
+					if (markersElement.customBubbleText != '') {
+						//var decodedHtml = $("<p></p>").html(markersElement.customBubbleText).text();
+						bubble += "<p style='text-align: left; margin-top: 5px !important;'>" + markersElement.customBubbleText + "</p>";
+					}
 				} else {
 					var substr = markersElement.postTitle.substring(0, 30);
 					bubble += "";
@@ -631,11 +635,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					var targetArr = this.addy.split(CGMPGlobal.sep);
 
 					if (Utils.isNumeric(targetArr[0])) {
-						addGeoPoint(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+						addGeoPoint(index, targetArr, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
 					} else if (Utils.isAlphaNumeric(targetArr[0])) {
-						storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+						storeAddress(index, targetArr, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
 					} else {
-						storeAddress(targetArr[0], index, targetArr[1], this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
+						storeAddress(index, targetArr, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
 						Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
 					}
 					index ++;
@@ -647,23 +651,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				 var targetArr = target.split(CGMPGlobal.sep);
 
 				 if (Utils.isNumeric(targetArr[0])) {
-					 addGeoPoint(targetArr[0], index, targetArr[1], '', '', '', false);
+					 addGeoPoint(index, targetArr, '', '', '', false);
 				 } else if (Utils.isAlphaNumeric(targetArr[0])) {
-					 storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
+					 storeAddress(index, targetArr, '', '', '', false);
 				 } else {
-					 storeAddress(targetArr[0], index, targetArr[1], '', '', '', false);
+					 storeAddress(index, targetArr, '', '', '', false);
 					 Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
 				 }
 			}
 
-			function storeAddress(address, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup) {
-					
-					Logger.info("Storing address: " + address + " for marker-to-be for the map ID: " + mapDivId);
+			function storeAddress(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup) {
+
+					if (targetArr[2] != null) {
+				 		if (targetArr[2].indexOf("No description provided") != -1) {
+							targetArr[2] = '';
+				 		}
+				 	} else {
+						targetArr[2] = '';
+				 	}
+					Logger.info("Storing address: " + targetArr[0] + " for marker-to-be for the map ID: " + mapDivId);
 					storedAddresses.push({
-						address: address,
+						address: targetArr[0],
 						animation: google.maps.Animation.DROP,
 						zIndex: zIndex,
-						markerIcon: markerIcon,
+						markerIcon: targetArr[1],
+						customBubbleText: targetArr[2],
 						postTitle: postTitle,
 						postLink: postLink,
 						postExcerpt: postExcerpt,
@@ -671,16 +683,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					});
 				}
 			
-			function addGeoPoint(point, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup) {
-				if (point == null || !point) {
+			function addGeoPoint(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup) {
+				if (targetArr[0] == null || !targetArr[0]) {
 					Logger.warn("Given GEO point containing Lat/Long is NULL");
 					return false;
 				}
 				
-				var latLng = point;
+				var latLng = targetArr[0];
 				if (!(latLng instanceof google.maps.LatLng)) {
-					if (point.indexOf(",") != -1) {
-						var latlngStr = point.split(",",4);
+					if (targetArr[0].indexOf(",") != -1) {
+						var latlngStr = targetArr[0].split(",",4);
 
 						if (latlngStr == null || latlngStr.length != 2) {
 							Logger.warn("Exploded lat/long array is NULL or does not have length of two");
@@ -705,7 +717,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						latLng = new google.maps.LatLng(lat, lng);
 					}
 				}
-				storeAddress(latLng, zIndex, markerIcon, postTitle, postLink, postExcerpt, geoMashup);
+				targetArr[0] = latLng;
+				storeAddress(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup);
 			}
 			
 			function queryGeocoderService() {
@@ -1015,6 +1028,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				}
 
 				var jsonString = $(element).find('param').val();
+				jsonString = Utils.searchReplace(jsonString, "'", "");
 				var json = $.parseJSON(jsonString);
 
 				if ($('div#' + json.id).length > 0) {
