@@ -9,7 +9,7 @@
 					<td>INPUT_HEIGHT</td>
 				</tr>
 				<tr>
-					<td><a id="tooltip-marker-zoom" class="google-map-tooltip-marker" href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view. Please note: when using KML, the KML zoom needs to be set within the KML file. Zoom config option does not affect zoom of the map generated from KML.">[?]</a>&nbsp;LABEL_ZOOM</td>
+					<td><a id="tooltip-marker-zoom" class="google-map-tooltip-marker" href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view. Please note: when using KML or GPX, the zoom needs to be set within the file. Zoom config option does not affect zoom of the map generated from KML/GPX.">[?]</a>&nbsp;LABEL_ZOOM</td>
 					<td>INPUT_ZOOM</td>
 					<td><a id="tooltip-marker-maptype" class="google-map-tooltip-marker" href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
 					<td>SELECT_MAPTYPE</td>
@@ -107,12 +107,12 @@
 	
 
 	<fieldset  class="collapsible">
-		<legend>KML/Geo RSS</legend>
+		<legend>KML/GPX/Geo RSS</legend>
 		<table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
 			<tbody>
 
 				<tr>	
-					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify a valid URL here to a remote KML file (Can be stored on your blog), thats starts with http(s). The Google Maps API supports the KML and GeoRSS data formats for displaying geographic information. These data formats are displayed on a map from a publicly accessible KML or GeoRSS file. Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
+					<td><a id="tooltip-marker-kml" class="google-map-tooltip-marker"  href="javascript:void(0);" title="KML/GPX/GeoRSS is a file format used to display geographic data in an earth browser, such as Google Earth, Google Maps, and Google Maps for mobile. Specify a valid URL here to a remote KML file (Can be stored on your blog), thats starts with http(s). The Google Maps API supports the KML, GPX and GeoRSS data formats for displaying geographic information. These data formats are displayed on a map from a publicly accessible KML, GPX or GeoRSS file. Please note, KML configuration *supersedes* address and latitude/longitude settings">[?]</a>&nbsp;LABEL_KML</td>
 					<td colspan="3">INPUT_KML</td>
 				</tr>
 

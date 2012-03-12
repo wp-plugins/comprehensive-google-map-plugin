@@ -22,11 +22,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		}
 	})();
 
+
+
 	var jQueryCgmp = jQuery.noConflict();
 	(function ($) {
 
-		var CGMPGlobal = {};
+		var parseJson = function(jsonString) { Logger.fatal("Using parseJson stub.."); }
+		var version = parseFloat($.fn.jquery);
+		if (version >= 1.4) {
+			parseJson = $.parseJSON;
+		} else if (window.JSON && window.JSON.parse) {
+        	parseJson =  window.JSON.parse;
+    	}
 
+		var CGMPGlobal = {};
 		var GoogleMapOrchestrator = (function() {
 
 			var builder = {};
@@ -126,13 +135,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					Logger.error("KML URL must start with HTTP(S). Aborting..");
 					return false;
 				}
-				var kmlLayer = new google.maps.KmlLayer(url);
 
+				var kmlLayer = new google.maps.KmlLayer(url);
 				google.maps.event.addListener(kmlLayer, "status_changed", function() {
 					kmlLayerStatusEventCallback(kmlLayer);
 				});
 				kmlLayer.setMap(googleMap);
-
 			}
 
 			function kmlLayerStatusEventCallback(kmlLayer)  {
@@ -245,7 +253,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				csvString = Utils.searchReplace(csvString, "'", "");
 
 				if (isGeoMashap == "true") {
-					var json = $.parseJSON(csvString);
+					var json = parseJson(csvString);
 
 					if (isBubbleContainsPostLink == "true") {
 						parseJsonStructure(json, true);
@@ -1011,9 +1019,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			CGMPGlobal.sep = $("object#global-data-placeholder").find("param#sep").val();
 			CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
 			CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
-			CGMPGlobal.errors = $.parseJSON(CGMPGlobal.errors);
+
+			CGMPGlobal.errors = parseJson(CGMPGlobal.errors);
 			CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
-			CGMPGlobal.translations = $.parseJSON(CGMPGlobal.translations);
+			CGMPGlobal.translations = parseJson(CGMPGlobal.translations);
 
 			$("object.map-data-placeholder").each(function (index, element) {
 
@@ -1029,7 +1038,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 				var jsonString = $(element).find('param').val();
 				jsonString = Utils.searchReplace(jsonString, "'", "");
-				var json = $.parseJSON(jsonString);
+
+				var json = parseJson(jsonString);
+
+				if (typeof json == "undefined" || !json) {
+					Logger.fatal("We did not parse JSON from OBJECT param. Aborting map generation ..");
+					return false;
+				}
 
 				if ($('div#' + json.id).length > 0) {
 
