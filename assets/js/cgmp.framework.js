@@ -946,9 +946,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 					var alertError = function alertError(content)  {
 
-						var mask = $('<div id="mask"/>');
+						var mask = $('<div id="cgmp-popup-mask"/>');
 						var id = Math.random().toString(36).substring(3);
-						var shortcode_dialog = $('<div id="' + id + '" class="shortcode-dialog window" />');
+						var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window" />');
 						shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
 
 						$('body').append(mask);
@@ -956,10 +956,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 						var maskHeight = $(document).height();
 						var maskWidth = $(window).width();
-						$('#mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.3});
+						$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.3});
 
-						if ($("#mask").length == 1) {
-							$('#mask').show();
+						if ($("#cgmp-popup-mask").length == 1) {
+							$('#cgmp-popup-mask').show();
 						}
 
 						var winH = $(window).height();
@@ -967,27 +967,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						$("div#" + id).css('top',  winH/2-$("div#" + id).height()/2);
 						$("div#" + id).css('left', winW/2-$("div#" + id).width()/2);
 						$("div#" + id).fadeIn(500); 
-						$('.window .close-dialog').click(function (e) {
+						$('.cgmp-popup-window .close-dialog').click(function (e) {
 							e.preventDefault();
 
-							var parentDialog = $(this).closest("div.shortcode-dialog");
+							var parentDialog = $(this).closest("div.cgmp-popup-shortcode-dialog");
 							if (parentDialog) {
 								$(parentDialog).remove();
 							}
 
-							if ($("div.shortcode-dialog").length == 0) {
-								$('#mask').remove();
+							if ($("div.cgmp-popup-shortcode-dialog").length == 0) {
+								$('#cgmp-popup-mask').remove();
 							}
 						});
-						$('#mask').click(function () {
+						$('#cgmp-popup-mask').click(function () {
 							$(this).remove();
-							$('.window').remove();
+							$('.cgmp-popup-window').remove();
 						});
 						$(window).resize(function () {
 							var box = $('.window');
 							var maskHeight = $(document).height();
 							var maskWidth = $(window).width();
-							$('#mask').css({'width':maskWidth,'height':maskHeight});
+							$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight});
 							var winH = $(window).height();
 							var winW = $(window).width();
 							box.css('top',  winH/2 - box.height()/2);

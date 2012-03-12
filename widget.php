@@ -37,7 +37,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
 
 	function widget( $args, $instance ) {
-
+		extract($args);
 		$map_data_properties = array();
 		$not_map_data_properties = array("title", "width", "height", "mapalign", "directionhint",
 				"latitude", "longitude", "addresscontent", "addmarkerlisthidden", "addmarkermashuphidden", "addmarkerinput", 
@@ -60,7 +60,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		echo $before_widget;
 
 		if ( isset($title)) {
-			echo $before_title . "<div class='cgmp-widget-title'><h3 class='widget-title'>".$title."</h3></div>" . $after_title;
+			echo $before_title .$title . $after_title;
 		}
 
 		if ($addmarkermashuphidden == 'true') {
