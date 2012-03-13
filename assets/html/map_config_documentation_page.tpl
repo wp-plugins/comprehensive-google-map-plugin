@@ -38,7 +38,7 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;width="<span class="italic">any positive numeric character, without decimal points</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;height="<span class="italic">any positive numeric character, without decimal points</span>"<br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;zoom="<span class="italic">any positive numeric character, without decimal points between zero and 20</span>"<br />  
-	&nbsp;&nbsp;&nbsp;&nbsp;maptype="<span class="italic">ROADMAP <span class="sep">or</span> SATELLITE <span class="sep">or</span> HYBRID <span class="sep">or</span> TERRAIN </span>"<br />  
+	&nbsp;&nbsp;&nbsp;&nbsp;maptype="<span class="italic">ROADMAP <span class="sep">or</span> SATELLITE <span class="sep">or</span> HYBRID <span class="sep">or</span> TERRAIN <span class="sep">or</span> OSM </span>"<br />  
 
 	&nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />  
 	&nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />  

@@ -11,7 +11,7 @@
 				<tr>
 					<td><a id="tooltip-marker-zoom" class="google-map-tooltip-marker" href="javascript:void(0);" title="Defines the resolution of the map view. Zoom levels between 0 (the lowest level, in which the entire world can be seen on one map) to 19 (the highest level, down to individual buildings) are possible within the normal maps view. Zoom levels up to 20 are possible within satellite view. Please note: when using KML or GPX, the zoom needs to be set within the file. Zoom config option does not affect zoom of the map generated from KML/GPX.">[?]</a>&nbsp;LABEL_ZOOM</td>
 					<td>INPUT_ZOOM</td>
-					<td><a id="tooltip-marker-maptype" class="google-map-tooltip-marker" href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information">[?]</a>&nbsp;LABEL_MAPTYPE</td>
+					<td><a id="tooltip-marker-maptype" class="google-map-tooltip-marker" href="javascript:void(0);" title="The following map types are available in the Google Maps: ROADMAP displays the default road map view, SATELLITE displays Google Earth satellite images, HYBRID displays a mixture of normal and satellite views, TERRAIN displays a physical map based on terrain information, OSM displays OpenStreetMap imagery, please read more about it in plugin documentation page on the left side Wordpress menu">[?]</a>&nbsp;LABEL_MAPTYPE</td>
 					<td>SELECT_MAPTYPE</td>
 				</tr>
 				<tr>

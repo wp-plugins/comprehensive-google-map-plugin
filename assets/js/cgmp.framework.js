@@ -45,6 +45,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			var initMap = function initMap(map, bubbleAutoPan, zoom, mapType)  {
 				googleMap = map;
 
+				var mapTypeIds = [];
+            	for(var type in google.maps.MapTypeId) {
+                	mapTypeIds.push(google.maps.MapTypeId[type]);
+            	}
+
 				if (mapType == "ROADMAP") {
 					mapType = google.maps.MapTypeId.ROADMAP;
 				} else if (mapType == "SATELLITE") {
@@ -53,12 +58,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					mapType = google.maps.MapTypeId.HYBRID;
 				} else if (mapType == "TERRAIN") {
 					mapType = google.maps.MapTypeId.TERRAIN;
+				} else if (mapType == "OSM") {
+					mapType = "OSM";
+					mapTypeIds.push(mapType);
+					googleMap.mapTypes.set(mapType, new google.maps.ImageMapType({
+                		getTileUrl: function(coord, zoom) {
+                    		return "http://tile.openstreetmap.org/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+                		},
+                		tileSize: new google.maps.Size(256, 256),
+                		name: "OpenStreet",
+                		maxZoom: 20
+            		}));
 				}
 
 				googleMap.setOptions({
 					zoom: zoom,
 					mapTypeId: mapType,
-					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
+					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DEFAULT, mapTypeIds: mapTypeIds}
 				});
 			}
 
