@@ -209,7 +209,7 @@ function buildShortcode(id, $) {
 				if ($(targetInput).val() != null && $(targetInput).val() != "" && $(targetInput).val().indexOf("Enter marker") == -1) {
 
 					var target = $(targetInput).val().replace(/^\s+|\s+$/g, '');
-					var chars = /^(?=.*(\d|[a-zA-Z])).{5,}$/;
+					var chars = new RegExp(/^(?=.*(\d|[a-zA-Z])).{5,}$/);
 					var hasValidChars = chars.test(target);
 					if (hasValidChars) {
 
