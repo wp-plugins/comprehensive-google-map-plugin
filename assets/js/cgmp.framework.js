@@ -56,13 +56,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 		name: "OpenStreet",
                 		maxZoom: 20
             		}));
-				} else if (mapType == "roadmap") {
+				} else if (mapType == "roadmap".toUpperCase()) {
 					mapType = google.maps.MapTypeId.ROADMAP;
-				} else if (mapType == "satellite") {
+				} else if (mapType == "satellite".toUpperCase()) {
 					mapType = google.maps.MapTypeId.SATELLITE;
-				} else if (mapType == "hybrid") {
+				} else if (mapType == "hybrid".toUpperCase()) {
 					mapType = google.maps.MapTypeId.HYBRID;
-				} else if (mapType == "terrain") {
+				} else if (mapType == "terrain".toUpperCase()) {
 					mapType = google.maps.MapTypeId.TERRAIN;
 				}
 
