@@ -22,9 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		}
 	})();
 
-
-
-	var jQueryCgmp = jQuery.noConflict();
+	//var jQueryCgmp = jQuery.noConflict();
 	(function ($) {
 
 		var parseJson = function(jsonString) { Logger.fatal("Using parseJson stub.."); }
@@ -40,8 +38,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 			var builder = {};
 			var googleMap = {};
-			var ControlType = {PAN: 0, ZOOM: 1, SCALE: 2, STREETVIEW: 3, MAPTYPE: 4, SCROLLWHEEL: 5};
-
 			var initMap = function initMap(map, bubbleAutoPan, zoom, mapType)  {
 				googleMap = map;
 
@@ -50,16 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 	mapTypeIds.push(google.maps.MapTypeId[type]);
             	}
 
-				if (mapType == "ROADMAP") {
-					mapType = google.maps.MapTypeId.ROADMAP;
-				} else if (mapType == "SATELLITE") {
-					mapType = google.maps.MapTypeId.SATELLITE;
-				} else if (mapType == "HYBRID") {
-					mapType = google.maps.MapTypeId.HYBRID;
-				} else if (mapType == "TERRAIN") {
-					mapType = google.maps.MapTypeId.TERRAIN;
-				} else if (mapType == "OSM") {
-					mapType = "OSM";
+				if (mapType == "OSM") {
 					mapTypeIds.push(mapType);
 					googleMap.mapTypes.set(mapType, new google.maps.ImageMapType({
                 		getTileUrl: function(coord, zoom) {
@@ -69,45 +56,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 		name: "OpenStreet",
                 		maxZoom: 20
             		}));
+				} else if (mapType == "roadmap") {
+					mapType = google.maps.MapTypeId.ROADMAP;
+				} else if (mapType == "satellite") {
+					mapType = google.maps.MapTypeId.SATELLITE;
+				} else if (mapType == "hybrid") {
+					mapType = google.maps.MapTypeId.HYBRID;
+				} else if (mapType == "terrain") {
+					mapType = google.maps.MapTypeId.TERRAIN;
 				}
 
 				googleMap.setOptions({
 					zoom: zoom,
 					mapTypeId: mapType,
-					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DEFAULT, mapTypeIds: mapTypeIds}
+					mapTypeControlOptions: {mapTypeIds: mapTypeIds}
 				});
 			}
 
-			var mapControl = function mapControl(isOn, mapControlType) {
-				switch (mapControlType) {
-
-					case GoogleMapOrchestrator.ControlType.SCROLLWHEEL:
-						googleMap.setOptions({scrollwheel: (isOn == "false" ? false : true) });
-					break;
-					case GoogleMapOrchestrator.ControlType.MAPTYPE:
-						googleMap.setOptions({mapTypeControl: (isOn == "false" ? false : true) });
-					break;
-					case GoogleMapOrchestrator.ControlType.PAN:
-						googleMap.setOptions({panControl: (isOn == "false" ? false : true) });
-					break;
-					case GoogleMapOrchestrator.ControlType.ZOOM:
-						googleMap.setOptions({zoomControl: (isOn == "false" ? false : true) });
-					break;
-					case GoogleMapOrchestrator.ControlType.SCALE:
-						googleMap.setOptions({scaleControl: (isOn == "false" ? false : true) });
-					break;
-					case GoogleMapOrchestrator.ControlType.STREETVIEW:
-						googleMap.setOptions({streetViewControl: (isOn == "false" ? false : true) });
-					break;
-					default:
-						Logger.warn("Unknown map control type: " + mapControlType);
-				}
+			var setMapControls = function setMapControls(mapControlOptions) {
+				googleMap.setOptions(mapControlOptions);
 			}
 
 			return {
 				initMap: initMap,
-				mapControl: mapControl,
-				ControlType: ControlType
+				setMapControls: setMapControls
 			}
 		})();
 
@@ -607,6 +579,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				randomNumber = randomNumber + "-" + mapDivId;
 
 				var	bubble = "<div id='bubble-" + randomNumber + "' style='height: 130px !important; width: 300px !important;' class='bubble-content'>";
+				//var bubble = document.createElement("div");
+				//bubble.id = "bubble-" + randomNumber;
+				//bubble.setAttribute("class", "bubble-content");
+				//bubble.style.cssText = "height: 330px !important; width: 300px !important;";
+
 
 				if (!markersElement.geoMashup) {
 					bubble += "<h4>" + CGMPGlobal.translations.address + ":</h4>";
@@ -708,40 +685,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				}
 			
 			function addGeoPoint(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup) {
-				if (targetArr[0] == null || !targetArr[0]) {
-					Logger.warn("Given GEO point containing Lat/Long is NULL");
+			
+				var latlngArr = [];
+				if (targetArr[0].indexOf(",") != -1) {
+					latlngArr = targetArr[0].split(",");
+				} else 	if (targetArr[0].indexOf(";") != -1) {
+					latlngArr = targetArr[0].split(";");
+				}
+
+				if (latlngArr.length == 0) {
+					Logger.warn("Exploded lat/long array has length of zero");
 					return false;
 				}
-				
-				var latLng = targetArr[0];
-				if (!(latLng instanceof google.maps.LatLng)) {
-					if (targetArr[0].indexOf(",") != -1) {
-						var latlngStr = targetArr[0].split(",",4);
 
-						if (latlngStr == null || latlngStr.length != 2) {
-							Logger.warn("Exploded lat/long array is NULL or does not have length of two");
-							return false;
-						}
+				latlngArr[0] = Utils.trim(latlngArr[0]);
+				latlngArr[1] = Utils.trim(latlngArr[1]);
 
-						if (latlngStr[0] == null || latlngStr[1] == null) {
-							Logger.warn("Lat or Long are NULL");
-							return false;
-						}
-
-						latlngStr[0] = 	Utils.trim(latlngStr[0]);
-						latlngStr[1] = 	Utils.trim(latlngStr[1]);
-
-						if (latlngStr[0] == '' || latlngStr[1] == '') {
-							Logger.warn("Lat or Long are empty string");
-							return false;
-						}
-
-						var lat = parseFloat(latlngStr[0]);
-						var lng = parseFloat(latlngStr[1]);
-						latLng = new google.maps.LatLng(lat, lng);
-					}
+				if (latlngArr[0] == '' || latlngArr[1] == '') {
+					Logger.warn("Lat or Long are empty string");
+					return false;
 				}
-				targetArr[0] = latLng;
+
+				targetArr[0] = new google.maps.LatLng(parseFloat(latlngArr[0]), parseFloat(latlngArr[1]));
 				storeAddress(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup);
 			}
 			
@@ -796,21 +761,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			function buildLocationFromCoords(element)  {
 				var addressPoint = element.address;
 
-				element.address = buildLatLongBubbleInfo(element, addressPoint);
+				element.address = "Lat/Long: " + addressPoint.lat().toFixed(6) + ", " + addressPoint.lng().toFixed(6);
 				instrumentMarker(addressPoint, element);
 				queryGeocoderService();
-			}
-
-			function buildLatLongBubbleInfo(element, addressPoint)  {
-				var lat = addressPoint.lat();
-				lat = parseFloat(lat);
-				lat = lat.toFixed(5);
-
-				var lng = addressPoint.lng();
-				lng = parseFloat(lng);
-				lng = lng.toFixed(5);
-
-				return "Lat/Long: " + lat + ", " + lng;
 			}
 
 			function geocoderCallback(results, status, element) {
@@ -896,7 +849,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		var Utils = (function() {
 			var isNumeric = function isNumeric(subject) {
-				var numericRegex = /^([0-9?(\-.,\s{1,})]+)$/;
+				var numericRegex = /^([0-9?(\-.,;\s{1,})]+)$/;
 				return numericRegex.test(subject);
 			}
 			var isAlphaNumeric = function isAlphaNumeric(subject) {
@@ -972,15 +925,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 						var mask = $('<div id="cgmp-popup-mask"/>');
 						var id = Math.random().toString(36).substring(3);
-						var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window" />');
-						shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
+						var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window">');
+						shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
 
 						$('body').append(mask);
 						$('body').append(shortcode_dialog);
 
 						var maskHeight = $(document).height();
 						var maskWidth = $(window).width();
-						$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.3});
+						$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.1});
 
 						if ($("#cgmp-popup-mask").length == 1) {
 							$('#cgmp-popup-mask').show();
@@ -992,9 +945,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						$("div#" + id).css('left', winW/2-$("div#" + id).width()/2);
 						$("div#" + id).fadeIn(500); 
 						$('.cgmp-popup-window .close-dialog').click(function (e) {
+							close_dialog(e, $(this));
+						});
+						$('.cgmp-popup-window .dialog-dismiss').click(function (e) {
+							 close_dialog(e, $(this));
+						});
+
+						function close_dialog(e, object) {
 							e.preventDefault();
 
-							var parentDialog = $(this).closest("div.cgmp-popup-shortcode-dialog");
+							var parentDialog = $(object).closest("div.cgmp-popup-shortcode-dialog");
 							if (parentDialog) {
 								$(parentDialog).remove();
 							}
@@ -1002,7 +962,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 							if ($("div.cgmp-popup-shortcode-dialog").length == 0) {
 								$('#cgmp-popup-mask').remove();
 							}
-						});
+						}
+
 						$('#cgmp-popup-mask').click(function () {
 							$(this).remove();
 							$('.cgmp-popup-window').remove();
@@ -1042,6 +1003,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 			$("object.map-data-placeholder").each(function (index, element) {
 
+
 				if (typeof google == "undefined" || !google) {
 					Errors.alertError(CGMPGlobal.errors.msgNoGoogle);
 					Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
@@ -1052,7 +1014,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					return false;
 				}
 
-				var jsonString = $(element).find('param').val();
+				var currentElementId = $(element).attr('id');
+				var jsonString = $(element).find('param#json-string-' + currentElementId).val();
 				jsonString = Utils.searchReplace(jsonString, "'", "");
 
 				var json = parseJson(jsonString);
@@ -1071,30 +1034,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						var markerBuilder = new MarkerBuilder();
 						markerBuilder.init(googleMap, json.bubbleautopan);
 
-						GoogleMapOrchestrator.mapControl(json.maptypecontrol, GoogleMapOrchestrator.ControlType.MAPTYPE);
-						GoogleMapOrchestrator.mapControl(json.pancontrol, GoogleMapOrchestrator.ControlType.PAN);
-						GoogleMapOrchestrator.mapControl(json.zoomcontrol, GoogleMapOrchestrator.ControlType.ZOOM);
-						GoogleMapOrchestrator.mapControl(json.scalecontrol, GoogleMapOrchestrator.ControlType.SCALE);
-						GoogleMapOrchestrator.mapControl(json.scrollwheelcontrol, GoogleMapOrchestrator.ControlType.SCROLLWHEEL);
-						GoogleMapOrchestrator.mapControl(json.streetviewcontrol, GoogleMapOrchestrator.ControlType.STREETVIEW);
 
+						var controlOptions = {
+								mapTypeControl: (json.maptypecontrol === 'true'),
+								panControl: (json.pancontrol === 'true'),
+								zoomControl: (json.zoomcontrol === 'true'),
+								scaleControl: (json.scalecontrol === 'true'),
+								scrollwheel: (json.scrollwheelcontrol === 'true'),
+								streetViewControl: (json.streetviewcontrol === 'true')
+						};
+						GoogleMapOrchestrator.setMapControls(controlOptions);
 
-						if (json.showpanoramio == "true") {
+						if (json.showpanoramio === "true") {
 							LayerBuilder.buildPanoramioLayer(json.panoramiouid);
 						}
 
-						if (json.showbike == "true") {
+						if (json.showbike === "true") {
 							LayerBuilder.buildBikeLayer();
 						}
-						if (json.showtraffic == "true") {
+						if (json.showtraffic === "true") {
 							LayerBuilder.buildTrafficLayer();
 						}
 
-						if (json.kml != null && json.kml != '') {
+						if (json.kml != null && Utils.trim(json.kml) != '') {
 							LayerBuilder.buildKmlLayer(json.kml);
 						} else {
 
-							if (json.markerlist != null && json.markerlist != '') {
+							if (json.markerlist != null && Utils.trim(json.markerlist) != '') {
 								markerBuilder.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.addmarkermashupbubble);
 							}
 
@@ -1108,4 +1074,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				}
 			//});
 		});
-	}(jQueryCgmp));
+	}(jQuery));

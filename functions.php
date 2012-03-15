@@ -123,18 +123,19 @@ endif;
 
 
 if ( !function_exists('cgmp_map_data_injector') ):
-	function cgmp_map_data_injector($map_json) {
-			cgmp_map_data_hook_function( $map_json );
+	function cgmp_map_data_injector($map_json, $id) {
+			cgmp_map_data_hook_function( $map_json, $id );
 	}
 endif;
 
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
-	function cgmp_map_data_hook_function( $map_json ) {
+	function cgmp_map_data_hook_function( $map_json, $id) {
 		$naughty_stuff = array("'", "\r\n", "\n", "\r");
 		$map_json = str_replace($naughty_stuff, "", $map_json);
-		//$map_json = htmlentities($map_json, ENT_QUOTES);
-		echo "<object class='map-data-placeholder' style='width: 0px !important; height: 0px !important'><param name='json-string' value='".$map_json."' /></object> ".PHP_EOL;
+		$objectid = 'for-mapid-'.$id;
+		$paramid = 'json-string-'.$objectid;
+		echo "<object id='".$objectid."' name='".$objectid."' class='map-data-placeholder' style='width: 0px !important; height: 0px !important'><param id='".$paramid."' name='".$paramid."' value='".$map_json."' /></object> ".PHP_EOL;
 	}
 endif;
 
@@ -429,7 +430,7 @@ if ( !function_exists('cgmp_set_values_for_html_rendering') ):
 		$html_element_select_options['show_hide'] = array("Show" => "true", "Hide" => "false");
 		$html_element_select_options['enable_disable_xor'] = array("Enable" => "false", "Disable" => "true");
 		$html_element_select_options['enable_disable'] = array("Enable" => "true", "Disable" => "false");
-		$html_element_select_options['map_types'] = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN", "OpenStreet"=>"OSM");
+		$html_element_select_options['map_types'] = array("Roadmap"=>"roadmap", "Satellite"=>"satellite", "Hybrid"=>"hybrid", "Terrain" => "terrain", "OpenStreet"=>"OSM");
 		$html_element_select_options['animation_types'] = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
 		$html_element_select_options['map_aligns'] = array("Center"=>"center", "Right"=>"right", "Left" => "left");
 		$html_element_select_options['languages'] = array("Default" => "default", "Arabic" => "ar", "Basque" => "eu", "Bulgarian" => "bg", "Bengali" => "bn", "Catalan" => "ca", "Czech" => "cs", "Danish" => "da", "English" => "en", "German" => "de", "Greek" => "el", "Spanish" => "es", "Farsi" => "fa", "Finnish" => "fi", "Filipino" => "fil", "French" => "fr", "Galician" => "gl", "Gujarati" => "gu", "Hindi" => "hi", "Croatian" => "hr", "Hungarian" => "hu", "Indonesian" => "id", "Italian" => "it", "Hebrew" => "iw", "Japanese" => "ja", "Kannada" => "kn", "Korean" => "ko", "Lithuanian" => "lt", "Latvian" => "lv", "Malayalam" => "ml", "Marathi" => "mr", "Dutch" => "nl", "Norwegian" => "no", "Oriya" => "or", "Polish" => "pl", "Portuguese" => "pt", "Romanian" => "ro", "Russian" => "ru", "Slovak" => "sk", "Slovenian" => "sl", "Serbian" => "sr", "Swedish" => "sv", "Tagalog" => "tl", "Tamil" => "ta", "Telugu" => "te", "Thai" => "th", "Turkish" => "tr", "Ukrainian" => "uk", "Vietnamese" => "vi", "Chinese (simpl)" => "zh-CN", "Chinese (tradi)" => "zh-TW");

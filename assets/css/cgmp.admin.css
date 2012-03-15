@@ -151,9 +151,9 @@ ul.custom-icons-placeholder li img:hover {
 		width: 65px;
 }
 
-#google-map-container-settings fieldset table,
-#google-map-container-metabox fieldset table,
-.tools-tabs .shortcodebuilder fieldset table {
+#google-map-container-settings fieldset table.cgmp-widget-table,
+#google-map-container-metabox fieldset table.cgmp-widget-table,
+.tools-tabs .shortcodebuilder fieldset table.cgmp-widget-table {
 		width: 602px !important;
 }
 
@@ -188,7 +188,7 @@ ul.custom-icons-placeholder li img:hover {
 		padding: 0.2em;
 		color:gray;
 		font-size: 100%;
-		text-align:right;
+		text-align:left;
 }
 
 #google-map-container-settings input,
@@ -261,12 +261,18 @@ ul.custom-icons-placeholder li img:hover {
 }
 
 ul.tools-tabs-nav {
-	margin-bottom: -1px;
+	margin-bottom: 5px;
 	padding-left: 4.2em;
 	/*overflow: hidden;*/
 	white-space: nowrap;
 	padding-right: 3.5em;
 	padding-top: 3.1em;
+}
+
+@-moz-document url-prefix() {
+    ul.tools-tabs-nav {
+        margin-bottom: -1px;
+    }
 }
 
 input.text-field {

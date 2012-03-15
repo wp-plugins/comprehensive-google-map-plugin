@@ -533,8 +533,14 @@ img {
     visibility: inherit !important;
 }
 
+
+
 .google-map-placeholder div {
     overflow: none !important;
+}
+
+.google-map-placeholder div.gmnoprint {
+    right: none !important;
 }
 /** Override styles */
 
@@ -698,7 +704,7 @@ img {
   left:0;
   top:0;
   z-index:9000;
-  background-color: #000;
+  background-color: #222;
   display:none;
 }
   
@@ -718,29 +724,85 @@ img {
   width:560px; 
   min-height: 200px;
   height: auto;
-  background-color: #efefef;
+  background: none repeat scroll 0 0 #F9EDBE;
+  border: 1px solid #EBAE3D;
   color: #222;
-  border-radius: 7px;
-    -moz-border-radius: 7px;
-    -webkit-border-radius: 7px;
-    -moz-box-shadow: 0px 5px 30px #000;
-    -webkit-box-shadow: 0px 5px 30px #000;
-    box-shadow: 0px 5px 30px #000;
+  border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .cgmp-popup-shortcode-dialog p {
     font-size: 13px !important;
+    font-family: Arial,sans-serif !important;
+}
+
+.cgmp-popup-shortcode-dialog .dismiss-container {
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.cgmp-popup-shortcode-dialog .dialog-dismiss {
+    color: #7F7F7F !important;
+    float: right;
+    font: 26px Arial,sans-serif;
+    margin: 6px 14px;
+    text-decoration: none;
+}
+
+.cgmp-popup-shortcode-dialog .close-dialog {
+   -moz-transition: all 0.218s ease 0s;
+    -moz-user-select: none;
+    background-color: #D14836;
+    background-image: -moz-linear-gradient(center top , #DD4B39, #D14836);
+    border: 1px solid transparent;
+    border-radius: 2px 2px 2px 2px;
+    color: #FFFFFF;
+    cursor: default;
+    display: inline-block;
+    font: bold 11px/27px "Arial","Helvetica",sans-serif;
+    height: 27px;
+    min-width: 54px;
+    padding: 0 8px;
+    text-align: center;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.cgmp-popup-shortcode-dialog .close-dialog:focus, .cgmp-popup-shortcode-dialog .close-dialog.focus {
+    box-shadow: 0 0 0 1px #FFFFFF inset;
+}
+.cgmp-popup-shortcode-dialog .close-dialog:focus:hover, .cgmp-popup-shortcode-dialog .close-dialog.focus:hover {
+    box-shadow: 0 0 0 1px #FFFFFF inset, 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.cgmp-popup-shortcode-dialog .close-dialog:hover {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #C53727;
+    background-image: -moz-linear-gradient(center top , #DD4B39, #C53727);
+    border-color: #B0281A #B0281A #AF301F;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    color: #FFFFFF;
+}
+.cgmp-popup-shortcode-dialog .close-dialog:active, .cgmp-popup-shortcode-dialog .close-dialog:focus:active, .cgmp-popup-shortcode-dialog .close-dialog.focus:active {
+    background-color: #B0281A;
+    background-image: -moz-linear-gradient(center top , #DD4B39, #B0281A);
+    border: 1px solid #992A1B;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset;
 }
 
 .attention {
     font-weight: bold;
     color: red;
-}
-
-object.map-data-placeholder,
-object.global-data-placeholder {
-    min-width: 0px !important; 
-    width: 0px !important; 
-    min-height: 0px !important; 
-    height: 0px !important
 }

@@ -83,7 +83,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
 		$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
 
-		cgmp_map_data_injector(json_encode($map_data_properties));
+		cgmp_map_data_injector(json_encode($map_data_properties), $id);
 
 		echo $after_widget;
 

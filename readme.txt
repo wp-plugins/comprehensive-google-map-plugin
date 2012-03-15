@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 7.0.10
+Stable tag: 7.0.11
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -87,6 +87,14 @@ Please revisit and reconfigure your widget or shortcode configuration. The map r
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 7.0.11 =
+* Enhancement: Beautified error message dialogs
+* Enhancement: Latitude and longitude can be now separated by semi-column as well as by comma
+* Enhancement: Revisited some JS functions and made them smaller
+* Enhancement: Checking for jQuery version when using parseJSON function
+* Commented on jQuery.noConflict(); as it is actually interfered with some themes poorly written JS
+* Bug: IE7 and IE8 could not display more than one map on the page
 
 = 7.0.10 =
 * Enhancement: Added OpenStreetMap (OSM) as an additional map type. User can select whether to view Google map imagery or OpenStreetMap imagery.
