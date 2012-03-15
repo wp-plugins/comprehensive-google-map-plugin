@@ -899,7 +899,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				if ( $.browser.msie ) {
 					//Die... die... die.... why dont you just, die???
 				 } else {
-					if ($.browser.mozilla && parseInt($.browser.version) >= 3 ) {
+					if ($.browser.mozilla && parseInt($.browser.version) >= 1 ) {
 						console.log(message);
 					} else if ($.browser.webkit) {
 						console.log(message);
@@ -1017,6 +1017,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				var currentElementId = $(element).attr('id');
 				var jsonString = $(element).find('param#json-string-' + currentElementId).val();
 				jsonString = Utils.searchReplace(jsonString, "'", "");
+				jsonString = jsonString.replace("&quot;", "");
 
 				var json = parseJson(jsonString);
 

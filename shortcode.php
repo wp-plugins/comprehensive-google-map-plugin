@@ -56,9 +56,11 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 		$addmarkerlist = make_marker_geo_mashup();
 	} else if ($addmarkermashup == 'false') {
 		$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
-		$addmarkerlist = cgmp_parse_wiki_style_links($addmarkerlist);
 		$addmarkerlist = htmlspecialchars($addmarkerlist);
 	}
+	$bad_entities = array("&quot;", "&#039;");
+	$addmarkerlist = str_replace($bad_entities, "", $addmarkerlist);
+	$addmarkerlist = cgmp_parse_wiki_style_links($addmarkerlist);
 
 	cgmp_set_google_map_language($language);
 	cgmp_google_map_init_scripts();

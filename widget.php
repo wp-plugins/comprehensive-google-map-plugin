@@ -67,9 +67,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 			$addmarkerlisthidden = make_marker_geo_mashup();
 		} else if ($addmarkermashuphidden == 'false') {
 			$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
-			$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
 			$addmarkerlisthidden = htmlspecialchars($addmarkerlisthidden);
 		}
+		$bad_entities = array("&quot;", "&#039;");
+		$addmarkerlisthidden = str_replace($bad_entities, "", $addmarkerlisthidden);
+		$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
 
 		cgmp_set_google_map_language($language);
 		cgmp_google_map_init_scripts();

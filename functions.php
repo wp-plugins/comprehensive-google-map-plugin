@@ -801,8 +801,19 @@ function make_marker_geo_mashup()   {
 
 				if (!isset($filtered[$tobe_filtered_loc])) {
 					$filtered[$tobe_filtered_loc]['addy'] = $full_loc;
-					$filtered[$tobe_filtered_loc]['title'] = $title;
 					$filtered[$tobe_filtered_loc]['permalink'] = $permalink;
+
+					$bad_entities = array("&quot;", "&#039;", "'");
+					if ($title != null) {
+						$title = trim($title);
+						$title = str_replace($bad_entities, "", $title);
+					}
+					$filtered[$tobe_filtered_loc]['title'] = $title;
+					if ($excerpt != null) {
+						$excerpt = trim($excerpt);
+						$excerpt = str_replace($bad_entities, "", $excerpt);
+					}
+
 					$filtered[$tobe_filtered_loc]['excerpt'] = $excerpt;
 				}
 			}

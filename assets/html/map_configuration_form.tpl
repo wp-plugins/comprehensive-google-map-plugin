@@ -75,7 +75,6 @@
 					</td>
 					<td colspan="2" style="text-align: left !important;">
 						<table class="marker-element-holder" cellspacing="0" cellpadding="0" border="0" style="width: 98% !important;">
-							<tbody>
 								<tr>
 									<td width="" rowspan="2" style="text-align: left;">
 										INPUT_ADDMARKERINPUT
@@ -87,7 +86,6 @@
 										INPUT_BUBBLETEXTADDMARKERINPUT
 									</td>
 								</tr>
-							</tbody>
 						</table>
 					</td>
 					<td>
