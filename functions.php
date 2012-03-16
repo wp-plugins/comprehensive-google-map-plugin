@@ -135,7 +135,7 @@ if ( !function_exists('cgmp_map_data_hook_function') ):
 		$map_json = str_replace($naughty_stuff, "", $map_json);
 		$objectid = 'for-mapid-'.$id;
 		$paramid = 'json-string-'.$objectid;
-		echo "<object id='".$objectid."' name='".$objectid."' class='map-data-placeholder' style='width: 0px !important; height: 0px !important'><param id='".$paramid."' name='".$paramid."' value='".$map_json."' /></object> ".PHP_EOL;
+	echo "<object id='".$objectid."' name='".$objectid."' class='cgmp-data-placeholder cgmp-json-string-placeholder'><param id='".$paramid."' name='".$paramid."' value='".$map_json."' /></object> ".PHP_EOL;
 	}
 endif;
 

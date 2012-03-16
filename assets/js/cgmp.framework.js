@@ -587,20 +587,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 				if (!markersElement.geoMashup) {
 					bubble += "<h4>" + CGMPGlobal.translations.address + ":</h4>";
-					bubble += "<p style='text-align: left'>" + contentFromMarker + "</p>";
+					bubble += "<p class='custom-bubble-text'>" + contentFromMarker + "</p>";
 					if (markersElement.customBubbleText != '') {
 						//var decodedHtml = $("<p></p>").html(markersElement.customBubbleText).text();
-						bubble += "<p style='text-align: left; margin-top: 5px !important;'>" + markersElement.customBubbleText + "</p>";
+						bubble += "<p class='custom-bubble-text'>" + markersElement.customBubbleText + "</p>";
 					}
 				} else {
 					var substr = markersElement.postTitle.substring(0, 30);
 					bubble += "";
-					bubble += "<p style='text-align: left'><a style='font-size: 15px !important; font-weight: bold !important;' title='Original post: " + markersElement.postTitle + "' href='" + markersElement.postLink  + "'>" + substr + "..</a></p>";
-					bubble += "<p style='font-size: 12px !important; padding-left: 12px !important; padding-right: 6px !important; text-align: left; line-height: 130% !important'>" + markersElement.postExcerpt  + "</p>";
+					bubble += "<p class='geo-mashup-post-title'><a title='Original post: " + markersElement.postTitle + "' href='" +markersElement.postLink+ "'>" + substr + "..</a></p>";
+					bubble += "<p class='geo-mashup-post-excerpt'>" + markersElement.postExcerpt  + "</p>";
 				}
 
 				bubble += "<hr />";
-				bubble += "<p style='text-align: left'>" + CGMPGlobal.translations.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.streetView + "</a></p>";
+				bubble += "<p class='custom-bubble-text'>" + CGMPGlobal.translations.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.streetView + "</a></p>";
 				bubble += "</div>";
 
 				return {bubbleHolderId : randomNumber, bubbleContent: bubble};
@@ -1001,7 +1001,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
 			CGMPGlobal.translations = parseJson(CGMPGlobal.translations);
 
-			$("object.map-data-placeholder").each(function (index, element) {
+			$("object.cgmp-json-string-placeholder").each(function (index, element) {
 
 
 				if (typeof google == "undefined" || !google) {

@@ -123,7 +123,7 @@
     "dbParameterId" : "bubbleautopan",
     "dbParameterName" : "bubbleautopan",
     "dbParameterValue" : "true",
-    "htmlLabelValue" : "Bubble Auto-Pan",
+    "htmlLabelValue" : "Bubble Pan",
     "htmlSelectOptionsKey" : "enable_disable",
     "templateTokenNameSuffix" : "bubbleautopan"
   },

@@ -74,7 +74,7 @@ if ( !function_exists('cgmp_google_map_init_global_admin_html_object') ):
 		function cgmp_google_map_init_global_admin_html_object()  {
 
 			if (is_admin()) {
-				echo "<object id='global-data-placeholder' style='width: 0px !important; height: 0px !important'>".PHP_EOL;
+				echo "<object id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
 				echo "    <param id='defaultLocationText' name='defaultLocationText' value='Enter marker address or latitude,longitude here (required)' />".PHP_EOL;
@@ -115,7 +115,7 @@ if ( !function_exists('cgmp_google_map_init_global_html_object') ):
 				$tokens_with_values['LABEL_FROMHERE'] = __('From here');
 				$info_bubble_translated_template = cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_INFO_BUBBLE);
 
-				echo "<object id='global-data-placeholder' style='width: 0px !important; height: 0px !important'>".PHP_EOL;
+				echo "<object id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
 				echo "    <param id='errors' name='errors' value='".$global_error_messages_json_template."' />".PHP_EOL;

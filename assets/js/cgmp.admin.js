@@ -38,41 +38,60 @@ function displayShortcodeInPopup(container_id) {
 
 function displayPopupWithContent(content, $)  {
 
-		var mask = $('<div id="mask"/>');
-		var shortcode_dialog = $('<div id="shortcode-dialog" class="window" />');
-		shortcode_dialog.html("<p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close' value='Close' /></div>");
+		var mask = $('<div id="cgmp-popup-mask"/>');
+		var id = Math.random().toString(36).substring(3);
+		var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window">');
+		shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
 
 		$('body').append(mask);
 		$('body').append(shortcode_dialog);
 
 		var maskHeight = $(document).height();
 		var maskWidth = $(window).width();
-		$('#mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.1});
-		$('#mask').show();	
-		$('#mask').show();	
+		$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight, 'opacity':0.1});
+
+		if ($("#cgmp-popup-mask").length == 1) {
+			$('#cgmp-popup-mask').show();
+		}
+
 		var winH = $(window).height();
 		var winW = $(window).width();
-		$("div#shortcode-dialog").css('top',  winH/2-$("div#shortcode-dialog").height()/2);
-		$("div#shortcode-dialog").css('left', winW/2-$("div#shortcode-dialog").width()/2);
-		$("div#shortcode-dialog").fadeIn(500); 
-		$('.window .close').click(function (e) {
-			e.preventDefault();
-			$('#mask').remove();
-			$('.window').remove();
+		$("div#" + id).css('top',  winH/2-$("div#" + id).height()/2);
+		$("div#" + id).css('left', winW/2-$("div#" + id).width()/2);
+		$("div#" + id).fadeIn(500); 
+		$('.cgmp-popup-window .close-dialog').click(function (e) {
+			close_dialog(e, $(this));
 		});
-		$('#mask').click(function () {
+		$('.cgmp-popup-window .dialog-dismiss').click(function (e) {
+			 close_dialog(e, $(this));
+		});
+
+		function close_dialog(e, object) {
+			e.preventDefault();
+
+			var parentDialog = $(object).closest("div.cgmp-popup-shortcode-dialog");
+			if (parentDialog) {
+				$(parentDialog).remove();
+			}
+
+			if ($("div.cgmp-popup-shortcode-dialog").length == 0) {
+				$('#cgmp-popup-mask').remove();
+			}
+		}
+
+		$('#cgmp-popup-mask').click(function () {
 			$(this).remove();
-			$('.window').remove();
+			$('.cgmp-popup-window').remove();
 		});
 		$(window).resize(function () {
- 			var box = $('.window');
-        	var maskHeight = $(document).height();
-        	var maskWidth = $(window).width();
-        	$('#mask').css({'width':maskWidth,'height':maskHeight});
-        	var winH = $(window).height();
-        	var winW = $(window).width();
-        	box.css('top',  winH/2 - box.height()/2);
-        	box.css('left', winW/2 - box.width()/2);
+			var box = $('.window');
+			var maskHeight = $(document).height();
+			var maskWidth = $(window).width();
+			$('#cgmp-popup-mask').css({'width':maskWidth,'height':maskHeight});
+			var winH = $(window).height();
+			var winW = $(window).width();
+			box.css('top',  winH/2 - box.height()/2);
+			box.css('left', winW/2 - box.width()/2);
 		});
 }
 

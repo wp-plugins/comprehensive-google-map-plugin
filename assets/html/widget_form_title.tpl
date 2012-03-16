@@ -1,4 +1,4 @@
-			<fieldset>
+			<fieldset class="fieldset">
 				<legend>Widget Title</legend>
 				<table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
 					<tbody>
