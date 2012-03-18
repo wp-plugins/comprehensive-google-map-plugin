@@ -26,21 +26,15 @@ endif;
 if ( !function_exists('cgmp_google_map_admin_add_script') ):
 		function cgmp_google_map_admin_add_script()  {
 
-				$whitelist = array('localhost', '127.0.0.1');
+				$whitelist = array('localhost', '127.0.0.1', 'initbinder.com');
 
               	wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5.a', true);
-				
-				if (!in_array($_SERVER['HTTP_HOST'], $whitelist)) {
- 					wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput.min.js', array('jquery'), CGMP_VERSION, true);
-				} else {
-					wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput.js', array('jquery'), CGMP_VERSION, true);
+				$minified = ".min";
+				if (in_array($_SERVER['HTTP_HOST'], $whitelist)) {
+					$minified = "";
 				}
-
-				if (!in_array($_SERVER['HTTP_HOST'], $whitelist)) {
-					wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin.min.js', array('jquery'), CGMP_VERSION, true);
-				} else {
-					wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin.js', array('jquery'), CGMP_VERSION, true);
-				}
+				wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
+				wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
 		}
 endif;
 
@@ -58,13 +52,13 @@ if ( !function_exists('cgmp_google_map_init_scripts') ):
 			if (!is_admin()) {
 
 				wp_enqueue_style('cgmp-google-map-styles', CGMP_PLUGIN_URI . 'style.css', false, CGMP_VERSION, "screen");
-				$whitelist = array('localhost', '127.0.0.1');
+				$whitelist = array('localhost', '127.0.0.1', 'initbinder.com');
 				wp_enqueue_script( array ( 'jquery' ) );
-				if (!in_array($_SERVER['HTTP_HOST'], $whitelist)) {
-					wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework.min.js', array(), CGMP_VERSION, true);
-				} else {
-					wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework.js', array(), CGMP_VERSION, true);
+				$minified = ".min";
+				if (in_array($_SERVER['HTTP_HOST'], $whitelist)) {
+					$minified = "";
 				}
+				wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework'.$minified.'.js', array(), CGMP_VERSION, true);
 			}
 		}
 endif;
@@ -77,7 +71,7 @@ if ( !function_exists('cgmp_google_map_init_global_admin_html_object') ):
 				echo "<object id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
-				echo "    <param id='defaultLocationText' name='defaultLocationText' value='Enter marker address or latitude,longitude here (required)' />".PHP_EOL;
+				echo "    <param id='defaultLocationText' name='defaultLocationText' value='Enter marker destination address or latitude,longitude here (required)' />".PHP_EOL;
 				echo "    <param id='defaultBubbleText' name='defaultBubbleText' value='Enter marker info bubble text here (optional)' />".PHP_EOL;
 				echo "</object> ".PHP_EOL;
 			}
@@ -115,8 +109,11 @@ if ( !function_exists('cgmp_google_map_init_global_html_object') ):
 				$tokens_with_values['LABEL_FROMHERE'] = __('From here');
 				$info_bubble_translated_template = cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_INFO_BUBBLE);
 
+				global $cgmp_global_map_language;
+
 				echo "<object id='global-data-placeholder' style='background-color:transparent !important;border:none !important;height:0 !important;left:10000000px !important;line-height:0 !important;margin:0 !important;outline:medium none !important;padding:0 !important;position:absolute !important;top:100000px !important;width:0 !important;z-index:9999786 !important'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
+				echo "    <param id='language' name='language' value='".$cgmp_global_map_language."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
 				echo "    <param id='errors' name='errors' value='".$global_error_messages_json_template."' />".PHP_EOL;
 				echo "    <param id='translations' name='translations' value='".$info_bubble_translated_template."' />".PHP_EOL;

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 7.0.14
+Stable tag: 7.0.15
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -16,7 +16,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * Over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
-* Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
+* Google-like directions - driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
 * Short-code builder available, which integrated with post/page editor. In other words, you do not need
@@ -70,9 +70,12 @@ Just click once somewhere on the map
 
 4. The map appears empty with "loading" image or just gray square why is that?
 Please check the following when adding marker locations: 
-[a] In the shortcode builder, did you click the 'Add Marker' button before clicking 'Send to Editor'?
-[b] In the widget, did you click the 'Add Marker' button before clicking 'Save'?
+[a] In the shortcode builder, did you add marker loaction(s) and clicked the 'Add' button before clicking 'Send to Editor'?
+[b] In the widget, did you add marker loaction(s) and clicked the 'Add' button before clicking 'Save'?
 Please revisit and reconfigure your widget or shortcode configuration. The map requires at least one marker location to be added.
+
+5. Where is plugin documentation?<br />
+After plugin activation, look at the left hand side menu of WP admin, look for "Google Map" item
 
 == Screenshots ==
 
@@ -88,8 +91,15 @@ Please revisit and reconfigure your widget or shortcode configuration. The map r
 
 == Changelog ==
 
+= 7.0.15 =
+* Enhancement: Added option to disable map from being draggable
+* Enhancement: Added 45 degree tilt option
+* Enhancement: Added overview map control - a small fold out map in the lower right corner of the main map
+* Enhancement: Google map API now loaded via google.load, which makes plugin compatible with plugins like Better WP Security
+* Enhancement: General CSS face lift in plugin admin and documentation
+
 = 7.0.14 =
-* Enhancement: CSS bug fix
+* Bug: Fixed CSS of OBJECT element for Safari and Chrome 
 
 = 7.0.13 =
 * Bug: Fixed CSS of OBJECT element for Safari and Chrome 

@@ -31,12 +31,17 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
 
 		if ( is_active_widget(false, false, $this->id_base, true) ) {
-			
+
 		}
 	}
 
 
 	function widget( $args, $instance ) {
+
+		if (is_admin() || is_feed()) {
+			return;
+		}
+
 		extract($args);
 		$map_data_properties = array();
 		$not_map_data_properties = array("title", "width", "height", "mapalign", "directionhint",
@@ -73,9 +78,6 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$addmarkerlisthidden = str_replace($bad_entities, "", $addmarkerlisthidden);
 		$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
 
-		cgmp_set_google_map_language($language);
-		cgmp_google_map_init_scripts();
-
 		$id = md5(time().' '.rand());
 		echo cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
 
@@ -85,10 +87,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
 		$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
 
+		cgmp_set_google_map_language($language);
+		cgmp_google_map_init_scripts();
 		cgmp_map_data_injector(json_encode($map_data_properties), $id);
 
 		echo $after_widget;
-
 	}
 
 	function update( $new_instance, $old_instance ) {

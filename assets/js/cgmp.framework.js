@@ -993,6 +993,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				return;
 			}
 
+			/*
+			var head = document.getElementsByTagName('head')[0];
+   			var link = document.createElement('link');
+   			link.type= 'text/css';
+			link.rel = 'stylesheet';
+   			link.href = $("object#global-data-placeholder").find("param#stylesheet-href").val();
+			link.media = 'screen';
+   			head.appendChild(link);
+			*/
+
 			CGMPGlobal.sep = $("object#global-data-placeholder").find("param#sep").val();
 			CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
 			CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
@@ -1001,18 +1011,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
 			CGMPGlobal.translations = parseJson(CGMPGlobal.translations);
 
+			if (typeof google == "undefined" || !google) {
+				Errors.alertError(CGMPGlobal.errors.msgNoGoogle);
+				Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
+				return false;
+			} else if (typeof GMap2 != "undefined" && GMap2) {
+				Errors.alertError(CGMPGlobal.errors.msgApiV2);
+				Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
+				return false;
+			}
+
+			CGMPGlobal.language = $("object#global-data-placeholder").find("param#language").val();
+			google.load('maps', '3', {other_params:'sensor=false&libraries=panoramio&language=' + CGMPGlobal.language, callback: function () { google_map_api_callback(); }});
+
+		function google_map_api_callback() {
+
 			$("object.cgmp-json-string-placeholder").each(function (index, element) {
-
-
-				if (typeof google == "undefined" || !google) {
-					Errors.alertError(CGMPGlobal.errors.msgNoGoogle);
-					Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
-					return false;
-				} else if (typeof GMap2 != "undefined" && GMap2) {
-					Errors.alertError(CGMPGlobal.errors.msgApiV2);
-					Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
-					return false;
-				}
 
 				var currentElementId = $(element).attr('id');
 				var jsonString = $(element).find('param#json-string-' + currentElementId).val();
@@ -1042,7 +1056,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 								zoomControl: (json.zoomcontrol === 'true'),
 								scaleControl: (json.scalecontrol === 'true'),
 								scrollwheel: (json.scrollwheelcontrol === 'true'),
-								streetViewControl: (json.streetviewcontrol === 'true')
+								streetViewControl: (json.streetviewcontrol === 'true'),
+								tilt: (json.tiltfourtyfive === 'true' ? 45 : null),
+								draggable: (json.draggable === 'true'),
+								overviewMapControl: true,
+								overviewMapControlOptions: {opened: false}
 						};
 						GoogleMapOrchestrator.setMapControls(controlOptions);
 
@@ -1073,6 +1091,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				} else {
 					Logger.fatal("It looks like the map DIV placeholder ID [" + json.id + "] does not exist in the page!");
 				}
+			});
+
+		}
 			//});
-		});
-	}(jQuery));
+}(jQuery));
