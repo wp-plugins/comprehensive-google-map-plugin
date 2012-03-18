@@ -68,6 +68,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 			echo $before_title .$title . $after_title;
 		}
 
+		$addmarkermashuphidden = isset($addmarkermashuphidden) ? $addmarkermashuphidden : 'false';
 		if ($addmarkermashuphidden == 'true') {
 			$addmarkerlisthidden = make_marker_geo_mashup();
 		} else if ($addmarkermashuphidden == 'false') {
@@ -87,6 +88,12 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
 		$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
 
+		//When widget was saved and untouched for a long time, the new added config options were not initialized
+		$map_data_properties['scrollwheelcontrol'] = isset($map_data_properties['scrollwheelcontrol']) ? $map_data_properties['scrollwheelcontrol'] : "false";
+		$map_data_properties['tiltfourtyfive'] = isset($map_data_properties['tiltfourtyfive']) ? $map_data_properties['tiltfourtyfive'] : "false";
+		$map_data_properties['draggable'] = isset($map_data_properties['draggable']) ? $map_data_properties['draggable'] : "true";
+		$language = isset($language) ? $language : "en";
+		
 		cgmp_set_google_map_language($language);
 		cgmp_google_map_init_scripts();
 		cgmp_map_data_injector(json_encode($map_data_properties), $id);

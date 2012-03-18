@@ -240,17 +240,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				csvString = Utils.trim(markerLocations);
 				csvString = Utils.searchReplace(csvString, "'", "");
 
-				if (isGeoMashap == "true") {
+				if (isGeoMashap === "true") {
 					var json = parseJson(csvString);
 
-					if (isBubbleContainsPostLink == "true") {
+					if (isBubbleContainsPostLink === "true") {
 						parseJsonStructure(json, true);
-					} else if (isBubbleContainsPostLink == "false") {
+					} else if (isBubbleContainsPostLink === "false") {
 						parseJsonStructure(json, false);
 					}
 					queryGeocoderService();
 
-				} else if (isGeoMashap == "false") {
+				} else if (isGeoMashap == null || isGeoMashap === "false") {
 					parseCsv();
 					queryGeocoderService();
 				}

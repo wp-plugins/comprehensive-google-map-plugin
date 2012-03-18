@@ -41,20 +41,20 @@
 					<td valign="top" class="fourth-td">SELECT_PANCONTROL</td>
 				</tr>
 				<tr>
-					<td><a id="tooltip-marker-zoomcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Zoom control displays a slider (for large maps) or small '+/-' buttons (for small maps) to control the zoom level of the map. This control appears by default in the top left corner of the map on non-touch devices or in the bottom left corner on touch devices">[Help?]</a>&nbsp;LABEL_Z_OOMCONTROL</td>
-					<td>SELECT_Z_OOMCONTROL</td>
-					<td><a id="tooltip-marker-scalecontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Scale control displays a map scale element. This control is not enabled by default">[Help?]</a>&nbsp;LABEL_SCALECONTROL</td>
-					<td>SELECT_SCALECONTROL</td>
+					<td valign="top"><a id="tooltip-marker-zoomcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Zoom control displays a slider (for large maps) or small '+/-' buttons (for small maps) to control the zoom level of the map. This control appears by default in the top left corner of the map on non-touch devices or in the bottom left corner on touch devices">[Help?]</a>&nbsp;LABEL_Z_OOMCONTROL</td>
+					<td valign="top">SELECT_Z_OOMCONTROL</td>
+					<td valign="top"><a id="tooltip-marker-scalecontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Scale control displays a map scale element. This control is not enabled by default">[Help?]</a>&nbsp;LABEL_SCALECONTROL</td>
+					<td valign="top">SELECT_SCALECONTROL</td>
 				</tr>
 				<tr>
-					<td><a id="tooltip-marker-streetviewcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map">[Help?]</a>&nbsp;LABEL_STREETVIEWCONTROL</td>
-					<td>SELECT_STREETVIEWCONTROL</td>
-					<td><a id="tooltip-marker-scrollwheelcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Scroll Wheel control enables user to zoom in/out on mouse wheel scroll. This setting has 'disable' setting by default">[Help?]</a>&nbsp;LABEL_SCROLLWHEELCONTROL</td>
-					<td>SELECT_SCROLLWHEELCONTROL</td>
+					<td valign="top"><a id="tooltip-marker-streetviewcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Street View control contains a Pegman icon which can be dragged onto the map to enable Street View. This control appears by default in the top left corner of the map">[Help?]</a>&nbsp;LABEL_STREETVIEWCONTROL</td>
+					<td valign="top">SELECT_STREETVIEWCONTROL</td>
+					<td valign="top"><a id="tooltip-marker-scrollwheelcontrol" class="google-map-tooltip-marker" href="javascript:void(0);" title="The Scroll Wheel control enables user to zoom in/out on mouse wheel scroll. This setting has 'disable' setting by default">[Help?]</a>&nbsp;LABEL_SCROLLWHEELCONTROL</td>
+					<td valign="top">SELECT_SCROLLWHEELCONTROL</td>
 				</tr>
 				<tr>
-					<td><a id="tooltip-map-draggable" class="google-map-tooltip-marker" href="javascript:void(0);" title="If disabled, prevents the map from being dragged. Dragging is enabled by default">[Help?]</a>&nbsp;LABEL_DRAGGABLE</td>
-					<td>SELECT_DRAGGABLE</td>
+					<td valign="top"><a id="tooltip-map-draggable" class="google-map-tooltip-marker" href="javascript:void(0);" title="If disabled, prevents the map from being dragged. Dragging is enabled by default">[Help?]</a>&nbsp;LABEL_DRAGGABLE</td>
+					<td valign="top">SELECT_DRAGGABLE</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>

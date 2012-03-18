@@ -100,7 +100,7 @@ function buildShortcode(id, $) {
 	$(id + ' .shortcodeitem').each(function() {
 	
 		var role = $(this).attr('role');
-		var val =  $(this).attr('value');
+		var val =  $(this).val();
 
 		if (role == 'addmarkerlisthidden') {
 			val = $('<div />').text(val).html();
@@ -118,7 +118,7 @@ function buildShortcode(id, $) {
 			role = name;
 		}
 	
-		if (typeof role == "undefined" || role == "undefined") {
+		if (role == null || typeof role == "undefined" || role == "undefined") {
 			role = $(this).attr('id');
 		}
 
@@ -142,22 +142,22 @@ function buildShortcode(id, $) {
 
 	var CGMPGlobal = {};
 
-	CGMPGlobal.sep = $("object#global-data-placeholder param#sep").attr("value");
-	CGMPGlobal.customMarkersUri = $("object#global-data-placeholder param#customMarkersUri").attr("value");
-	CGMPGlobal.defaultLocationText = $("object#global-data-placeholder param#defaultLocationText").attr("value");
-	CGMPGlobal.defaultBubbleText = $("object#global-data-placeholder param#defaultBubbleText").attr("value");
+	CGMPGlobal.sep = $("object#global-data-placeholder param#sep").val();
+	CGMPGlobal.customMarkersUri = $("object#global-data-placeholder param#customMarkersUri").val();
+	CGMPGlobal.defaultLocationText = $("object#global-data-placeholder param#defaultLocationText").val();
+	CGMPGlobal.defaultBubbleText = $("object#global-data-placeholder param#defaultBubbleText").val();
 
 	var lists = [];
 
 		function initTokenHolders()  {
 
 				lists = [];
-				var parentElements = "div#widgets-right  ul.token-input-list, div#google-map-container-metabox ul.token-input-list";
+				var parentElements = "div.widget-google-map-container ul.token-input-list, div#google-map-container-metabox ul.token-input-list";
 
 				$.map($(parentElements), function(element) {
 					var id = $(element).attr("id");
 
-					if (id != null) {
+					if (id != null && id.indexOf('__i__') == -1) {
 						var hiddenInput = "#" + element.id + "hidden";
 						var csv = $(hiddenInput).val();
 
