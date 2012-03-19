@@ -74,7 +74,7 @@
 					<td valign="top" class="fourth-td" align="left"></td>
 				</tr>
 				<tr>
-					<td class="first-td-cell"><a id="tooltip-marker-width" class="google-map-tooltip-marker" href="javascript:;" title="If selected, the generated map will aggregate all markers from other maps created by you in your public published posts. In other words, you get a Geo marker mashup in one map! At the moment, the mashup does not include markers from maps on pages and widgets, posts ONLY">[Help?]</a>&nbsp;</td>
+					<td class="first-td-cell"><a id="tooltip-marker-width" class="google-map-tooltip-marker" href="javascript:;" title="If selected, the generated map will aggregate all markers from other maps created by you in your public published posts and pages. In other words, you get a Geo marker mashup in one map! At the moment, the mashup does not include markers from maps in widgets, POSTS and PAGES ONLY">[Help?]</a>&nbsp;</td>
 					<td align="left" colspan="3">
 						<span>
 							HIDDEN_ADDMARKERMASHUPHIDDEN

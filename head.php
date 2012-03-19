@@ -16,11 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( !function_exists('cgmp_enqueue_head_scripts') ):
+        function cgmp_enqueue_head_scripts()  {
+				wp_enqueue_script( array ( 'jquery' ) );
+        }
+endif;
+
+
 if ( !function_exists('cgmp_google_map_admin_add_style') ):
         function cgmp_google_map_admin_add_style()  {
        			wp_enqueue_style('comprehensive-google-map-style', CGMP_PLUGIN_CSS . '/cgmp.admin.css', false, CGMP_VERSION, "screen");
         }
 endif;
+
 
 
 if ( !function_exists('cgmp_google_map_admin_add_script') ):
@@ -53,12 +61,17 @@ if ( !function_exists('cgmp_google_map_init_scripts') ):
 
 				wp_enqueue_style('cgmp-google-map-styles', CGMP_PLUGIN_URI . 'style.css', false, CGMP_VERSION, "screen");
 				$whitelist = array('localhost', '127.0.0.1', 'initbinder.com');
-				wp_enqueue_script( array ( 'jquery' ) );
 				$minified = ".min";
 				if (in_array($_SERVER['HTTP_HOST'], $whitelist)) {
 					$minified = "";
 				}
 				wp_enqueue_script('cgmp-google-map-wrapper-framework-final', CGMP_PLUGIN_JS. '/cgmp.framework'.$minified.'.js', array(), CGMP_VERSION, true);
+
+				global $global_is_global_object_loaded;
+				if (!$global_is_global_object_loaded) {
+					add_action('wp_footer', 'cgmp_google_map_init_global_html_object');
+					$global_is_global_object_loaded = true;
+				}
 			}
 		}
 endif;

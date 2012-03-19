@@ -5,6 +5,7 @@ span.sep{color:red;font-size:12px;font-style:normal;font-weight:400}
 fieldset.fieldset{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#F1F1F1;background-image:0;border-bottom:1px solid #c1c1c1;border-left:1px solid #D1D1D1;border-radius:3px;border-right:1px solid #D1D1D1;border-top:1px solid #D1D1D1;margin-bottom:15px;padding:10px 10px 15px}
 fieldset.fieldset legend{color:gray;font-size:100%;padding:0.2em;text-align:left}
 fieldset.fieldset table{width:100%}
+fieldset.fieldset table p.geo-mashup-marker-options {margin: 0 0 0.3em; padding: 0}
 fieldset.fieldset table td{width:100px}
 fieldset.fieldset table td.first-td-cell{width: 70px}
 fieldset.fieldset table td.btn-add-marker-td{width:22px}

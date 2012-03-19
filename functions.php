@@ -156,7 +156,7 @@ if ( !function_exists('cgmp_set_google_map_language') ):
 
 			} else {
 				if (!is_admin()) {
-					wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array('jquery'), false, true);
+					wp_enqueue_script('cgmp-google-map-api', CGMP_GOOGLE_API_URL, array(), false, true);
 					$cgmp_global_map_language = "en";
 				}
 			}
@@ -182,7 +182,7 @@ if ( !function_exists('cgmp_deregister_and_enqueue_google_api') ):
 			$api = CGMP_GOOGLE_API_URL;
 			//$api .= "&language=".$lang;
 			wp_deregister_script( 'cgmp-google-map-api' );
-			wp_register_script('cgmp-google-map-api', $api, array('jquery'), false, true);
+			wp_register_script('cgmp-google-map-api', $api, array(), false, true);
 			wp_enqueue_script('cgmp-google-map-api');
 		}
 	}
@@ -334,10 +334,11 @@ if ( !function_exists('cgmp_create_html_geobubble') ):
 					$trueselected = "checked";
 				}
 
-				$elem = "<input type='radio' class='".$attr['class']."' id='".$attr['id']."-false' role='".$attr['name']."' name='".$attr['name']."' ".$falseselected." value='false' />&nbsp;";
-				$elem .= "<label for='".$attr['id']."-false'>Display Geo address and lat/long in the marker info bubble</label><br />";
+				$elem = "<p class='geo-mashup-marker-options'>When Geo mashup marker clicked, info bubble should contain:</p>";
+				$elem .= "<input type='radio' class='".$attr['class']."' id='".$attr['id']."-false' role='".$attr['name']."' name='".$attr['name']."' ".$falseselected." value='false' />&nbsp;";
+				$elem .= "<label for='".$attr['id']."-false'> - marker location (address or lat/long, whichever was set in the original map)</label><br />";
 				$elem .= "<input type='radio' class='".$attr['class']."' id='".$attr['id']."-true' role='".$attr['name']."' name='".$attr['name']."' ".$trueselected." value='true' />&nbsp;";
-				$elem .= "<label for='".$attr['id']."-true'>Display linked title and excerpt of the original blog post in the marker info bubble</label>";
+				$elem .= "<label for='".$attr['id']."-true'> - linked title to the original post/page and the latter's excerpt</label>";
 				return $elem;
 		}
 endif;
@@ -603,24 +604,37 @@ endif;
 
 
 if ( !function_exists('extract_locations_from_all_posts') ):
-		function extract_locations_from_all_posts()  {
-			$args = array(
+	function extract_locations_from_all_posts()  {
+			$post_query_args = array(
 					'numberposts'     => 120,
 	    		    'orderby'         => 'post_date',
 	    			'order'           => 'DESC',
 	   	 		    'post_type'       => 'post',
 					'post_status'     => 'publish' );
+			$posts = get_posts( $post_query_args );
 
-				$posts = get_posts( $args );
+			$page_query_args = array(
+					'number'     => 120,
+	    		    'sort_column'     => 'post_date',
+	    			'sort_order' 	  => 'DESC',
+	   	 		    'post_type'       => 'page',
+					'post_status'     => 'publish' );
+			$pages = get_pages( $page_query_args );
+
+			return array_merge(process_collection_of_contents($posts), process_collection_of_contents($pages));
+	}
+endif;
+
+
+if ( !function_exists('process_collection_of_contents') ):
+		function process_collection_of_contents($published_content_list)  {
 
 				$db_markers = array();
-				foreach($posts as $post) {
-
-					//echo "Extracted list: " .print_r($post, true)."<br /><br />";
+				foreach($published_content_list as $post) {
 
 					$post_content = $post->post_content;
 					$extracted = extract_locations_from_post_content($post_content);
-					//echo "Extracted list: " .print_r($extracted, true)."<br /><br />";
+
 					if (count($extracted) > 0) {
 							$post_title = $post->post_title;
 							$post_title = str_replace("'", "", $post_title);
@@ -637,19 +651,18 @@ if ( !function_exists('extract_locations_from_all_posts') ):
 						} else {
 							$clean = clean_excerpt($post_content);
 						}
-						
-						//Dont consider text that has shortcodes of some sort
 						if ( strlen($clean) > 0 ) {
 							$excerpt = substr($clean, 0, 130);
 							$db_markers[$post->ID]['excerpt'] = $excerpt."..";
 						} 
 					}
 				}
-				//echo "Extracted list: " .print_r(json_decode(json_encode($db_markers)), true)."<br /><br />";
 				return $db_markers;
 
 	}
 endif;
+
+
 
 if ( !function_exists('clean_excerpt') ):
 	function clean_excerpt($content)  {
@@ -805,7 +818,7 @@ function make_marker_geo_mashup()   {
 					$loc_arr = explode(CGMP_SEP, $full_loc);
 					$tobe_filtered_loc = $loc_arr[0];
 				}
-
+				$tobe_filtered_loc = trim($tobe_filtered_loc);
 				if (!isset($filtered[$tobe_filtered_loc])) {
 					$filtered[$tobe_filtered_loc]['addy'] = $full_loc;
 					$filtered[$tobe_filtered_loc]['permalink'] = $permalink;
