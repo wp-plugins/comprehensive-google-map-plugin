@@ -954,7 +954,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 								var mask = $('<div id="cgmp-popup-mask"/>');
 								var id = Math.random().toString(36).substring(3);
 								var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window">');
-								shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
+								shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='text-align: left; padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
 
 								$('body').append(mask);
 								$('body').append(shortcode_dialog);
@@ -1021,15 +1021,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						return;
 					}
 
-					/*
-					var head = document.getElementsByTagName('head')[0];
+					var head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement;
 					var link = document.createElement('link');
 					link.type= 'text/css';
 					link.rel = 'stylesheet';
-					link.href = $("object#global-data-placeholder").find("param#stylesheet-href").val();
+					link.href = $("object#global-data-placeholder").find("param#cssHref").val();
 					link.media = 'screen';
 					head.appendChild(link);
-					*/
 
 					CGMPGlobal.sep = $("object#global-data-placeholder").find("param#sep").val();
 					CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
