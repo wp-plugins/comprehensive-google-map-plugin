@@ -23,240 +23,136 @@ if ( !function_exists( 'add_action' ) ) {
 
 class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
-	var $maindesc = "A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more.";
+	var $maindesc = "A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more.";
 
 	function ComprehensiveGoogleMap_Widget() {
 		$widget_ops = array('classname' => 'comprehensivegooglemap_widget', 'description' => __( $this->maindesc, 'kalisto') );
-		$cops = array('width' => 480);
+		$cops = array('width' => 570);
 		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
 
-		if ( is_active_widget(false, false, $this->id_base) ){
-				add_action( 'wp_print_scripts', array(&$this, 'add_script') );
-				add_action( 'wp_print_styles', array(&$this, 'add_style') );
+		if ( is_active_widget(false, false, $this->id_base, true) ) {
+
 		}
 	}
 
-	function add_script(){
-
-	}
-
-	function add_style() {
-
-	}
 
 	function widget( $args, $instance ) {
-		extract( $args );
-		$title = apply_filters('widget_title', empty($instance['title']) ? __('Google Map', 'kalisto') : $instance['title'], $instance, $this->id_base);
 
-		$width = empty($instance['width']) ? 250 : $instance['width'];
-		$height = empty($instance['height']) ? 250 : $instance['height'];
-		$zoom = empty($instance['zoom']) ? 5 : $instance['zoom'];
-		$latitude = empty($instance['latitude']) ? 40 : $instance['latitude'];
-		$longitude = empty($instance['longitude']) ? -73 : $instance['longitude'];
-		$maptype = empty($instance['maptype']) ? 'ROADMAP' : $instance['maptype'];
-		$showmarker = empty($instance['showmarker']) ? "true" : $instance['showmarker'];
-		$animation = empty($instance['animation']) ? 'DROP' : $instance['animation'];
-		$infobubblecontent = empty($instance['infobubblecontent']) ? '' : $instance['infobubblecontent'];
-		$addresscontent = empty($instance['addresscontent']) ? '' : $instance['addresscontent'];
-		$showbike = empty($instance['showbike']) ? '' : $instance['showbike'];
-		$showtraffic = empty($instance['showtraffic']) ? '' : $instance['showtraffic'];
-		$kml = empty($instance['kml']) ? '' : $instance['kml'];
-
-
-		$controlOpts = array();
-		$controlOpts['m_aptypecontrol'] = empty($instance['m_aptypecontrol']) ? "true" : $instance['m_aptypecontrol'];
-		$controlOpts['pancontrol'] = empty($instance['pancontrol']) ? "true" : $instance['pancontrol'];
-		$controlOpts['z_oomcontrol'] = empty($instance['z_oomcontrol']) ? "true" : $instance['z_oomcontrol'];
-		$controlOpts['scalecontrol'] = empty($instance['scalecontrol']) ? "true" : $instance['scalecontrol'];
-		$controlOpts['streetviewcontrol'] = empty($instance['streetviewcontrol']) ? "true" : $instance['streetviewcontrol'];
-
-		echo $before_widget;
-
-		if ( $title) {
-			echo $before_title . $title . $after_title;
+		if (is_admin() || is_feed()) {
+			return;
 		}
 
+		extract($args);
+		$map_data_properties = array();
+		$not_map_data_properties = array("title", "width", "height", "mapalign", "directionhint",
+				"latitude", "longitude", "addresscontent", "addmarkerlisthidden", "addmarkermashuphidden", "addmarkerinput", 
+				"showmarker", "animation", "infobubblecontent", "markerdirections", "locationaddmarkerinput", "bubbletextaddmarkerinput");
+
+		$json_default_values = cgmp_fetch_json_data_file(CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
+
+		foreach ($instance as $key => $value) {
+				$value = trim($value);
+				$value = (!isset($value) || empty($value)) ? $json_default_values[$key] : esc_attr(strip_tags($value));
+				$instance[$key] = $value;
+
+				if (!in_array($key, $not_map_data_properties)) {
+					$key = str_replace("hidden", "", $key);
+					$key = str_replace("_", "", $key);
+					$map_data_properties[$key] = $value;
+				}
+		}
+		extract( $instance );
+		echo $before_widget;
+
+		if ( isset($title)) {
+			echo $before_title .$title . $after_title;
+		}
+
+		$addmarkermashuphidden = isset($addmarkermashuphidden) ? $addmarkermashuphidden : 'false';
+		if ($addmarkermashuphidden == 'true') {
+			$addmarkerlisthidden = make_marker_geo_mashup();
+		} else if ($addmarkermashuphidden == 'false') {
+			$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
+			$addmarkerlisthidden = htmlspecialchars($addmarkerlisthidden);
+		}
+		$bad_entities = array("&quot;", "&#039;");
+		$addmarkerlisthidden = str_replace($bad_entities, "", $addmarkerlisthidden);
+		$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
+
 		$id = md5(time().' '.rand());
+		echo cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint);
 
-		$result = '';
-		$result .= cgmp_draw_map_placeholder($id, $width, $height);
-		$result .= cgmp_begin_map_init($id, $latitude, $longitude, $zoom, $maptype, $controlOpts);
-		$result .= cgmp_draw_map_marker($id, $showmarker, $animation);
-		$result .= cgmp_draw_marker_infobubble($id, $infobubblecontent);
-		$result .= cgmp_draw_map_address($id, $addresscontent);
-		$result .= cgmp_draw_map_bikepath($id, $showbikepath);
-		$result .= cgmp_draw_map_traffic($id, $showtraffic);
-		$result .= cgmp_draw_kml($id, $kml);
-		$result .= cgmp_end_map_init();
-		echo $result;
-		
+		$map_data_properties['id'] = $id;
+		$map_data_properties['markerlist'] = $addmarkerlisthidden;
+		$map_data_properties['addmarkermashup'] = $addmarkermashuphidden;
+		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
+		$map_data_properties['panoramiouid'] = cgmp_clean_panoramiouid($map_data_properties['panoramiouid']);
+
+		//When widget was saved and untouched for a long time, the new added config options were not initialized
+		$map_data_properties['scrollwheelcontrol'] = isset($map_data_properties['scrollwheelcontrol']) ? $map_data_properties['scrollwheelcontrol'] : "false";
+		$map_data_properties['tiltfourtyfive'] = isset($map_data_properties['tiltfourtyfive']) ? $map_data_properties['tiltfourtyfive'] : "false";
+		$map_data_properties['draggable'] = isset($map_data_properties['draggable']) ? $map_data_properties['draggable'] : "true";
+		$language = isset($language) ? $language : "en";
+
+		cgmp_set_google_map_language($language);
+		global $global_is_global_object_loaded;
+		$global_is_global_object_loaded = true;
+		cgmp_map_data_injector(json_encode($map_data_properties), $id);
+
 		echo $after_widget;
-
 	}
 
 	function update( $new_instance, $old_instance ) {
+
 		$instance = $old_instance;
-         
-		$instance['title'] = strip_tags($new_instance['title']);
-		$instance['width'] = strip_tags($new_instance['width']);
-		$instance['height'] = strip_tags($new_instance['height']);
-		$instance['zoom'] = strip_tags($new_instance['zoom']);
-		$instance['latitude'] = strip_tags($new_instance['latitude']);
-		$instance['longitude'] = strip_tags($new_instance['longitude']);
-		$instance['maptype'] = strip_tags($new_instance['maptype']);
-		$instance['showmarker'] = strip_tags($new_instance['showmarker']);
-		$instance['animation'] = strip_tags($new_instance['animation']);
-		$instance['infobubblecontent'] = strip_tags($new_instance['infobubblecontent']);
-		$instance['m_aptypecontrol'] = strip_tags($new_instance['m_aptypecontrol']);
-		$instance['pancontrol'] = strip_tags($new_instance['pancontrol']);
-		$instance['z_oomcontrol'] = strip_tags($new_instance['z_oomcontrol']);
-		$instance['scalecontrol'] = strip_tags($new_instance['scalecontrol']);
-		$instance['streetviewcontrol'] = strip_tags($new_instance['streetviewcontrol']);
-		$instance['addresscontent'] = strip_tags($new_instance['addresscontent']);
-		$instance['showbike'] = strip_tags($new_instance['showbike']);
-		$instance['showtraffic'] = strip_tags($new_instance['showtraffic']);
-		$instance['kml'] = strip_tags($new_instance['kml']);
-
-
+		foreach ($new_instance as $key => $val) {
+			$instance[$key] = strip_tags($new_instance[$key]);
+		}
 		return $instance;
 	}
 
 	function form( $instance ) {
 
-		$bools = array("Show" => "true", "Hide" => "false");
-		$types = array("Roadmap"=>"ROADMAP", "Satellite"=>"SATELLITE", "Hybrid"=>"HYBRID", "Terrain" => "TERRAIN");
-		$animations = array("Drop"=>"DROP", "Bounce"=>"BOUNCE");
-	
-		$title = isset($instance['title']) ? esc_attr($instance['title']) : 'Google Map';
-		$width = isset($instance['width']) ? esc_attr($instance['width']) : '250';
-		$height = isset($instance['height']) ? esc_attr($instance['height']) : '250';
-		$zoom = isset($instance['zoom']) ? esc_attr($instance['zoom']) : '5';
-		$latitude = isset($instance['latitude']) ? esc_attr($instance['latitude']) : '40';
-		$longitude = isset($instance['longitude']) ? esc_attr($instance['longitude']) : '-73';
-        $maptype = isset($instance['maptype']) ? esc_attr($instance['maptype']) : 'ROADMAP';
-		$showmarker = isset($instance['showmarker']) ? esc_attr($instance['showmarker']) : "true";
-		$animation = isset($instance['animation']) ? esc_attr($instance['animation']) : 'DROP';
-
-		$infobubblecontent = isset($instance['infobubblecontent']) ? esc_attr(htmlspecialchars_decode($instance['infobubblecontent'])) : "";
-		$addresscontent = isset($instance['addresscontent']) ? esc_attr(htmlspecialchars_decode($instance['addresscontent'])) : "";
-
-		$maptypecontrol = !empty($instance['m_aptypecontrol']) ? esc_attr($instance['m_aptypecontrol']) : 'true';
-		$pancontrol = !empty($instance['pancontrol']) ? esc_attr($instance['pancontrol']) : 'true';
-		$zoomcontrol = !empty($instance['z_oomcontrol']) ? esc_attr($instance['z_oomcontrol']) : 'true';
-		$scalecontrol = !empty($instance['scalecontrol']) ? esc_attr($instance['scalecontrol']) : 'true';
-		$streetviewcontrol = !empty($instance['streetviewcontrol']) ? esc_attr($instance['streetviewcontrol']) : 'true';
-		$showbike = !empty($instance['showbike']) ? esc_attr($instance['showbike']) : 'false';
-		$showtraffic = !empty($instance['showtraffic']) ? esc_attr($instance['showtraffic']) : 'false';
-		$kml = !empty($instance['kml']) ? esc_attr($instance['kml']) : '';
-
-
-		$title_template = file_get_contents(CGMP_PLUGIN_HTML."/form_title_template.plug");
-		$template = file_get_contents(CGMP_PLUGIN_HTML."/form_body_template.plug");
-		
-		$template_values = array();
-		
 		$settings = array();
 
-		$v = "title";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Title")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $title, "class" => "widefat", "style" => "width: 100% !important;"));
+		$json_html_elems = cgmp_fetch_json_data_file(CGMP_JSON_DATA_HTML_ELEMENTS_FORM_PARAMS);
+		$json_default_values = cgmp_fetch_json_data_file(CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES);
 
-		$v = "width";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Width (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $width, "class" => "widefat", "style" => "")); 
+		if (is_array($json_html_elems)) {
 
+			$legacy_params = array("latitude" => "", "longitude" => "", "addresscontent" => "", "addmarkerlisthidden" => "");
 
-		$v = "height";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Height (px)")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $height, "class" => "widefat", "style" => "")); 
+			foreach ($json_html_elems as $data_chunk) {
+				$id = $data_chunk['dbParameterId'];
+				$value = trim($instance[$id]);
+				$value = (!isset($value) || empty($value)) ? $json_default_values[$id] : esc_attr(strip_tags($value));
 
-		$v = "latitude";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Latitude")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $latitude, "class" => "widefat", "style" => "")); 
+				if (array_key_exists($id, $legacy_params)) {
+					$legacy_params[$id] = $value;
+				}
 
-		$v = "longitude";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Longitude")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $longitude, "class" => "widefat", "style" => "")); 
+				if ($id == "addmarkerlisthidden") {
+					extract($legacy_params);
+					$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
+					$value = $addmarkerlisthidden;
+				}
 
-		$v = "zoom";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Zoom")); 
-		$settings[] = array("type" => "input@range", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $zoom, "class" => "widefat", "style" => "")); 
+				$data_chunk['dbParameterValue'] = $value;
+				$data_chunk['dbParameterId'] = $this->get_field_id($id);
+				$data_chunk['dbParameterName'] = $this->get_field_name($id);
+				cgmp_set_values_for_html_rendering($settings, $data_chunk);
+			}
+		}
 
-		$v = "maptype";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Map type")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $maptype, "options" => $types)); 
-
-
-		$v = "showmarker";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Marker")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showmarker, "options" => $bools)); 
-
-		
-		$v = "animation";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Animation")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $animation, "options" => $animations)); 
-
-
-		$v = "m_aptypecontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "MapType")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $maptypecontrol, "options" => $bools)); 
-
-		$v = "pancontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Pan")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $pancontrol, "options" => $bools)); 
-
-
-		$v = "z_oomcontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Zoom")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $zoomcontrol, "options" => $bools)); 
-
-		
-		$v = "scalecontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Scale")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $scalecontrol, "options" => $bools)); 
-
-		$v = "streetviewcontrol";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "StreetView")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $streetviewcontrol, "options" => $bools)); 
-
-
-		$v = "infobubblecontent";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Content Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $infobubblecontent, "class" => "widefat", "style" => "width: 100% !important;"));
-
-
-		$v = "addresscontent";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Address Text")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $addresscontent, "class" => "widefat", "style" => "width: 100% !important;"));
-
-
-		$v = "showbike";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Bike Paths")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showbike, "options" => $bools)); 
-
-		$v = "showtraffic";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "Traffic Info")); 
-		$settings[] = array("type" => "select", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $showtraffic, "options" => $bools)); 
-
-		$v = "kml";
-		$settings[] = array("type" => "label", "token" => $v, "attr" => array("for" => $this->get_field_id($v), "value" => "URL")); 
-		$settings[] = array("type" => "input", "token" => $v, "attr"=> array("role" => $v, "id" => $this->get_field_id($v), "name" => $this->get_field_name($v), "value" => $kml, "class" => "widefat", "style" => "width: 100% !important;"));
-
-
+		$template_values = array();
 		$template_values = cgmp_build_template_values($settings);
 
-		global $global_fieldset_names;
-		$title_template = cgmp_replace_template_tokens($global_fieldset_names, $title_template);
-		$template = cgmp_replace_template_tokens($global_fieldset_names, $template);
-		$template = cgmp_replace_template_tokens($template_values, $template);
-		$title_template = cgmp_replace_template_tokens($template_values, $title_template);
-		
-		$res = "<div id='google-map-container-{$this->id}' class='widget-google-map-container'>
-				<div id='slider'></div>
-				{$title_template}
-				{$template}
-				</div>";
-		echo $res;
+		$tokens_with_values = array();
+		$tokens_with_values['WIDGET_ID_TOKEN'] = $this->id;
+		$tokens_with_values['WIDGET_FORM_TITLE_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE);
+		$tokens_with_values['MAP_CONFIGURATION_FORM_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_MAP_CONFIGURATION_FORM);
+
+		echo cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_WIDGET);
 	}
 }
 ?>
