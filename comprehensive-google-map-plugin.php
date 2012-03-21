@@ -2,8 +2,8 @@
 /*
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
-Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, traffic/bike lanes and more. 
-Version: 1.0.1
+Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
+Version: 7.0.21
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -29,54 +29,90 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define('CGMP_GOOGLE_API_URL', 'http://maps.googleapis.com/maps/api/js?sensor=false');
-define('CGMP_VERSION', '1.0.1');
-define('CGMP_PLUGIN_DIR', dirname( __FILE__ ));
-define('CGMP_PLUGIN_URI', plugin_dir_url( __FILE__ ));
-define('CGMP_PLUGIN_ASSETS_URI', CGMP_PLUGIN_URI.'assets');
-define('CGMP_PLUGIN_CSS', CGMP_PLUGIN_ASSETS_URI . '/css');
-define('CGMP_PLUGIN_IMAGES', CGMP_PLUGIN_CSS . '/images');
-define('CGMP_PLUGIN_JS', CGMP_PLUGIN_ASSETS_URI . '/js');
-define('CGMP_PLUGIN_HTML', CGMP_PLUGIN_DIR . '/assets/html');
 
-define('CGMP_FIELDSETNAME_WIDGETTITLE', 'Widget Title');
-define('CGMP_FIELDSETNAME_BASICSETTINGS', 'Basic Settings');
-define('CGMP_FIELDSETNAME_MARKER_CONFIG', 'Marker Configuration');
-define('CGMP_FIELDSETNAME_MARKER_INFOBUBBLE', 'Marker Info Bubble Configuration');
-define('CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO', 'Destination Address Information');
-define('CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH', 'Bike Paths and Traffic Information');
-define('CGMP_FIELDSETNAME_CONTROL_CONFIG', 'Control Handle Configuration');
-define('CGMP_FIELDSETNAME_KML', 'KML/GeoRSS Configuration');
+if ( !function_exists('cgmp_define_constants') ):
+	function cgmp_define_constants() {
+		define('CGMP_PLUGIN_BOOTSTRAP', __FILE__ );
+		define('CGMP_PLUGIN_DIR', dirname(CGMP_PLUGIN_BOOTSTRAP));
+		define('CGMP_PLUGIN_URI', plugin_dir_url(CGMP_PLUGIN_BOOTSTRAP));
 
-$global_fieldset_names = array();
-$global_fieldset_names["LEGEND_BASIC_SETTINGS"] = CGMP_FIELDSETNAME_BASICSETTINGS;
-$global_fieldset_names["LEGEND_MARKER"] = CGMP_FIELDSETNAME_MARKER_CONFIG;
-$global_fieldset_names["LEGEND_CONTROL"] = CGMP_FIELDSETNAME_CONTROL_CONFIG;
-$global_fieldset_names["LEGEND_INFOBUBBLE"] = CGMP_FIELDSETNAME_MARKER_INFOBUBBLE;
-$global_fieldset_names["LEGEND_ADDRESS"] = CGMP_FIELDSETNAME_DESTINATION_ADDR_INFO;
-$global_fieldset_names["LEGEND_WIDGETTITLE"] = CGMP_FIELDSETNAME_WIDGETTITLE;
-$global_fieldset_names["LEGEND_BIKE_AND_TRAFFIC"] = CGMP_FIELDSETNAME_BIKE_TRAFFIC_PATH;
-$global_fieldset_names["LEGEND_KML"] = CGMP_FIELDSETNAME_KML;
+		$json_constants_string = file_get_contents(CGMP_PLUGIN_DIR."/data/plugin.constants.json");
+		$json_constants = json_decode($json_constants_string, true);
+		$json_constants = $json_constants[0];
 
-$doc_url = get_option('siteurl')."/wp-admin/admin.php?page=menu.php";
-$global_fieldset_names["DOC_URL"] = $doc_url;
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
-//define('CGMP_FIELDSETNAME_', '');
+		if (is_array($json_constants)) {
+			foreach ($json_constants as $constant_key => $constant_value) {
+				$constant_value = str_replace("CGMP_PLUGIN_DIR", CGMP_PLUGIN_DIR, $constant_value);
+				$constant_value = str_replace("CGMP_PLUGIN_URI", CGMP_PLUGIN_URI, $constant_value);
+				define($constant_key, $constant_value);
+			}
+		}
+	}
+endif;
 
-require_once (CGMP_PLUGIN_DIR . '/functions.php');
-require_once (CGMP_PLUGIN_DIR . '/widget.php');
-require_once (CGMP_PLUGIN_DIR . '/shortcode.php');
-require_once (CGMP_PLUGIN_DIR . '/metabox.php');
-require_once (CGMP_PLUGIN_DIR . '/menu.php');
-require_once (CGMP_PLUGIN_DIR . '/head.php');
+if ( !function_exists('cgmp_require_dependancies') ):
+	function cgmp_require_dependancies() {
+		require_once (CGMP_PLUGIN_DIR . '/functions.php');
+		require_once (CGMP_PLUGIN_DIR . '/widget.php');
+		require_once (CGMP_PLUGIN_DIR . '/shortcode.php');
+		require_once (CGMP_PLUGIN_DIR . '/metabox.php');
+		require_once (CGMP_PLUGIN_DIR . '/menu.php');
+		require_once (CGMP_PLUGIN_DIR . '/head.php');
+	}
+endif;
 
-add_action('admin_init', 'cgmp_google_map_admin_add_style');
-add_action('admin_init', 'cgmp_google_map_admin_add_script');
-add_action('admin_menu', 'cgmp_google_map_meta_boxes');
-add_action('admin_menu', 'cgmp_google_map_plugin_menu');
-add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
-add_action('wp_head', 'cgmp_google_map_head_scripts', 10);
-add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
+if ( !function_exists('cgmp_register_hooks') ):
+	function cgmp_register_hooks() {
+		register_activation_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_on_activate_hook');
+		register_deactivation_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_on_deactivation_hook');
+		register_uninstall_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_on_uninstall_hook');
+	}
+endif;
+
+if ( !function_exists('cgmp_add_actions') ):
+	function cgmp_add_actions() {
+		//http://scribu.net/wordpress/optimal-script-loading.html
+		add_action('init', 'cgmp_google_map_register_scripts');
+		add_action('wp_footer', 'cgmp_google_map_init_scripts');
+		add_action('admin_notices', 'cgmp_show_message');
+		add_action('admin_init', 'cgmp_google_map_admin_add_style');
+		add_action('admin_init', 'cgmp_google_map_admin_add_script');
+		add_action('admin_footer', 'cgmp_google_map_init_global_admin_html_object');
+		add_action('admin_menu', 'cgmp_google_map_plugin_menu');
+		add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
+		add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
+		add_action('publish_post', 'cgmp_publish_post_hook' );
+		add_action('publish_page', 'cgmp_publish_page_hook' );
+	}
+endif;
+
+if ( !function_exists('cgmp_add_shortcode_support') ):
+	function cgmp_add_shortcode_support() {
+		add_shortcode('google-map-v3', 'cgmp_shortcode_googlemap_handler');
+	}
+endif;
+
+if ( !function_exists('cgmp_add_filters') ):
+	function cgmp_add_filters() {
+		add_filter('widget_text', 'do_shortcode');
+		add_filter( 'plugin_row_meta', 'cgmp_plugin_row_meta', 10, 2 );
+	}
+endif;
+
+global $cgmp_global_map_language;
+$cgmp_global_map_language = "en";
+
+global $global_is_global_object_loaded;
+$global_is_global_object_loaded = false;
+
+/* BOOTSTRAPPING STARTS */
+cgmp_define_constants();
+cgmp_require_dependancies();
+cgmp_add_actions();
+cgmp_register_hooks();
+cgmp_add_shortcode_support();
+cgmp_add_filters();
+/* BOOTSTRAPPING ENDS */
+
 
 ?>
