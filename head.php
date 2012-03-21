@@ -62,7 +62,12 @@ if ( !function_exists('cgmp_google_map_register_scripts') ):
 				$minified = "";
 			}
 			wp_register_script('cgmp-google-map-orchestrator-framework', CGMP_PLUGIN_JS. '/cgmp.framework'.$minified.'.js', array(), CGMP_VERSION, true);
-			wp_register_script('cgmp-google-map-jsapi', CGMP_GOOGLE_API_URL, array(), false, true);
+
+			$api = CGMP_GOOGLE_API_URL;
+			if (is_ssl()) {
+				$api = CGMP_GOOGLE_API_URL_SSL;
+			}
+			wp_register_script('cgmp-google-map-jsapi', $api, array(), false, true);
 		}
 endif;
 
