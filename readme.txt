@@ -16,7 +16,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * Over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
-* Google-like directions - driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
+* Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
 * Short-code builder available, which integrated with post/page editor. In other words, you do not need
