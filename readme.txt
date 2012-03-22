@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.2.1
 Tested up to: 3.3.1
-Stable tag: 7.0.22
+Stable tag: 7.0.23
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -16,7 +16,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * Over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
-* Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
+* Google-like directions - driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
 * Short-code builder available, which integrated with post/page editor. In other words, you do not need
@@ -90,6 +90,11 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 7.0.23 =
+* Bug: HTML tags were not stripped from marker location and description when using short code builder
+* Enhancement: Added extra button 'send to editor' above short code builder form
+* Enhancement: Making sure that HTML5 validation does not break
 
 = 7.0.22 =
 * Enhancement: Added SSL detection before loading Google API 

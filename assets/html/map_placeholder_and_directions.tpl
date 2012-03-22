@@ -1,9 +1,9 @@
-<div align="MAP_ALIGN_TOKEN">MARKER_DIRECTIONS_HINT_TOKEN<div class="google-map-placeholder" id="MAP_PLACEHOLDER_ID_TOKEN" style="width: MAP_PLACEHOLDER_WIDTH_TOKENpx; height: MAP_PLACEHOLDER_HEIGHT_TOKENpx;"><div align="center" style="background:url('IMAGES_DIRECTORY_URI/loading.gif') no-repeat 0 0 transparent !important; height:100px; width:100px; position: relative; top: LOADING_INDICATOR_TOP_POS_TOKENpx !important;"></div></div>
+<div style="text-align: MAP_ALIGN_TOKEN"><div style='margin: 0 auto; width: MAP_PLACEHOLDER_WIDTH_TOKENpx; text-align: left;'>MARKER_DIRECTIONS_HINT_TOKEN<div class="google-map-placeholder" id="MAP_PLACEHOLDER_ID_TOKEN" style="width: MAP_PLACEHOLDER_WIDTH_TOKENpx; height: MAP_PLACEHOLDER_HEIGHT_TOKENpx;"><div style="background:url('IMAGES_DIRECTORY_URI/loading.gif') no-repeat 0 0 transparent !important; height:100px; width:100px; position: relative; top: LOADING_INDICATOR_TOP_POS_TOKENpx !important; text-align: center; margin: 0 auto"></div></div>
 			MAP_POWEREDBY_NOTICE_TOKEN
 			<div class="direction-controls-placeholder" id="direction-controls-placeholder-MAP_PLACEHOLDER_ID_TOKEN" style="background: white; width: MAP_PLACEHOLDER_WIDTH_TOKENpx; margin-top: 5px; border: 1px solid #EBEBEB; display: none; padding: 18px 0 9px 0;">
 			<div class="d_close-wrapper">
 				<a id="d_close" href="javascript:void(0)"> 
-					<img src="IMAGES_DIRECTORY_URI/transparent.png" class="close"> 
+					<img src="IMAGES_DIRECTORY_URI/transparent.png" class="close" /> 
 				</a>
 			</div>
 
@@ -12,7 +12,7 @@
 					<img class="dir-tm-d" src="IMAGES_DIRECTORY_URI/transparent.png" /> 
 				</a>
 				<a tabindex="3" class="kd-button kd-button-right" href="javascript:void(0)" id="dir_w_btn" title="Walking"> 
-					<img class="dir-tm-w" src="IMAGES_DIRECTORY_URI/transparent.png"> 
+					<img class="dir-tm-w" src="IMAGES_DIRECTORY_URI/transparent.png" /> 
 				</a>
 			</div>
 			<div class="dir-clear"></div>
@@ -21,12 +21,12 @@
 					<div class="dir-wp-hl">
 						<div id="dir_m_0" class="dir-m" style="cursor: -moz-grab;">
 							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img style="position: absolute; left: 0px; top: -141px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="IMAGES_DIRECTORY_URI/directions.png">
+								<img style="position: absolute; left: 0px; top: -141px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="IMAGES_DIRECTORY_URI/directions.png" />
 							</div>
 						</div>
 						<div class="dir-input">
 							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value="" name="a_address" id="a_address" title="Start address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
+								<input type="text" maxlength="2048" tabindex="4" value="" name="a_address" id="a_address" title="Start address" class="wp kd-input-text" />
 							</div>
 						</div>
 					</div>
@@ -34,7 +34,7 @@
 				<div class="dir-rev-wrapper">
 					<div id="dir_rev" title="Get reverse directions">
 						<a id="reverse-btn" href="javascript:void(0)" class="kd-button"> 
-							<img class="dir-reverse" src="IMAGES_DIRECTORY_URI/transparent.png"> 
+							<img class="dir-reverse" src="IMAGES_DIRECTORY_URI/transparent.png" /> 
 						</a>
 					</div>
 				</div>
@@ -42,12 +42,12 @@
 					<div class="dir-wp-hl">
 						<div id="dir_m_1" class="dir-m" style="cursor: -moz-grab;">
 							<div style="width: 24px; height: 24px; overflow: hidden; position: relative;">
-								<img style="position: absolute; left: 0px; top: -72px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="IMAGES_DIRECTORY_URI/directions.png">
+								<img style="position: absolute; left: 0px; top: -72px; -moz-user-select: none; border: 0px none; padding: 0px; margin: 0px;" src="IMAGES_DIRECTORY_URI/directions.png" />
 							</div>
 						</div>
 						<div class="dir-input">
 							<div class="kd-input-text-wrp">
-								<input type="text" maxlength="2048" tabindex="4" value="" name="b_address" id="b_address" title="End address" class="wp kd-input-text" autocomplete="off" autocorrect="off">
+								<input type="text" maxlength="2048" tabindex="4" value="" name="b_address" id="b_address" title="End address" class="wp kd-input-text" />
 							</div>
 						</div>
 					</div>
@@ -78,4 +78,5 @@
 			</div>
 		</div>
 		<div id="rendered-directions-placeholder-MAP_PLACEHOLDER_ID_TOKEN" style="display: none; border: 1px solid #ddd; width: DIRECTIONS_WIDTH_TOKENpx; margin-top: 10px; direction: ltr; overflow: auto; height: 180px; padding: 5px;" class="rendered-directions-placeholder"></div>
-	</div>
+	</div></div>
+

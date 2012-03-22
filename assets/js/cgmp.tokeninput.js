@@ -18,24 +18,42 @@ var jQueryCgmp = jQuery.noConflict();
 		var CGMPGlobal = {};
 
 		CGMPGlobal.sep = $("object#global-data-placeholder param#sep").val();
+		if (CGMPGlobal.sep == null || typeof CGMPGlobal.sep == "undefined") {
+			CGMPGlobal.sep = "{}";
+		}
 		CGMPGlobal.customMarkersUri = $("object#global-data-placeholder param#customMarkersUri").val();
 
-		
+	//val = val.replace(/(<([^>]+)>)/ig, '');	
 		var DEFAULT_SETTINGS = {
 			holderId: null,	
 			theme: null,
 			tokenDataId: "id",
 			tokenDataValue: "value",
-			tokenFormatter: function(item) { 
-					
+			tokenSanitizer: function(item) { 
 					var value = item[this.tokenDataValue] ;
 					var value_arr = value.split(CGMPGlobal.sep);
-					var bubbleText = "<p style='padding-left: 50px'><i>No description provided</i> ..</p>";
+
+					if (value_arr[0] != null && value_arr[0] != '') {
+						value_arr[0] = value_arr[0].replace(/(<([^>]+)>)/ig, '');
+					}
+
+					if (value_arr[2] != null && value_arr[2] != '') {
+						value_arr[2] = value_arr[2].replace(/(<([^>]+)>)/ig, '');
+					}
+
+					item[this.tokenDataValue] = value_arr.join(CGMPGlobal.sep);
+
+					return item;
+			},
+			tokenFormatter: function(item) { 
+					item = this.tokenSanitizer(item);
+					var value = item[this.tokenDataValue] ;
+					var value_arr = value.split(CGMPGlobal.sep);
+					var bubbleText = "<p style='padding-left: 50px'><i>Marker description was not entered (Optional)</i> ..</p>";
 
 					if (value_arr[2] != null && value_arr[2] != '') {
 						bubbleText = "<p style='padding-left: 50px'><i>" + value_arr[2] + "</i></p>";
 					}
-					
 					return "<li><img src='" + CGMPGlobal.customMarkersUri + value_arr[1] + 
 		"' border='0' style='float: left; margin-right: 8px;'><p><b>" + value_arr[0] + 
 		"</b></p>" + bubbleText + "</li>" }
@@ -140,7 +158,7 @@ var jQueryCgmp = jQuery.noConflict();
             		if (!exists) {
                         token_list.css("border", "1px solid #C9C9C9");
 						input_token.remove();
-                        saved_tokens.push(token_data);
+                        saved_tokens.push(settings.tokenSanitizer(token_data));
                         
                         var new_token = $(settings.tokenFormatter(token_data));
                		 	new_token = $(new_token).addClass(settings.classes.token).appendTo(token_list);

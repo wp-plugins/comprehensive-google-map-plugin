@@ -88,7 +88,7 @@ if ( !function_exists('cgmp_google_map_init_global_admin_html_object') ):
 		function cgmp_google_map_init_global_admin_html_object()  {
 
 			if (is_admin()) {
-				echo "<object id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
+				echo "<object type='text/plain' id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='customMarkersUri' name='customMarkersUri' value='".CGMP_PLUGIN_IMAGES."/markers/' />".PHP_EOL;
 				echo "    <param id='defaultLocationText' name='defaultLocationText' value='Enter marker destination address or latitude,longitude here (required)' />".PHP_EOL;
@@ -130,7 +130,7 @@ if ( !function_exists('cgmp_google_map_init_global_html_object') ):
 				global $cgmp_global_map_language;
 				$cgmp_global_map_language = (isset($cgmp_global_map_language) && $cgmp_global_map_language != '') ? $cgmp_global_map_language : "en";
 
-				echo "<object id='global-data-placeholder' style='background-color:transparent !important;border:none !important;height:0 !important;left:10000000px !important;line-height:0 !important;margin:0 !important;outline:medium none !important;padding:0 !important;position:absolute !important;top:100000px !important;width:0 !important;z-index:9999786 !important'>".PHP_EOL;
+				echo "<object id='global-data-placeholder' type='text/plain' style='background-color:transparent !important;border:none !important;height:0 !important;left:10000000px !important;line-height:0 !important;margin:0 !important;outline:medium none !important;padding:0 !important;position:absolute !important;top:100000px !important;width:0 !important;z-index:9999786 !important'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
 				echo "    <param id='cssHref' name='cssHref' value='".CGMP_PLUGIN_URI."style.css?ver=".CGMP_VERSION."' />".PHP_EOL;
 				echo "    <param id='language' name='language' value='".$cgmp_global_map_language."' />".PHP_EOL;
