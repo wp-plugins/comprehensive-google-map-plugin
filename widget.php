@@ -71,10 +71,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$addmarkermashuphidden = isset($addmarkermashuphidden) ? $addmarkermashuphidden : 'false';
 		if ($addmarkermashuphidden == 'true') {
 			$addmarkerlisthidden = make_marker_geo_mashup();
-			$addmarkerlisthidden = strip_tags($addmarkerlisthidden);
 		} else if ($addmarkermashuphidden == 'false') {
 			$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
-			$addmarkerlisthidden = strip_tags($addmarkerlisthidden);
 			$addmarkerlisthidden = htmlspecialchars($addmarkerlisthidden);
 		}
 		$bad_entities = array("&quot;", "&#039;");

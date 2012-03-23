@@ -58,12 +58,11 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 
 			$id = md5(time().' '.rand()); 
 
+			$addmarkerlist = strip_tags($addmarkerlist);
 			if ($addmarkermashup == 'true') {
 				$addmarkerlist = make_marker_geo_mashup();
-				$addmarkerlist = strip_tags($addmarkerlist);
 			} else if ($addmarkermashup == 'false') {
 				$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
-				$addmarkerlist = strip_tags($addmarkerlist);
 				$addmarkerlist = htmlspecialchars($addmarkerlist);
 			}
 			$bad_entities = array("&quot;", "&#039;");
