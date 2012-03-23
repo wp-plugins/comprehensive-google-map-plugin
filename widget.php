@@ -90,7 +90,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$map_data_properties['scrollwheelcontrol'] = isset($map_data_properties['scrollwheelcontrol']) ? $map_data_properties['scrollwheelcontrol'] : "false";
 		$map_data_properties['tiltfourtyfive'] = isset($map_data_properties['tiltfourtyfive']) ? $map_data_properties['tiltfourtyfive'] : "false";
 		$map_data_properties['draggable'] = isset($map_data_properties['draggable']) ? $map_data_properties['draggable'] : "true";
-		$poweredby = isset($poweredby) ? $poweredby : "true";
+		$poweredby = isset($poweredby) ? $poweredby : "false";
 		$language = isset($language) ? $language : "en";
 
 		echo cgmp_draw_map_placeholder($id, $width, $height, $mapalign, $directionhint, $poweredby);

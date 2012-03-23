@@ -93,6 +93,7 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 
 = 7.0.24 =
 * Reverted v7.0.23 to version v7.0.22. Errors appeared in Safari on iOS (can't display the page) and IE7 and IE8 (permission denied)
+* Powered by message now is disabled by default
 
 = 7.0.23 =
 * Bug: HTML tags were not stripped from marker location and description when using short code builder

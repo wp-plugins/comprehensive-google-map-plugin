@@ -49,7 +49,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 				'panoramiouid' => '',
 				'addmarkermashup' => 'false',
 				'language' => 'default',
-				'poweredby' => 'true',
+				'poweredby' => 'false',
 				'draggable' => 'true',
 				'tiltfourtyfive' => 'false',
 				'addmarkermashupbubble' => 'false'), $attr);
