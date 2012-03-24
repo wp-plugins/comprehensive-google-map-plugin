@@ -93,7 +93,7 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 
 = 7.0.25 =
 * Enhancement: Width of map placeholderder can now be percentage as well as pixels
-* Enhancement: Added Italian and French translations
+* Enhancement: Added Italian (Nicola Spreafico) and French (Mehdi Lahlou) translations
 * Bug: Marker shadow image was fetched over non-SSL when client is on SSL
 
 = 7.0.24 =
