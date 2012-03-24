@@ -23,12 +23,10 @@ if ( !function_exists( 'add_action' ) ) {
 
 class ComprehensiveGoogleMap_Widget extends WP_Widget {
 
-	var $maindesc = "A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more.";
-
 	function ComprehensiveGoogleMap_Widget() {
-		$widget_ops = array('classname' => 'comprehensivegooglemap_widget', 'description' => __( $this->maindesc, 'kalisto') );
+		$widget_ops = array('classname' => 'comprehensivegooglemap_widget', 'description' => __("A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more.", CGMP_NAME) );
 		$cops = array('width' => 570);
-		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', 'kalisto'), $widget_ops, $cops);
+		$this->WP_Widget('comprehensivegooglemap', __('AZ :: Google Map', CGMP_NAME), $widget_ops, $cops);
 
 		if ( is_active_widget(false, false, $this->id_base, true) ) {
 
