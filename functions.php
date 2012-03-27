@@ -25,14 +25,17 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 
 				$width = strtolower($width);
 				$height = strtolower($height);
+				$directionswidth = $width;
 
 				if (strpos($width, "%") !== false) {
 					$widthunits = "%";
 					$width = substr($width, 0, -1);
+					$directionswidth = $width;
 				}
 
 				if (strpos($width, "px") !== false) {
 					$width = substr($width, 0, -1);
+					$directionswidth = ($width - 10);
 				}
 
 				if (strpos($height, "%") !== false) {
@@ -70,7 +73,7 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 				$tokens_with_values['MARKER_DIRECTIONS_HINT_TOKEN'] = $map_marker_directions_hint_template;
 				$tokens_with_values['MAP_POWEREDBY_NOTICE_TOKEN'] = $map_poweredby_notice_template;
 				$tokens_with_values['IMAGES_DIRECTORY_URI'] = CGMP_PLUGIN_IMAGES;
-				$tokens_with_values['DIRECTIONS_WIDTH_TOKEN'] = ($width - 10).$widthunits;
+				$tokens_with_values['DIRECTIONS_WIDTH_TOKEN'] = $directionswidth.$widthunits;
 				$tokens_with_values['LABEL_GET_DIRECTIONS'] = __('Get Directions',CGMP_NAME);
 				$tokens_with_values['LABEL_PRINT_DIRECTIONS'] = __('Print Directions',CGMP_NAME);
 				$tokens_with_values['LABEL_ADDITIONAL_OPTIONS'] = __('Additional options',CGMP_NAME);

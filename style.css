@@ -23,7 +23,7 @@
 .direction-controls-placeholder .kd-button-share:hover{background-color:#368200;background-image:0;border:1px solid #2D6200;color:#FFF;text-shadow:0 1px rgba(0, 0, 0, 0.3)}
 .direction-controls-placeholder .ml-loading-img{background-image:url("assets/css/images/my_location_button_spinner.gif");height:10px !important;width:10px !important}
 .direction-controls-placeholder .dir-tm .kd-button img{opacity:0.667px;vertical-align:2px; display: inline !important}
-.direction-controls-placeholder .kd-button img{display:inline-block;margin:-3px 0 0;opacity:0.55px;vertical-align:middle}
+.direction-controls-placeholder .kd-button img{display:inline-block !important;margin:-3px 0 0;opacity:0.55px;vertical-align:middle}
 .direction-controls-placeholder .dir-tm-d{background:url("assets/css/images/directions.png") no-repeat scroll 0 -96px transparent !important;height:12px !important;width:15px !important}
 .direction-controls-placeholder .dir-tm-w{background:url("assets/css/images/directions.png") no-repeat scroll 0 -489px transparent !important;height:16px !important;width:10px !important}
 .direction-controls-placeholder .close{background:url("assets/css/images/utilbuttons.png") no-repeat scroll -108px -26px transparent !important;height:10px !important;opacity:0.7px;overflow:hidden;width:10px !important}
