@@ -686,6 +686,8 @@ if ( !function_exists('cgmp_on_activate_hook') ):
 
 		function cgmp_on_activate_hook()  {
 
+			update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, false);
+
 			update_option(CGMP_DB_PUBLISHED_POST_MARKERS, '');
 			update_option(CGMP_DB_POST_COUNT, '');
 
@@ -720,6 +722,9 @@ if ( !function_exists('cgmp_on_uninstall_hook') ):
 
 			remove_option(CGMP_DB_PUBLISHED_POST_IDS);
 			remove_option(CGMP_DB_PUBLISHED_PAGE_IDS);
+
+			remove_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
+
         }
 endif;
 
