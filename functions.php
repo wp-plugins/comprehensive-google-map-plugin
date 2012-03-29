@@ -167,6 +167,10 @@ endif;
 
 if ( !function_exists('cgmp_map_data_hook_function') ):
 	function cgmp_map_data_hook_function( $map_json, $id) {
+
+		update_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER, "true");
+		update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, "false");
+
 		$naughty_stuff = array("'", "\r\n", "\n", "\r");
 		$map_json = str_replace($naughty_stuff, "", $map_json);
 		$objectid = 'for-mapid-'.$id;
@@ -686,7 +690,8 @@ if ( !function_exists('cgmp_on_activate_hook') ):
 
 		function cgmp_on_activate_hook()  {
 
-			update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, false);
+			update_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER, "false");
+			update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, "false");
 
 			update_option(CGMP_DB_PUBLISHED_POST_MARKERS, '');
 			update_option(CGMP_DB_POST_COUNT, '');
@@ -723,8 +728,8 @@ if ( !function_exists('cgmp_on_uninstall_hook') ):
 			remove_option(CGMP_DB_PUBLISHED_POST_IDS);
 			remove_option(CGMP_DB_PUBLISHED_PAGE_IDS);
 
+			remove_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER);
 			remove_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
-
         }
 endif;
 
