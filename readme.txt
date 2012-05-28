@@ -2,9 +2,9 @@
 Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
-Requires at least: 3.2.1
-Tested up to: 3.3.1
-Stable tag: 7.0.28
+Requires at least: 3.3.2
+Tested up to: 3.3.2
+Stable tag: 7.0.29
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -13,7 +13,7 @@ A simple and intuitive,  yet elegant and fully documented Google map plugin that
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers. OpenStreetMap imagery available
-* Over 250 amazingg custom marker icons to choose from!
+* Over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
 * Google-like directions - driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
@@ -91,6 +91,10 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 
 == Changelog ==
 
+= 7.0.29 =
+* Enhancement: Added admin config setting to enable short code builder under custom post/page types.
+* Enhancement: When using geomashup, the geo address validation is done from the server side instead of the client side. If there were no changes to posts/pages (update of existing posts or new content publishing), cached geomashup is served. The check whether the street view is available is done when marker is clicked, not prematurely. All this makes sure that the map loads really fast. Tested with 500 marker map.
+
 = 7.0.28 =
 * Spike: Trying to get plugin working with ParallelUS Mingle theme. The latter does some funky stuff with their footer.
 
@@ -143,7 +147,7 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 * Enhancement: Compatibility with ThemeShock themes on admin side
 * Bug: marker geomushap config value was null instead of false
 * Bug: IE7/8 .attr("value") => .val()
-* Bug: In old saved untouched widgets, new plugin config options were not initialised
+* Bug: In old saved untouched widgets, new plugin config options were not initialized
 
 = 7.0.15 =
 * Enhancement: Added option to disable map from being draggable
