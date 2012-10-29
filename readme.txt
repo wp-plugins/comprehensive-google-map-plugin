@@ -13,7 +13,7 @@ A simple and intuitive,  yet elegant and fully documented Google map plugin that
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. Facebook style interactive interface for managing multiple map markers. OpenStreetMap imagery available
-* Over 250 amazing custom marker icons to choose from!
+* With over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
 * Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
