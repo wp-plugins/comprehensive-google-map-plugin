@@ -3,8 +3,8 @@ Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.3.2
-Tested up to: 3.3.2
-Stable tag: 7.0.31
+Tested up to: 3.7.1
+Stable tag: 8.0.0
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -90,6 +90,13 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 8.0.0 =
+* Enhancement: Added Polish translation (Jakub Korzeniewski)
+* Fix javascript bug that mishandles minor version number on jQuery 1.xx (Israel Shirk)
+* Php warnings removed, when in wp_debug mode (Patrick Hafner)
+* Using sprintf for html output in a few lines (Patrick Hafner)
+* IE Quirks mode fix: Making the function return rather than echo to prevent tags from outputting before the and tags. This causes IE to render the document in quirks mode which basically will destroy any modern sites styling. This occurs when using the shortcode because the function just echos out the content before the rest of the site is rendered.
 
 = 7.0.31 =
 * Missing files for v7.0.30

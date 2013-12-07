@@ -628,7 +628,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 							bubble += "<p class='geo-mashup-post-title'><a title='Original post: " + markersElement.postTitle + "' href='" +markersElement.postLink+ "'>" + substr + "..</a></p>";
 							bubble += "<p class='geo-mashup-post-excerpt'>" + markersElement.postExcerpt  + "</p>";
 						}
-
                   bubble += "<div class='custom-bubble-links-section'>";
 						bubble += "<hr />";
 						bubble += "<p class='custom-bubble-text'>" + CGMPGlobal.translations.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.streetView + "</a></p>";
@@ -1039,8 +1038,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
 					CGMPGlobal.translations = parseJson(CGMPGlobal.translations);
 
-					var version = parseFloat($.fn.jquery);
-					if (version < 1.3) {
+					var versionMajor = parseFloat($.fn.jquery.split(".")[0]);
+					var versionMinor = parseFloat($.fn.jquery.split(".")[1]);
+					if ((versionMajor < 1) || (versionMajor >= 1 && versionMajor < 2 && versionMinor < 3)) {
 						alert(CGMPGlobal.errors.oldJquery);
 						//Logger.fatal("Client uses jQuery older than the version 1.3.0. Aborting map generation ..");
 						return false;
