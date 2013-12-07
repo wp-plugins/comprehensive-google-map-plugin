@@ -36,18 +36,18 @@ img{-moz-user-select:none;border:0 none;margin:0;padding:0}
 .direction-controls-placeholder .d-hl .dir-wp-hl{background:none repeat scroll 0 0 #FFF1A8;border-radius:3px 3px 3px 3px}
 .direction-controls-placeholder .dir-wp .dir-m{height:24px;left:15px;position:absolute;top:5px;width:24px}
 .direction-controls-placeholder .dir-input{margin:0 3px 0 36px;padding:1px 6px;text-align:left}
-.direction-controls-placeholder .dir-input .wp{height:18px;line-height:16px;margin:-1px -6px;padding:3px 5px;width:91%}
+.direction-controls-placeholder .dir-input .wp{height:18px;line-height:16px;margin:-1px -6px;padding:3px 5px;width:95%}
 .direction-controls-placeholder .wp:focus + .ml-input{background-color:#999;border-color:#7F7F7F;border-radius:1px 1px 1px 1px;color:#FFF;width:auto}
 .direction-controls-placeholder .kd-input-text{background-color:#FFF;border-color:silver #D9D9D9 #D9D9D9;border-radius:1px 1px 1px 1px;border-right:1px solid #D9D9D9;border-style:solid;border-width:1px;padding-left:8px}
 .direction-controls-placeholder .ml-input{background-color:#FFF;border:1px solid #FFF;color:#666;font-size:85%;font-weight:700;height:15px;left:46px;line-height:15px;padding:1px 6px;position:absolute;top:6px}
 .direction-controls-placeholder .dir-ml-img{display:inline;height:9px;margin-right:3px;width:9px}
-.direction-controls-placeholder #dir_rev{cursor:pointer;position:absolute;right:8px;top:-20px;z-index:1;margin-right: 5px; margin-top: 5px;}
+.direction-controls-placeholder #dir_rev{cursor:pointer;padding:5px;position:absolute;right:8px;top:-20px;z-index:1}
 .direction-controls-placeholder #dir_rev .kd-button{height:16px;min-width:18px;padding:0;width:18px}
 .direction-controls-placeholder #dir_controls{margin:0 51px 0 44px}
 .direction-controls-placeholder .d_links{font-size:100%;text-align:left}
-.direction-controls-placeholder .dir-sub-cntn{height:29px;position:relative;text-align:left; float:left}
-.direction-controls-placeholder #d_sub{height:22px;line-height:16px;margin:2px 0 0;padding:2px 5px !important;text-transform:uppercase; float:left; margin-right:10px;}
-.direction-controls-placeholder #print_sub{height:22px;line-height:16px;margin:2px 0 0 0px;padding:2px 5px !important;text-transform:uppercase; float:left; }
+.direction-controls-placeholder .dir-sub-cntn{height:29px;position:relative;text-align:left}
+.direction-controls-placeholder #d_sub{height:22px;line-height:16px;margin:2px 0 0;padding:2px 5px !important;position:absolute;text-transform:uppercase}
+.direction-controls-placeholder #print_sub{height:22px;line-height:16px;margin:2px 0 0 125px;padding:2px 5px !important;position:absolute;text-transform:uppercase}
 .google-map-placeholder{border:1px solid #333}
 /** Override styles   */.google-map-placeholder img{background-color:transparent !important;margin:0 !important;max-height:none !important;max-width:none !important;padding:0 !important;visibility:inherit !important}
 .google-map-placeholder div{overflow:none !important}
@@ -64,7 +64,7 @@ img{-moz-user-select:none;border:0 none;margin:0;padding:0}
 .direction-controls-placeholder{font-family:Arial,Tahoma,Verdana !important;font-size:12px !important;line-height:160% !important}
 .direction-controls-placeholder input{font-family:Arial,Tahoma,Verdana !important;font-size:12px !important;line-height:160% !important;margin:0 !important}
 .direction-controls-placeholder #d_options{color:#22222 !important}
-.direction-controls-placeholder #d_options input{}
+.direction-controls-placeholder #d_options input{width:5% !important}
 .direction-controls-placeholder input[type="text"]{box-shadow:none !important;color:#000 !important}
 .direction-controls-placeholder .d_error{background-color:#FFC0CB !important}
 .direction-controls-placeholder img{max-width:100% !important}
@@ -108,5 +108,3 @@ object.cgmp-data-placeholder{background-color:transparent !important;border:none
 .cgmp-popup-shortcode-dialog .close-dialog:focus,.cgmp-popup-shortcode-dialog .close-dialog.focus{box-shadow:0 0 0 1px #FFF inset}
 .cgmp-popup-shortcode-dialog .close-dialog:focus:hover,.cgmp-popup-shortcode-dialog .close-dialog.focus:hover{box-shadow:0 0 0 1px #FFF inset, 0 1px 1px rgba(0, 0, 0, 0.1)}
 .cgmp-popup-shortcode-dialog .close-dialog:active,.cgmp-popup-shortcode-dialog .close-dialog:focus:active,.cgmp-popup-shortcode-dialog .close-dialog.focus:active{background-color:#B0281A;background-image:0;border:1px solid #992A1B;box-shadow:0 1px 2px rgba(0, 0, 0, 0.3) inset}
-
-
