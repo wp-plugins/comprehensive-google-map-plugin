@@ -2,9 +2,9 @@
 Contributors: alexanderzagniotov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8
 Tags: google map, google map widget, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
-Requires at least: 3.3.2
+Requires at least: 3.6
 Tested up to: 3.7.1
-Stable tag: 8.0.3
+Stable tag: 8.0.4
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -16,7 +16,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * With over 250 amazing custom marker icons to choose from!
 * Aggregate all your post markers in one map - Marker Geo Mashup!
 * Help tooltips enabled, which makes your configuration hassle free
-* Add mobile device user's current GPS location to the map! Useful for end-users that want to find directions from their current location to map's markers
+* Add end-user's current GPS location to the map! Useful for end-users that want to find directions from their current location to map's markers
 * Google-like directions: driving and walking, distance shown in miles or KM, avoid tolls and highways options, direction print functionality
 * Info window can display marker's street view within itself.
 * Plugin is fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
@@ -92,6 +92,10 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 
 == Changelog ==
 
+= 8.0.4 =
+* Enhancement: Making use of the library by Chad Killingsworth to add end-user's current GPS location as a marker. The marker position is automatically updated as the user position changes. Useful for users on mobile devices that want to find directions from their current location to map's marker. This feature  will function in browsers supporting the W3C Geolocation API. This excludes Internet Explorer versions 8 and older.
+* Enhancement: CSS tweaks in directions dialog
+
 = 8.0.3 =
 * Enhancement: Made sure the plugin is compatible with jQuery 1.9+ (.live() -> .on(), .attr() -> .prop() where required)
 
@@ -104,7 +108,6 @@ After plugin activation, look at the left hand side menu of WP admin, look for "
 * Bug: In jQuery 1.8, the behaviour of .ajaxSuccess() changed, which caused an issue when saving widgets
 * Bug: When trying to print directions in KM, the print view was showing miles
 * Experimental: An attempt to resolve a problem of Google Maps & jQuery Tabs: resizing the map one second after it has been loaded
-* Experimental: Making use of the library by Chad Killingsworth to add end-user's current GPS location as a marker. The marker position is automatically updated as the user position changes. Useful for users on mobile devices that want to find directions from their current location to map's marker (themc)
 
 = 8.0.1 =
 * Bug: Commented out on PHP function parsing the shortcode and rendering a map  
