@@ -62,7 +62,7 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 
 			$addmarkerlist = strip_tags($addmarkerlist);
 			if ($addmarkermashup == 'true') {
-				$addmarkerlist = make_marker_geo_mashup();
+				$addmarkerlist = make_marker_geo_mashup_2();
 			} else if ($addmarkermashup == 'false') {
 				$addmarkerlist = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlist);
 				$addmarkerlist = htmlspecialchars($addmarkerlist);
@@ -85,6 +85,13 @@ if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 					$map_data_properties[$key] = $value;
 				}
 			}
+
+            if ($addmarkermashup == 'false') {
+                global $post;
+                $post_type = $post->post_type;
+                $post_id = $post->ID;
+                $addmarkerlist = cgmp_get_post_page_cached_markerlist($post_id, $post_type, $addmarkerlist);
+            }
 
 			$map_data_properties['id'] = $id;
 			$map_data_properties['markerlist'] = $addmarkerlist;
