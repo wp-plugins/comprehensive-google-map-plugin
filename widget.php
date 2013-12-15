@@ -80,17 +80,17 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
 
         if ($addmarkermashuphidden == 'false' && trim($addmarkerlisthidden) != "") {
-            $cached_marker_data_json = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_PREFIX.$this->id);
+            $cached_marker_data_json = get_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id);
             if (isset($cached_marker_data_json) && trim($cached_marker_data_json) != "") {
                 $addmarkerlisthidden = $cached_marker_data_json;
-                $cache_time = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_TIME_PREFIX.$this->id);
+                $cache_time = get_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id);
                 $map_data_properties['debug'] = array("state" => "cached", "since" => $cache_time, "geo_errors" => array());
             } else {
                 $execution_results = cgmp_do_serverside_address_validation_2($addmarkerlisthidden);
                 $addmarkerlisthidden = $execution_results["validated_addresses"];
                 $map_data_properties['debug'] = array("state" => "fresh", "since" => time(), "geo_errors" => $execution_results["errors"]);
-                update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_PREFIX.$this->id, $addmarkerlisthidden);
-                update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_TIME_PREFIX.$this->id, time());
+                update_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id, $addmarkerlisthidden);
+                update_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id, time());
             }
         }
 
@@ -123,8 +123,8 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 			$instance[$key] = strip_tags($new_instance[$key]);
 		}
 
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_PREFIX.$this->id, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_TIME_PREFIX.$this->id, "");
+        update_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id, "");
+        update_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id, "");
 
 		return $instance;
 	}
@@ -163,10 +163,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		}
 
 		$template_values = cgmp_build_template_values($settings);
+        $template_values['SHORTCODEBUILDER_FORM_TITLE'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE);
+        $template_values['SHORTCODEBUILDER_HTML_FORM'] = "";
 
 		$tokens_with_values = array();
 		$tokens_with_values['WIDGET_ID_TOKEN'] = $this->id;
-		$tokens_with_values['WIDGET_FORM_TITLE_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE);
 		$tokens_with_values['MAP_CONFIGURATION_FORM_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_MAP_CONFIGURATION_FORM);
 
 		echo cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_WIDGET);

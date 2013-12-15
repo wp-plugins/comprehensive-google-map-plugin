@@ -132,10 +132,8 @@ endif;
 
 if ( !function_exists('cgmp_render_template_with_values') ):
 	function cgmp_render_template_with_values($tokens_with_values, $template_name) {
-
-		$map_shortcode_builder_metabox_template = file_get_contents(CGMP_PLUGIN_HTML."/".$template_name);
-  		$map_shortcode_builder_metabox_template = cgmp_replace_template_tokens($tokens_with_values, $map_shortcode_builder_metabox_template);
-		return $map_shortcode_builder_metabox_template;
+		$template = file_get_contents(CGMP_PLUGIN_HTML."/".$template_name);
+  		return cgmp_replace_template_tokens($tokens_with_values, $template);
 	}
 endif;
 
@@ -186,7 +184,51 @@ if ( !function_exists('cgmp_load_plugin_textdomain') ):
 	}
 endif;
 
+if ( !function_exists('cgmp_register_mce') ):
+    function cgmp_register_mce() {
+        if ( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
+            add_filter('mce_external_plugins', 'cgmp_load_button_js_into_mce_editor');
+            add_filter('mce_buttons', 'cgmp_load_button_into_mce_editor');
+        }
+    }
+endif;
 
+if ( !function_exists('cgmp_load_button_js_into_mce_editor') ):
+    function cgmp_load_button_js_into_mce_editor($plugin_array) {
+        $plugin_array['shortcode'] = CGMP_PLUGIN_JS.'/cgmp.mce.js';
+        return $plugin_array;
+    }
+endif;
+
+if ( !function_exists('cgmp_load_button_into_mce_editor') ):
+    function cgmp_load_button_into_mce_editor($buttons) {
+        array_push($buttons, "shortcode");
+        return $buttons;
+    }
+endif;
+
+if ( !function_exists('cgmp_mce_ajax_action_callback') ):
+    function cgmp_mce_ajax_action_callback() {
+
+        if (isset($_POST['title']))  {
+            $persisted_shortcodes_json = get_option(CGMP_PERSISTED_SHORTCODES);
+            if (isset($persisted_shortcodes_json) && trim($persisted_shortcodes_json) != "") {
+                $persisted_shortcodes = json_decode($persisted_shortcodes_json, true);
+                if (is_array($persisted_shortcodes)) {
+                    if (isset($persisted_shortcodes[$_POST['title']])) {
+                        unset($persisted_shortcodes[$_POST['title']]);
+                        if (empty($persisted_shortcodes)) {
+                            //$persisted_shortcodes[] = array("title" => "None saved", "code" => "");
+                        }
+                        update_option(CGMP_PERSISTED_SHORTCODES, json_encode($persisted_shortcodes));
+                        echo "OK";
+                    }
+                }
+            }
+        }
+        exit();
+    }
+endif;
 
 if ( !function_exists('cgmp_show_message') ):
 
@@ -592,87 +634,97 @@ if ( !function_exists('cgmp_plugin_row_meta') ):
 endif;
 
 
-if ( !function_exists('cgmp_build_query_args') ):
+if ( !function_exists('extract_published_content_containing_shortcode') ):
+    function extract_published_content_containing_shortcode($content_type)  {
 
-		function cgmp_build_query_args($content_type, $ids = array())  {
+        $count_posts = wp_count_posts($content_type);
+        $total_published = $count_posts->publish;
 
-			$counter = wp_count_posts($content_type);
-			$published_items = isset($counter->publish) ? $counter->publish : 1;
+        // To avoid cases where plugin's like Ultimate Category Excluder messes around with the main query by using filter 'pre_get_posts' to exclude posts
+        global $wpdb;
+        $table = $wpdb->posts;
+        $query = "SELECT * FROM $table WHERE $table.post_type = '".$content_type."' AND $table.post_status = 'publish' LIMIT 1000"; // For 1000 should be more than enough, really who has a map with 1000+ markers?
+        $posts = $wpdb->get_results($query);
 
-			$limit = ($content_type == "post" ? "numberposts" : "number");
-			$args = array(
-					'post_type'      => $content_type,
-					$limit           => $published_items,
-					'post_status'    => 'publish' );
+        $extracted = array();
+        $pattern = "/\[google-map-v3[^\]]*\]/";
+        $addresses = array();
+        $per_published_content_type_address_counter = 0;
+        foreach($posts as $post)  {
 
-			if (sizeof($ids) > 0) {
-				$args['post__in'] = array_keys($ids);
-			}
-			return $args;
-		}
+            $content_id = $content_type . "_" . $post->ID;
 
+            preg_match_all($pattern, $post->post_content, $matches);
+            if (is_array($matches[0]) && count($matches[0]) > 0) {
+
+                $matches_shortcodes_per_post = $matches[0];
+                foreach($matches_shortcodes_per_post as $matched_shortcode)  {
+                    $washed_marker_csv = str_replace(array("\r\n", "\r", "\n"), " ", $matched_shortcode);
+
+                    $pattern = "/addmarkerlist=\"(.*?)\"/";
+                    preg_match_all($pattern, $washed_marker_csv, $address_matches);
+
+                    if (is_array($address_matches) && is_array($address_matches[1]) && !empty($address_matches[1])) {
+                        $addresss_segments = explode(CGMP_SEP, $address_matches[1][0]);
+                        $address_as_string = $addresss_segments[0];
+                        if (isset($address_as_string) && trim($address_as_string) != "") {
+                            if (!is_array($addresses[$content_id])) {
+                                $addresses[$content_id] = array();
+                            }
+                            $addresses[$content_id][] = $address_as_string;
+                        }
+                    }
+                }
+                $per_published_content_type_address_counter = $per_published_content_type_address_counter + count($addresses[$content_id]);
+                $extracted[$post->ID] = $post;
+            }
+        }
+
+        $function_used = "SQL query";
+        return array("extracted" => $extracted, "query" => array("wp_count_posts" => $total_published, $function_used => count($posts), $content_type."s_with_shortcodes" => count($extracted), $content_type."_addresses_total" => $per_published_content_type_address_counter, "addresses" => $addresses));
+    }
 endif;
-
-
-if ( !function_exists('extract_ids_from_all_containing_shortcode') ):
-		function extract_ids_from_all_containing_shortcode($content_type)  {
-
-			$args = cgmp_build_query_args($content_type);
-			$posts = ($content_type == "post" ? get_posts($args) : get_pages($args));
-			$ids = array();
-			$pattern = "/\[google-map-v3[^\]]*\]/";
-			foreach($posts as $post)  {
-				preg_match_all($pattern, $post->post_content, $matches);
-				if (is_array($matches[0]) && count($matches[0]) > 0) {
-					$ids[$post->ID] = $post->ID;
-				}
-			}
-
-			return $ids;
-		}
-endif;
-
 
 
 if ( !function_exists('cgmp_on_activate_hook') ):
-
-		function cgmp_on_activate_hook()  {
-            global $wpdb;
-            $options_table = $wpdb->options;
-            $wpdb->query( "DELETE FROM ".$options_table." WHERE option_name LIKE 'cgmp_%'" );
-			update_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER, "false");
-			update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, "false");
-            update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
-            update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
-        }
+    function cgmp_on_activate_hook()  {
+        cgmp_clear_cached_map_data(CGMP_ALL_MAP_CACHED_CONSTANTS_PREFIX);
+        update_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER, "false");
+        update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, "false");
+        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
+        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
+    }
 endif;
 
 
 if ( !function_exists('cgmp_on_uninstall_hook') ):
+    function cgmp_on_uninstall_hook()  {
 
-		function cgmp_on_uninstall_hook()  {
-
-			if ( CGMP_PLUGIN_BOOTSTRAP != WP_UNINSTALL_PLUGIN ) {
-				return;
-			}
-            remove_option(CGMP_DB_GEOMASHUP_DATA_CACHE);
-            remove_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME);
-
-            // Remove cache of posts, pages and widgets
-            global $wpdb;
-            $options_table = $wpdb->options;
-            $wpdb->query( "DELETE FROM ".$options_table." WHERE option_name LIKE 'cgmp_%'" );
-
-			//legacy
-			remove_option(CGMP_DB_PUBLISHED_POST_MARKERS);
-			remove_option(CGMP_DB_POST_COUNT);
-			remove_option(CGMP_DB_PUBLISHED_POST_IDS);
-			remove_option(CGMP_DB_PUBLISHED_PAGE_IDS);
-			remove_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER);
-			remove_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
-            remove_option(CGMP_DB_PURGE_GEOMASHUP_CACHE);
-            remove_option(CGMP_DB_GEOMASHUP_CONTENT);
+        if ( CGMP_PLUGIN_BOOTSTRAP != WP_UNINSTALL_PLUGIN ) {
+            return;
         }
+
+        cgmp_clear_cached_map_data(CGMP_ALL_MAP_CACHED_CONSTANTS_PREFIX);
+
+        //legacy
+        remove_option(CGMP_DB_PUBLISHED_POST_MARKERS);
+        remove_option(CGMP_DB_POST_COUNT);
+        remove_option(CGMP_DB_PUBLISHED_POST_IDS);
+        remove_option(CGMP_DB_PUBLISHED_PAGE_IDS);
+        remove_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER);
+        remove_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
+        remove_option(CGMP_DB_PURGE_GEOMASHUP_CACHE);
+        remove_option(CGMP_DB_GEOMASHUP_CONTENT);
+    }
+endif;
+
+if ( !function_exists('cgmp_clear_cached_map_data') ):
+    function cgmp_clear_cached_map_data($prefix_constant)  {
+        // Remove cache of posts, pages and widgets
+        global $wpdb;
+        $options_table = $wpdb->options;
+        $wpdb->query( "DELETE FROM ".$options_table." WHERE option_name LIKE '".$prefix_constant."%'" );
+    }
 endif;
 
 
@@ -687,14 +739,16 @@ if ( !function_exists('process_collection_of_contents') ):
 
 					$bad_entities = array("&quot;", "&#039;", "'", "\"");
 					if (count($extracted) > 0) {
-							$post_title = $post->post_title;
-							$post_title = strip_tags($post_title);
-							$post_title = str_replace($bad_entities, "", $post_title);
-							$post_title = preg_replace("/\r\n|\n\r|\n/", " ", $post_title);
-							$db_markers[$post->ID]['markers'] = $extracted;
-							$db_markers[$post->ID]['title'] = $post_title;
-							$db_markers[$post->ID]['permalink'] = $post->guid;
-							$db_markers[$post->ID]['excerpt'] = '';
+
+                        $marker = array();
+                        $post_title = $post->post_title;
+                        $post_title = strip_tags($post_title);
+                        $post_title = str_replace($bad_entities, "", $post_title);
+                        $post_title = preg_replace("/\r\n|\n\r|\n/", " ", $post_title);
+                        $marker[$post->ID]['markers'] = $extracted;
+                        $marker[$post->ID]['title'] = $post_title;
+                        $marker[$post->ID]['permalink'] = $post->guid;
+                        $marker[$post->ID]['excerpt'] = '';
 
 						$clean = "";
 						if (isset($post->post_excerpt) && trim($post->post_excerpt) != '') {
@@ -704,8 +758,9 @@ if ( !function_exists('process_collection_of_contents') ):
 						}
 						if ( trim($clean) != '' ) {
 							$excerpt = mb_substr($clean, 0, 175);
-							$db_markers[$post->ID]['excerpt'] = $excerpt."..";
-						} 
+                            $marker[$post->ID]['excerpt'] = $excerpt."..";
+						}
+                        $db_markers[] = $marker[$post->ID];
 					}
 				}
 				return $db_markers;
@@ -825,8 +880,9 @@ endif;
 
 if ( !function_exists('cgmp_save_post_hook') ):
     function cgmp_save_post_hook($postID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX.$postID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX.$postID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_PREFIX.$postID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_TIME_PREFIX.$postID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -834,8 +890,9 @@ endif;
 
 if ( !function_exists('cgmp_save_page_hook') ):
     function cgmp_save_page_hook($pageID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX.$pageID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX.$pageID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_PREFIX.$pageID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$pageID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -843,8 +900,9 @@ endif;
 
 if ( !function_exists('cgmp_publish_post_hook') ):
     function cgmp_publish_post_hook($postID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX.$postID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX.$postID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_PREFIX.$postID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_TIME_PREFIX.$postID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -852,8 +910,9 @@ endif;
 
 if ( !function_exists('cgmp_publish_page_hook') ):
     function cgmp_publish_page_hook($pageID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX.$pageID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX.$pageID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_PREFIX.$pageID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$pageID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -861,8 +920,9 @@ endif;
 
 if ( !function_exists('cgmp_deleted_post_hook') ):
     function cgmp_deleted_post_hook($postID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX.$postID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX.$postID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_PREFIX.$postID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_POST_TIME_PREFIX.$postID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -870,8 +930,9 @@ endif;
 
 if ( !function_exists('cgmp_deleted_page_hook') ):
     function cgmp_deleted_page_hook($pageID)  {
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX.$pageID, "");
-        update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX.$pageID, "");
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_PREFIX.$pageID);
+        cgmp_clear_cached_map_data(CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$pageID);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
@@ -882,18 +943,18 @@ if ( !function_exists('cgmp_publish_to_draft_hook') ):
         if (isset($obj)) {
             $post_page_type = $obj->post_type;
             $post_page_id = $obj->ID;
-            $post_db_cache_key = CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX.$post_page_id;
-            $post_db_cache_time_key = CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX.$post_page_id;
+            $post_db_cache_key = CGMP_MAP_CACHE_POST_PREFIX.$post_page_id;
+            $post_db_cache_time_key = CGMP_MAP_CACHE_POST_TIME_PREFIX.$post_page_id;
 
-            $page_db_cache_key = CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX.$post_page_id;
-            $page_db_cache_time_key = CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX.$post_page_id;
+            $page_db_cache_key = CGMP_MAP_CACHE_PAGE_PREFIX.$post_page_id;
+            $page_db_cache_time_key = CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$post_page_id;
 
             if ($post_page_type == "post") {
-                update_option($post_db_cache_key, "");
-                update_option($post_db_cache_time_key, "");
+                cgmp_clear_cached_map_data($post_db_cache_key);
+                cgmp_clear_cached_map_data($post_db_cache_time_key);
             } else if ($post_page_type == "page") {
-                update_option($page_db_cache_key, "");
-                update_option($page_db_cache_time_key, "");
+                cgmp_clear_cached_map_data($page_db_cache_key);
+                cgmp_clear_cached_map_data($page_db_cache_time_key);
             }
             update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
             update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
@@ -902,39 +963,42 @@ if ( !function_exists('cgmp_publish_to_draft_hook') ):
 endif;
 
 if ( !function_exists('cgmp_get_post_page_cached_markerlist') ):
-    function cgmp_get_post_page_cached_markerlist($post_page_id, $post_page_type, $markerlist)  {
+    function cgmp_get_post_page_cached_markerlist($shortcodeid, $post_page_id, $post_page_type, $markerlist)  {
 
-        $post_db_cache_key = CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX.$post_page_id;
-        $post_db_cache_time_key = CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX.$post_page_id;
+        $post_db_cache_key = CGMP_MAP_CACHE_POST_PREFIX.$post_page_id."_".$shortcodeid;
+        $post_db_cache_time_key = CGMP_MAP_CACHE_POST_TIME_PREFIX.$post_page_id."_".$shortcodeid;
 
-        $page_db_cache_key = CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX.$post_page_id;
-        $page_db_cache_time_key = CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX.$post_page_id;
+        $page_db_cache_key = CGMP_MAP_CACHE_PAGE_PREFIX.$post_page_id."_".$shortcodeid;
+        $page_db_cache_time_key = CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$post_page_id."_".$shortcodeid;
 
-        $cached_marker_data_json = "";
-        $cached_marker_data_time = "";
+        $cached_map_data_plus_errors = "";
+        $cached_map_data_time = "";
         if ($post_page_type == "post") {
-            $cached_marker_data_json = get_option($post_db_cache_key);
-            $cached_marker_data_time = get_option($post_db_cache_time_key);
+            $cached_map_data_plus_errors = get_option($post_db_cache_key);
+            $cached_map_data_time = get_option($post_db_cache_time_key);
         } else if ($post_page_type == "page") {
-            $cached_marker_data_json = get_option($page_db_cache_key);
-            $cached_marker_data_time = get_option($page_db_cache_time_key);
+            $cached_map_data_plus_errors = get_option($page_db_cache_key);
+            $cached_map_data_time = get_option($page_db_cache_time_key);
         }
 
-        if (isset($cached_marker_data_json) && trim($cached_marker_data_json) != "") {
-            return array("data" => $cached_marker_data_json, "debug" => array("state" => "cached", "since" => $cached_marker_data_time, "geo_errors" => array()));
+        if (isset($cached_map_data_plus_errors) && trim($cached_map_data_plus_errors) != "") {
+            $addresses_plus_errors = json_decode($cached_map_data_plus_errors, true);
+            if (is_array($addresses_plus_errors)) {
+                return array("data" => $addresses_plus_errors["validated_addresses"], "debug" => array("shortcodeid" => $shortcodeid, "state" => "cached", "since" => $cached_map_data_time, "geo_errors" => $addresses_plus_errors["errors"]));
+            }
         }
 
-        $execution_results = cgmp_do_serverside_address_validation_2($markerlist);
-        $validated_marker_list = $execution_results["validated_addresses"];
+        $addresses_plus_errors = cgmp_do_serverside_address_validation_2($markerlist);
+        $validated_marker_list = $addresses_plus_errors["validated_addresses"];
         if ($post_page_type == "post") {
-            update_option($post_db_cache_key, $validated_marker_list);
+            update_option($post_db_cache_key, json_encode($addresses_plus_errors));
             update_option($post_db_cache_time_key, time());
         } else if ($post_page_type == "page") {
-            update_option($page_db_cache_key, $validated_marker_list);
+            update_option($page_db_cache_key, json_encode($addresses_plus_errors));
             update_option($page_db_cache_time_key, time());
         }
 
-        return array("data" => $validated_marker_list, "debug" => array("state" => "fresh", "since" => time(), "geo_errors" => $execution_results["errors"]));
+        return array("data" => $validated_marker_list, "debug" => array("shortcodeid" => $shortcodeid, "state" => "fresh", "since" => time(), "geo_errors" => $addresses_plus_errors["errors"]));
     }
 endif;
 
@@ -945,25 +1009,25 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
 
         $cached_geomashup_json = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE);
         if (isset($cached_geomashup_json) && trim($cached_geomashup_json) != "" && is_array(json_decode($cached_geomashup_json, true))) {
-
             $cache_time = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME);
-            return array("data" => $cached_geomashup_json, "debug" => array("state" => "cached", "since" => $cache_time, "geo_errors" => array()));
+            return array("data" => $cached_geomashup_json, "debug" => array("state" => "cached", "since" => $cache_time));
         }
-        $post_ids = extract_ids_from_all_containing_shortcode("post");
-        $wp_query_args = cgmp_build_query_args("post", $post_ids);
-        $posts = get_posts($wp_query_args);
 
-        $page_ids = extract_ids_from_all_containing_shortcode("page");
-        $wp_query_args = cgmp_build_query_args("page", $page_ids);
-        $pages = get_pages($wp_query_args);
+        $query_debug_data = array();
+        $post_data = extract_published_content_containing_shortcode("post");
+        $query_debug_data["post"] = $post_data["query"];
 
-        $extracted_published_markers =  array_merge(process_collection_of_contents($posts), process_collection_of_contents($pages));
+        $page_data = extract_published_content_containing_shortcode("page");
+        $query_debug_data["page"] = $page_data["query"];
+
+        $extracted_published_markers =  array_merge(process_collection_of_contents($post_data["extracted"]), process_collection_of_contents($page_data["extracted"]));
 
         if (is_array($extracted_published_markers) && count($extracted_published_markers) > 0) {
 
             $geo_errors = array();
             $filtered = array();
-            foreach($extracted_published_markers as $postID => $post_data) {
+            $duplicates = array();
+            foreach($extracted_published_markers as $post_data) {
 
                 $title = $post_data['title'];
                 $permalink = $post_data['permalink'];
@@ -1000,15 +1064,24 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
                         }
 
                         $filtered[$tobe_filtered_loc]['excerpt'] = $excerpt;
+                    } else {
+                        if (isset($duplicates[$tobe_filtered_loc]) && is_numeric($duplicates[$tobe_filtered_loc])) {
+                            $duplicates[$tobe_filtered_loc]++;
+                        } else {
+                            $duplicates[$tobe_filtered_loc] = 1;
+                        }
                     }
                 }
             }
 
+            $debug_data = array("since" => time(), "query" => $query_debug_data, "geo_errors" => $geo_errors, "duplicate_addresses_extracted" => $duplicates);
+            $filtered["live_debug"] = $debug_data;
             $geomashup_json = json_encode($filtered);
             update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, $geomashup_json);
             update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, time());
 
-            return array("data" => $geomashup_json, "debug" => array("state" => "fresh", "since" => time(), "geo_errors" => $geo_errors));
+            $debug_data["state"] = "fresh";
+            return array("data" => $geomashup_json, "debug" => $debug_data);
         }
     }
 endif;

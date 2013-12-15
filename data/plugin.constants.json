@@ -6,20 +6,22 @@
 	"CGMP_DB_PURGE_GEOMASHUP_CACHE" : "cgmp_purge_geomashup_cache",
 
 
+    "CGMP_ALL_MAP_CACHED_CONSTANTS_PREFIX" : "cgmp_cache_",
+
+    "CGMP_MAP_CACHE_POST_PREFIX" : "cgmp_cache_post_",
+    "CGMP_MAP_CACHE_POST_TIME_PREFIX" : "cgmp_cache_time_post_",
+
+    "CGMP_MAP_CACHE_PAGE_PREFIX" : "cgmp_cache_page_",
+    "CGMP_MAP_CACHE_PAGE_TIME_PREFIX" : "cgmp_cache_time_page_",
+
+    "CGMP_MAP_CACHE_WIDGET_PREFIX" : "cgmp_cache_widget_map_",
+    "CGMP_MAP_CACHE_WIDGET_TIME_PREFIX" : "cgmp_cache_time_widget_map_",
+
+    "CGMP_DB_GEOMASHUP_DATA_CACHE" : "cgmp_cache_mashup_map",
+    "CGMP_DB_GEOMASHUP_DATA_CACHE_TIME" : "cgmp_cache_time_mashup_map",
 
 
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_POST_PREFIX" : "cgmp_geomashup_data_cache_post_prefix_",
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_POST_TIME_PREFIX" : "cgmp_geomashup_data_cache_post_time_prefix_",
-
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_PREFIX" : "cgmp_geomashup_data_cache_page_prefix_",
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_PAGE_TIME_PREFIX" : "cgmp_geomashup_data_cache_page_time_prefix_",
-
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_PREFIX" : "cgmp_geomashup_data_cache_widget_prefix_",
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_WIDGET_TIME_PREFIX" : "cgmp_geomashup_data_cache_widget_time_prefix_",
-
-    "CGMP_DB_GEOMASHUP_DATA_CACHE" : "cgmp_geomashup_data_cache",
-    "CGMP_DB_GEOMASHUP_DATA_CACHE_TIME" : "cgmp_geomashup_data_cache_time",
-
+    "CGMP_PERSISTED_SHORTCODES" : "cgmp_persisted_shortcodes",
     "CGMP_DB_SELECTED_LANGUAGE" : "cgmp_selected_language",
     "CGMP_DB_SETTINGS_BUILDER_LOCATION" : "cgmp_settings_builder_location",
 	"CGMP_DB_SETTINGS_CUSTOM_POST_TYPES" : "cgmp_settings_custom_post_types",
@@ -40,6 +42,8 @@
     "CGMP_HTML_TEMPLATE_PLUGIN_SETTINGS_PAGE" : "plugin_settings_page.tpl",
     "CGMP_HTML_TEMPLATE_WIDGET" : "widget.tpl",
     "CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE" : "widget_form_title.tpl",
+    "CGMP_HTML_TEMPLATE_SHORTCODE_BUILDER_FORM_TITLE" : "shortcode_builder_form_title.tpl",
+    "CGMP_HTML_TEMPLATE_SHORTCODE_BUILDER_HTML_FORM" : "shortcode_builder_html_form.tpl",
     "CGMP_JSON_DATA_DEFAULT_WIDGET_PARAM_VALUES" : "default.widget.params.values.json",
     "CGMP_JSON_DATA_HTML_ELEMENTS_DOCO_PARAMS" : "html.elements.doco.params.json",
     "CGMP_JSON_DATA_HTML_ELEMENTS_FORM_PARAMS" : "html.elements.form.params.json",
@@ -59,5 +63,5 @@
     "CGMP_SEP" : "{}",
     "CGMP_GEOSERVICE_THROTTLING_IN_MICROS" : 150000,
     "CGMP_GEO_VALIDATION_CLIENT_REVALIDATE" : "REVALIDATE",
-    "CGMP_VERSION" : "9.0.3"
+    "CGMP_VERSION" : "9.0.4"
   } ]
