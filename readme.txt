@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: google map, google map widget, jquery tabs, google map short code, google map short code, map widget, map short code, fusion tables, google fusion tables, google fusion queries, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.6
 Tested up to: 3.8
-Stable tag: 9.0.4.1
+Stable tag: 9.0.4.2
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -84,6 +84,13 @@ Look for little map icon in post/page WYSIWYG editor
 7. Do I lose my saved shortcodes after plugin update?<br />
 No, they will still be there
 
+8. Whats the correct way to define coordinates?
+You can use one of the following formats:
+[a] N43°38 19.39, W116°14 28.86 (Please note: single quote or apostrophe has been replaced with SPACE and no double quotes)
+[b] 43°38 19.39N, 116°14 28.86W
+[c] 43 38 19.39, -116 14 28.86
+[d] 43.6387194445, -116.2413513485235
+
 == Screenshots ==
 
 1. Help tooltip in action
@@ -97,6 +104,9 @@ No, they will still be there
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 9.0.4.2 =
+* Enhancement: Documentation update and some code clean up
 
 = 9.0.4.1 =
 * Experimental: Increased waiting times between HTTP requests to Google's Geocoder service
