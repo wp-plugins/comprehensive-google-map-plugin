@@ -32,12 +32,15 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
         );
     }
 
-
 	public function widget( $args, $instance ) {
 
 		if (is_admin() || is_feed()) {
 			return;
 		}
+
+        wp_enqueue_script('cgmp-google-map-jsapi');
+        wp_enqueue_script('cgmp-google-map-orchestrator-framework');
+        add_action('wp_footer', 'cgmp_google_map_init_global_html_object');
 
 		extract($args);
 		$map_data_properties = array();
@@ -68,7 +71,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$addmarkermashuphidden = isset($addmarkermashuphidden) ? $addmarkermashuphidden : "false";
         $enablegeolocationmarkerhidden = isset($enablegeolocationmarkerhidden) ? $enablegeolocationmarkerhidden : "false";
 		if ($addmarkermashuphidden == "true") {
-			$addmarkerlisthidden = make_marker_geo_mashup();
+            $json_data_arr = make_marker_geo_mashup_2();
+            $addmarkerlisthidden = $json_data_arr["data"];
+            $map_data_properties['debug'] = $json_data_arr["debug"];
 		} else if ($addmarkermashuphidden == "false") {
 			$addmarkerlisthidden = update_markerlist_from_legacy_locations($latitude, $longitude, $addresscontent, $addmarkerlisthidden);
 			$addmarkerlisthidden = htmlspecialchars($addmarkerlisthidden);
@@ -77,9 +82,23 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		$addmarkerlisthidden = str_replace($bad_entities, "", $addmarkerlisthidden);
 		$addmarkerlisthidden = cgmp_parse_wiki_style_links($addmarkerlisthidden);
 
+        if ($addmarkermashuphidden == 'false' && trim($addmarkerlisthidden) != "") {
+            $cached_marker_data_json = get_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id);
+            if (isset($cached_marker_data_json) && trim($cached_marker_data_json) != "") {
+                $addmarkerlisthidden = $cached_marker_data_json;
+                $cache_time = get_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id);
+                $map_data_properties['debug'] = array("widget_id" => $this->id, "state" => "cached", "since" => $cache_time);
+            } else {
+                $addmarkerlisthidden = cgmp_do_serverside_address_validation_2($addmarkerlisthidden);
+                $map_data_properties['debug'] = array("widget_id" => $this->id, "state" => "fresh", "since" => time());
+                update_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id, $addmarkerlisthidden);
+                update_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id, time());
+            }
+        }
+
 		$id = md5(time().' '.rand());
 		$map_data_properties['id'] = $id;
-		$map_data_properties['markerlist'] = $addmarkerlisthidden;
+        $map_data_properties['markerlist'] = $addmarkerlisthidden;
 		$map_data_properties['addmarkermashup'] = $addmarkermashuphidden;
 		$map_data_properties['enablegeolocationmarker'] = $enablegeolocationmarkerhidden;
 		$map_data_properties['kml'] = cgmp_clean_kml($map_data_properties['kml']);
@@ -105,6 +124,9 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		foreach ($new_instance as $key => $val) {
 			$instance[$key] = strip_tags($new_instance[$key]);
 		}
+
+        update_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$this->id, "");
+        update_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$this->id, "");
 
 		return $instance;
 	}
@@ -143,10 +165,11 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
 		}
 
 		$template_values = cgmp_build_template_values($settings);
+        $template_values['SHORTCODEBUILDER_FORM_TITLE'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE);
+        $template_values['SHORTCODEBUILDER_HTML_FORM'] = "";
 
 		$tokens_with_values = array();
 		$tokens_with_values['WIDGET_ID_TOKEN'] = $this->id;
-		$tokens_with_values['WIDGET_FORM_TITLE_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_WIDGET_FORM_TITLE);
 		$tokens_with_values['MAP_CONFIGURATION_FORM_TEMPLATE_TOKEN'] = cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_MAP_CONFIGURATION_FORM);
 
 		echo cgmp_render_template_with_values($tokens_with_values, CGMP_HTML_TEMPLATE_WIDGET);
