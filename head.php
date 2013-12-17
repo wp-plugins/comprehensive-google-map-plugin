@@ -34,7 +34,7 @@ endif;
 if ( !function_exists('cgmp_google_map_admin_add_script') ):
 		function cgmp_google_map_admin_add_script()  {
 
-				$whitelist = array('localhost', '127.0.0.1', 'initbinder.com');
+				$whitelist = array('localhost', '127.0.0.1');
 
               	wp_enqueue_script('cgmp-jquery-tools-tooltip', CGMP_PLUGIN_JS .'/jquery.tools.tooltip.min.js', array('jquery'), '1.2.5.a', true);
 				$minified = ".min";
@@ -56,7 +56,7 @@ endif;
 
 if ( !function_exists('cgmp_google_map_register_scripts') ):
 		function cgmp_google_map_register_scripts()  {
-			$whitelist = array('localhost', '127.0.0.1', 'initbinder.com');
+			$whitelist = array('localhost', '127.0.0.1');
 			$minified = ".min";
 			if (in_array($_SERVER['HTTP_HOST'], $whitelist)) {
 				$minified = "";
@@ -68,23 +68,6 @@ if ( !function_exists('cgmp_google_map_register_scripts') ):
 				$api = CGMP_GOOGLE_API_URL_SSL;
 			}
 			wp_register_script('cgmp-google-map-jsapi', $api, array(), false, true);
-		}
-endif;
-
-
-if ( !function_exists('cgmp_google_map_init_scripts') ):
-		function cgmp_google_map_init_scripts()  {
-			$should_base_object_render = get_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER);
-			$was_base_object_rendered = get_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
-
-			if ($should_base_object_render == trim("true") && $was_base_object_rendered == trim("false")) {
-
-				cgmp_google_map_init_global_html_object();
-				wp_print_scripts('cgmp-google-map-jsapi');
-				wp_print_scripts('cgmp-google-map-orchestrator-framework');
-				update_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER, "false");
-				update_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED, "true");
-			}
 		}
 endif;
 

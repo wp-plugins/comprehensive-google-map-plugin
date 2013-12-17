@@ -32,12 +32,15 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
         );
     }
 
-
 	public function widget( $args, $instance ) {
 
 		if (is_admin() || is_feed()) {
 			return;
 		}
+
+        wp_enqueue_script('cgmp-google-map-jsapi');
+        wp_enqueue_script('cgmp-google-map-orchestrator-framework');
+        add_action('wp_footer', 'cgmp_google_map_init_global_html_object');
 
 		extract($args);
 		$map_data_properties = array();
