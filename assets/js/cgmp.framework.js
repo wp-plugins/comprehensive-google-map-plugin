@@ -220,9 +220,14 @@
 
 
             var MarkerBuilder = function () {
-                var markers, storedAddresses, badAddresses, defaultUnits, wasBuildAddressMarkersCalled, timeout, directionControlsBinded, googleMap, csvString, bubbleAutoPan, originalExtendedBounds, originalMapCenter, updatedZoom, mapDivId, geocoder, bounds, infowindow, streetViewService, directionsRenderer, directionsService;
+                var markers, toValidateAddresses, badAddresses, defaultUnits, wasBuildAddressMarkersCalled, timeout, directionControlsBinded, googleMap, csvString, bubbleAutoPan, originalExtendedBounds, originalMapCenter, updatedZoom, mapDivId, geocoder, bounds, infowindow, streetViewService, directionsRenderer, directionsService;
                 var geolocationMarker = null;
-                var init = function init(map, autoPan, units) {
+                var isGeoMashupSet = false;
+                var resetCacheRequired = false;
+                var geoMashupJsonData = [];
+                var nonGeoMashupJsonData = [];
+                var init = function init(map, autoPan, units, mainJson) {
+                    nonGeoMashupJsonData = mainJson;
                     googleMap = map;
                     mapDivId = googleMap.getDiv().id;
                     bubbleAutoPan = autoPan;
@@ -233,7 +238,7 @@
 
                     markers = [];
                     badAddresses = [];
-                    storedAddresses = [];
+                    toValidateAddresses = [];
 
                     updatedZoom = 5;
 
@@ -281,6 +286,107 @@
                     return wasBuildAddressMarkersCalled;
                 }
 
+                function queryGeocoderService() {
+                    clearTimeout(timeout);
+                    if (toValidateAddresses.length > 0) {
+                        var element = toValidateAddresses.shift();
+                        Logger.info("Geocoding '" + element.address + "' Left " + toValidateAddresses.length + " items to geocode..");
+                        var geocoderRequest = {
+                            "address": element.address
+                        };
+                        geocoder.geocode(geocoderRequest, function (results, status) {
+                            geocoderCallback(results, status, element);
+                        });
+                    } else {
+                        setBounds();
+
+                        if (resetCacheRequired) {
+                            Logger.warn("Reset server map data cache required");
+
+                            if (isGeoMashupSet) {
+                                $.each(markers, function (index, marker) {
+                                    var position = (marker.position + "").replace(new RegExp("\\(|\\)", "g"), "");
+                                    $.each(geoMashupJsonData, function (jsonKey, jsonValue) {
+                                        if (jsonKey === marker.content && jsonValue.validated_address_csv_data.indexOf(CGMPGlobal.geoValidationClientRevalidate) != -1) {
+                                            jsonValue.validated_address_csv_data = jsonValue.validated_address_csv_data.replace(new RegExp(CGMPGlobal.geoValidationClientRevalidate, "g"), position);
+                                            return false;
+                                        }
+                                    });
+                                });
+                                var jsonDataAsString = JSON.stringify(geoMashupJsonData);
+                                $.post(CGMPGlobal.ajaxurl, {action: 'cgmp_ajax_cache_map_action', data: jsonDataAsString, geoMashup: "true"}, function (response) {
+                                    Logger.info("Posting map data to the server..");
+                                    if (response != null && response === "OK") {
+                                        Logger.info("Map geo mashup cache was reset on the server");
+                                    }
+                                });
+                            } else {
+                                var rawMarkerCSV = nonGeoMashupJsonData.markerlist.split("|");
+                                var widgetId = nonGeoMashupJsonData.debug.widget_id;
+                                var postId = nonGeoMashupJsonData.debug.post_id;
+                                var postType = nonGeoMashupJsonData.debug.post_type;
+                                var shortcodeId = nonGeoMashupJsonData.debug.shortcodeid;
+
+                                var filtered = [];
+                                $.each(markers, function (index, marker) {
+                                    var position = (marker.position + "").replace(new RegExp("\\(|\\)", "g"), "");
+                                    $.each(rawMarkerCSV, function (index, value) {
+
+                                       var chunks = value.split(CGMPGlobal.sep);
+                                       if (chunks[0] === marker.content && value.indexOf(CGMPGlobal.geoValidationClientRevalidate) != -1) {
+                                           filtered[index] = value.replace(new RegExp(CGMPGlobal.geoValidationClientRevalidate, "g"), position);
+                                           return false;
+                                        }
+                                    });
+                                });
+
+                                var cleansedMarkerCSV = filtered.join("|");
+                                if (typeof widgetId !== "undefined" && widgetId !== "undefined") {
+                                    $.post(CGMPGlobal.ajaxurl, {action: 'cgmp_ajax_cache_map_action', data: cleansedMarkerCSV, geoMashup: "false", widgetId: widgetId}, function (response) {
+                                        Logger.info("Posting map data to the server..");
+                                        if (response != null) {
+                                            if (response === "OK_WIDGET") {
+                                                Logger.info("Map cache was reset on the server for widget#" + widgetId);
+                                            }
+                                        }
+                                    });
+                                } else if (typeof postId !== "undefined" && postId !== "undefined") {
+                                    $.post(CGMPGlobal.ajaxurl, {action: 'cgmp_ajax_cache_map_action', data: cleansedMarkerCSV, geoMashup: "false", postId: postId, postType: postType, shortcodeId: shortcodeId}, function (response) {
+                                        Logger.info("Posting map data to the server..");
+                                        if (response != null) {
+                                            if (response === "OK_POST") {
+                                                Logger.info("Map cache was reset on the server for post#" + postId + " shortcode#" + shortcodeId);
+                                            } else if (response === "OK_PAGE") {
+                                                Logger.info("Map cache was reset on the server for page#" + postId + " shortcode#" + shortcodeId);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            resetCacheRequired = false;
+                        }
+
+                        Logger.info("Have " + (markers.length) + " markers on the map");
+                    }
+                }
+
+                function geocoderCallback(results, status, element) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        Logger.info("Geocoding '" + element.address + "' OK!");
+                        var addressPoint = results[0].geometry.location;
+                        instrumentMarker(addressPoint, element);
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 300);
+                    } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                        setBounds();
+                        toValidateAddresses.push(element);
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 3000);
+                    } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                        Logger.warn("Got ZERO_RESULTS for [" + element.address + "]");
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 300);
+                    }
+
+                }
+
                 var buildAddressMarkers = function buildAddressMarkers(markerLocations, isGeoMashap, isBubbleContainsPostLink) {
 
                     wasBuildAddressMarkersCalled = true;
@@ -288,6 +394,7 @@
                     csvString = Utils.searchReplace(csvString, "'", "");
 
                     if (isGeoMashap === "true") {
+                        isGeoMashupSet = true;
                         var json = parseJson(csvString);
                         if (isBubbleContainsPostLink === "true") {
                             createGoogleMarkersFromGeomashupJson(json, true);
@@ -298,12 +405,16 @@
                         createGoogleMarkersFromCsvAddressData(csvString, '', '', '', false, false);
                     }
                     setBounds();
+                    queryGeocoderService();
                 }
 
                 function createGoogleMarkersFromGeomashupJson(json, infoBubbleContainPostLink) {
                     var index = 1;
+
+                    geoMashupJsonData = json;
+
                     $.each(json, function (key, value) {
-                        if (key === "live_debug") {
+                        if (key === "live_debug" || key === "debug") {
                             return true;
                         }
                         if (this.excerpt == null) {
@@ -316,7 +427,6 @@
                         createGoogleMarkersFromCsvAddressData(this.validated_address_csv_data, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink, true);
                         index++;
                     });
-                    Logger.info("Have " + (markers.length) + " destinations for marker Geo mashup..");
                 }
 
                 function createGoogleMarkersFromCsvAddressData(csvString, postTitle, postLink, postExcerpt, infoBubbleContainPostLink, geoMashup) {
@@ -326,7 +436,7 @@
                     }
 
                     var locations = csvString.split("|");
-                    Logger.info("CSV " + locations);
+                    Logger.info("Raw: " + locations);
                     for (var i = 0; i < locations.length; i++) {
                         var target = locations[i];
                         if (target != null && target != "") {
@@ -355,6 +465,12 @@
                                 geoMashup: geoMashup
                             };
 
+                            if (rawCoordinates === CGMPGlobal.geoValidationClientRevalidate) {
+                                resetCacheRequired = true;
+                                toValidateAddresses.push(element);
+                                continue;
+                            }
+
                             var latlngArr = [];
                             if (rawCoordinates.indexOf(",") != -1) {
                                 latlngArr = rawCoordinates.split(",");
@@ -369,9 +485,7 @@
                                 return false;
                             }
 
-                            var latLngPoint = new google.maps.LatLng(parseFloat(latlngArr[0]).toFixed(8), parseFloat(latlngArr[1]).toFixed(8));
-                            Logger.info("Get marker: " + userInputAddress + " " + latLngPoint);
-
+                            var latLngPoint = new google.maps.LatLng(parseFloat(latlngArr[0]), parseFloat(latlngArr[1]));
                             instrumentMarker(latLngPoint, element);
                         }
                     }
@@ -386,7 +500,7 @@
                         map: googleMap
                     });
                     if (marker) {
-                        Logger.info("Got marker: " + element.address + " " + point);
+                        Logger.info("Built marker: " + element.address + " " + point);
                         if (element.markerIcon) {
                             var markerIcon = element.markerIcon;
                             if (typeof markerIcon == "undefined" || markerIcon === "undefined") {
@@ -1291,6 +1405,8 @@
             CGMPGlobal.noBubbleDescriptionProvided = $("object#global-data-placeholder").find("param#noBubbleDescriptionProvided").val();
             CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
             CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
+            CGMPGlobal.geoValidationClientRevalidate = $("object#global-data-placeholder").find("param#geoValidationClientRevalidate").val();
+            CGMPGlobal.ajaxurl = $("object#global-data-placeholder").find("param#ajaxurl").val();
 
             CGMPGlobal.errors = parseJson(CGMPGlobal.errors);
             CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
@@ -1346,7 +1462,7 @@
                         LayerBuilder.init(googleMap);
 
                         var markerBuilder = new MarkerBuilder();
-                        markerBuilder.init(googleMap, json.bubbleautopan, json.distanceunits);
+                        markerBuilder.init(googleMap, json.bubbleautopan, json.distanceunits, json);
                         markerBuilder.setGeoLocationIfEnabled(json.enablegeolocationmarker);
 
                         var controlOptions = {
@@ -1379,7 +1495,7 @@
                         if (json.kml != null && Utils.trim(json.kml) != '') {
                             LayerBuilder.buildKmlLayer(json.kml);
                         } else {
-
+                            //json.debug.geo_errors = parseJson('{"39\u00b0 26 56.42 N 8\u00b0 11 26.38 W":{"39\u00b0 26 56.42 N 8\u00b0 11 26.38 W":"OVER_QUERY_LIMIT"},"Estrada do Cabrito - Rossio ao sul do Tejo - Abrantes":{"Estrada do Cabrito - Rossio ao sul do Tejo - Abrantes":"OVER_QUERY_LIMIT"}}');
                             if (json.markerlist != null && Utils.trim(json.markerlist) != '') {
                                 markerBuilder.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.addmarkermashupbubble);
                             }

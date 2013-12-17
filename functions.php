@@ -87,53 +87,6 @@ if ( !function_exists('cgmp_draw_map_placeholder') ):
 endif;
 
 
-if ( !function_exists('cgmp_geocode_address') ):                                                            
-   function cgmp_geocode_address($address_to_geocode) {                                     
-      $server_api = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
-      $full_server_api = $server_api.urlencode($address_to_geocode);
-
-      $attempts = 0;
-      $results = array();
-      $errors = array();
-      $json_response = FALSE;
-      while ($attempts < 3) {
-          if (function_exists('curl_init')) {
-             $c = curl_init();
-             curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-             curl_setopt($c, CURLOPT_URL, $full_server_api);
-             $json_response = curl_exec($c);
-             curl_close($c);
-          } else {
-             $json_response = file_get_contents($full_server_api);
-          }
-
-          if ($json_response) {
-             $json = json_decode($json_response, true);
-             if ($json['status'] == 'OK') {
-                $results['location'] = $json['results'][0]['geometry']['location'];
-                $results['formatted_address'] = $json['results'][0]['formatted_address'];
-                break;
-             } else if ($json['status'] == 'OVER_QUERY_LIMIT') {
-                 $errors[$address_to_geocode] = $json['status'];
-                 $attempts++;
-                 sleep(3); //wait 3 seconds if status is OVER_QUERY_LIMIT
-             } else {
-                 $errors[$address_to_geocode] = $json['status'];
-                 $attempts++;
-                 usleep(500000); //wait 500k microseconds (or 500 milliseconds or 0.5 seconds) on other statuses
-             }
-          } else {
-              $errors[$address_to_geocode."_attempt_".$attempts] = "No JSON response from Geo service";
-              $attempts++;
-              usleep(500000); //wait 500k microseconds (or 500 milliseconds or 0.5 seconds)
-          }
-      }
-
-      return array("results" => $results, "errors" => $errors);
-   }                                                                                                                    
-endif;
-
-
 if ( !function_exists('cgmp_render_template_with_values') ):
 	function cgmp_render_template_with_values($tokens_with_values, $template_name) {
 		$template = file_get_contents(CGMP_PLUGIN_HTML."/".$template_name);
@@ -208,6 +161,47 @@ if ( !function_exists('cgmp_load_button_into_mce_editor') ):
     function cgmp_load_button_into_mce_editor($buttons) {
         array_push($buttons, "shortcode");
         return $buttons;
+    }
+endif;
+
+
+if ( !function_exists('cgmp_ajax_cache_map_action_callback') ):
+    function cgmp_ajax_cache_map_action_callback() {
+
+        if (isset($_POST['data']))  {
+            if (isset($_POST['geoMashup']))  {
+                $isGeoMashup = $_POST['geoMashup'] === "true";
+                if ($isGeoMashup) {
+                    update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, $_POST['data']);
+                    update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, time());
+                    echo "OK";
+                }  else {
+
+                    if (isset($_POST['postType']))  {
+                        $post_db_cache_key = CGMP_MAP_CACHE_POST_PREFIX.$_POST['postId']."_".$_POST['shortcodeId'];
+                        $post_db_cache_time_key = CGMP_MAP_CACHE_POST_TIME_PREFIX.$_POST['postId']."_".$_POST['shortcodeId'];
+
+                        $page_db_cache_key = CGMP_MAP_CACHE_PAGE_PREFIX.$_POST['postId']."_".$_POST['shortcodeId'];
+                        $page_db_cache_time_key = CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$_POST['postId']."_".$_POST['shortcodeId'];
+
+                        if ($_POST['postType'] == "post") {
+                            update_option($post_db_cache_key, $_POST['data']);
+                            update_option($post_db_cache_time_key, time());
+                            echo "OK_POST";
+                        } else if ($_POST['postType'] == "page") {
+                            update_option($page_db_cache_key, $_POST['data']);
+                            update_option($page_db_cache_time_key, time());
+                            echo "OK_PAGE";
+                        }
+                    } else if (isset($_POST['widgetId']))  {
+                        update_option(CGMP_MAP_CACHE_WIDGET_PREFIX.$_POST['widgetId'], $_POST['data']);
+                        update_option(CGMP_MAP_CACHE_WIDGET_TIME_PREFIX.$_POST['widgetId'], time());
+                        echo "OK_WIDGET";
+                    }
+                }
+            }
+        }
+        exit();
     }
 endif;
 
@@ -975,34 +969,30 @@ if ( !function_exists('cgmp_get_post_page_cached_markerlist') ):
         $page_db_cache_key = CGMP_MAP_CACHE_PAGE_PREFIX.$post_page_id."_".$shortcodeid;
         $page_db_cache_time_key = CGMP_MAP_CACHE_PAGE_TIME_PREFIX.$post_page_id."_".$shortcodeid;
 
-        $cached_map_data_plus_errors = "";
+        $cached_validated_addresses = "";
         $cached_map_data_time = "";
         if ($post_page_type == "post") {
-            $cached_map_data_plus_errors = get_option($post_db_cache_key);
+            $cached_validated_addresses = get_option($post_db_cache_key);
             $cached_map_data_time = get_option($post_db_cache_time_key);
         } else if ($post_page_type == "page") {
-            $cached_map_data_plus_errors = get_option($page_db_cache_key);
+            $cached_validated_addresses = get_option($page_db_cache_key);
             $cached_map_data_time = get_option($page_db_cache_time_key);
         }
 
-        if (isset($cached_map_data_plus_errors) && trim($cached_map_data_plus_errors) != "") {
-            $addresses_plus_errors = json_decode($cached_map_data_plus_errors, true);
-            if (is_array($addresses_plus_errors)) {
-                return array("data" => $addresses_plus_errors["validated_addresses"], "debug" => array("shortcodeid" => $shortcodeid, "state" => "cached", "since" => $cached_map_data_time, "geo_errors" => $addresses_plus_errors["errors"]));
-            }
+        if (isset($cached_validated_addresses) && trim($cached_validated_addresses) != "") {
+            return array("data" => $cached_validated_addresses, "debug" => array("shortcodeid" => $shortcodeid, "post_id"=>$post_page_id, "post_type"=>$post_page_type, "state" => "cached", "since" => $cached_map_data_time));
         }
 
-        $addresses_plus_errors = cgmp_do_serverside_address_validation_2($markerlist);
-        $validated_marker_list = $addresses_plus_errors["validated_addresses"];
+        $validated_addresses = cgmp_do_serverside_address_validation_2($markerlist);
         if ($post_page_type == "post") {
-            update_option($post_db_cache_key, json_encode($addresses_plus_errors));
+            update_option($post_db_cache_key, $validated_addresses);
             update_option($post_db_cache_time_key, time());
         } else if ($post_page_type == "page") {
-            update_option($page_db_cache_key, json_encode($addresses_plus_errors));
+            update_option($page_db_cache_key, $validated_addresses);
             update_option($page_db_cache_time_key, time());
         }
 
-        return array("data" => $validated_marker_list, "debug" => array("shortcodeid" => $shortcodeid, "state" => "fresh", "since" => time(), "geo_errors" => $addresses_plus_errors["errors"]));
+        return array("data" => $validated_addresses, "debug" => array("shortcodeid" => $shortcodeid, "post_id"=>$post_page_id, "post_type"=>$post_page_type, "state" => "fresh", "since" => time()));
     }
 endif;
 
@@ -1012,9 +1002,13 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
     function make_marker_geo_mashup_2()   {
 
         $cached_geomashup_json = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE);
-        if (isset($cached_geomashup_json) && trim($cached_geomashup_json) != "" && is_array(json_decode($cached_geomashup_json, true))) {
-            $cache_time = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME);
-            return array("data" => $cached_geomashup_json, "debug" => array("state" => "cached", "since" => $cache_time));
+        if (isset($cached_geomashup_json) && trim($cached_geomashup_json) != "") {
+            $cached_geomashup_json = str_replace("\\\"", "\"", $cached_geomashup_json);
+            $json = json_decode($cached_geomashup_json, true);
+            if (is_array($json)) {
+                $cache_time = get_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME);
+                return array("data" => $cached_geomashup_json, "debug" => array("state" => "cached", "since" => $cache_time, "geo_errors" => $json["live_debug"]["geo_errors"]));
+            }
         }
 
         $query_debug_data = array();
@@ -1028,7 +1022,6 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
 
         if (is_array($extracted_published_markers) && count($extracted_published_markers) > 0) {
 
-            $geo_errors = array();
             $filtered = array();
             $duplicates = array();
             foreach($extracted_published_markers as $post_data) {
@@ -1049,12 +1042,8 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
                     }
                     $tobe_filtered_loc = str_replace($bad_entities, "", str_replace($bad_characters, " ", $tobe_filtered_loc));
                     if (!isset($filtered[$tobe_filtered_loc])) {
-                        $execution_results = cgmp_do_serverside_address_validation_2($full_loc);
-                        if (is_array($execution_results["errors"]) && !empty($execution_results["errors"])) {
-                            $geo_errors[$tobe_filtered_loc] = $execution_results["errors"];
-                        }
-
-                        $filtered[$tobe_filtered_loc]['validated_address_csv_data'] = $execution_results["validated_addresses"];
+                        $validated_addresses = cgmp_do_serverside_address_validation_2($full_loc);
+                        $filtered[$tobe_filtered_loc]['validated_address_csv_data'] = $validated_addresses;
                         $filtered[$tobe_filtered_loc]['permalink'] = $permalink;
 
                         if (isset($title) &&  trim($title) != "")  {
@@ -1078,7 +1067,7 @@ if ( !function_exists('make_marker_geo_mashup_2') ):
                 }
             }
 
-            $debug_data = array("since" => time(), "query" => $query_debug_data, "geo_errors" => $geo_errors, "duplicate_addresses_extracted" => $duplicates);
+            $debug_data = array("since" => time(), "query" => $query_debug_data, "duplicate_addresses_extracted" => $duplicates);
             $filtered["live_debug"] = $debug_data;
             $geomashup_json = json_encode($filtered);
             update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, $geomashup_json);
@@ -1099,10 +1088,7 @@ if ( !function_exists('cgmp_do_serverside_address_validation_2') ):
         $markers_data = str_replace($bad_entities, "", str_replace($bad_characters, " ", $markers_data));
 
         $splitted_marker_list = explode("|", $markers_data);
-
-        $geo_errors = array();
         $validated_addresses = array();
-        $google_request_counter = 0;
         foreach($splitted_marker_list as $marker_data_with_cgmp_sep) {
 
             $marker_data_segments = explode(CGMP_SEP, $marker_data_with_cgmp_sep);
@@ -1111,35 +1097,12 @@ if ( !function_exists('cgmp_do_serverside_address_validation_2') ):
             $description = isset($marker_data_segments[2]) && trim($marker_data_segments[2]) != "" ? CGMP_SEP.$marker_data_segments[2] : CGMP_SEP.CGMP_NO_BUBBLE_DESC;
 
             if (preg_match('/[a-zA-Z]/', $address) !== 0) {
-                $execution_results = cgmp_geocode_address($address);
-
-                $result_from_google = $execution_results["results"];
-                if (is_array($result_from_google) && !empty($result_from_google)) {
-                    $lat = $result_from_google['location']['lat'];
-                    $lng = $result_from_google['location']['lng'];
-                    $location = $lat.",".$lng;
-                    $validated_addresses[] = $address.$icon.$description.CGMP_SEP.$location;
-                } else {
-                    // cgmp_geocode_address() returned an empty array, most probably some error received, ie.: OVER_QUERY_LIMIT
-                    // $validated_addresses[] = $address.$icon.$description.CGMP_SEP.CGMP_GEO_VALIDATION_CLIENT_REVALIDATE;
-                    $geo_errors[$address] = $execution_results["errors"];
-                }
-
-                $google_request_counter++;
-                // Some basic throttling...
-                if ($google_request_counter == 10) {
-                    $google_request_counter = 0;
-                    usleep(350000); //wait 350k microseconds (or 350 milliseconds) after we finished 10 requests to Google
-                } else {
-                    // https://developers.google.com/maps/documentation/business/articles/usage_limits
-                    // Google allows a rate limit or 10 QPS (queries per second), checked on 11/December/2013 using above link
-                    usleep(300000); //wait 300k microseconds (or 300 milliseconds) between each request
-                }
+                $validated_addresses[] = $address.$icon.$description.CGMP_SEP.CGMP_GEO_VALIDATION_CLIENT_REVALIDATE;
             } else {
                 $validated_addresses[] = $address.$icon.$description.CGMP_SEP.$address;
             }
         }
-        return array("validated_addresses" => implode("|", $validated_addresses),  "errors" => $geo_errors);
+        return implode("|", $validated_addresses);
     }
 endif;
 
