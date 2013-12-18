@@ -9,6 +9,15 @@
         "templateTokenNameSuffix": "title"
     },
     {
+        "backendFunctionNameSuffix": "input",
+        "cssClasses": "widefat notshortcodeitem",
+        "dbParameterId": "shortcode-title",
+        "dbParameterName": "shortcode-title",
+        "htmlLabelValue": "Title (unique per sh.code)",
+        "inlineCss": "width: 98% !important;",
+        "templateTokenNameSuffix": "shortcodetitle"
+    },
+    {
         "backendFunctionNameSuffix": "select",
         "cssClasses": "widefat",
         "dbParameterId": "mapalign",
