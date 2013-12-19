@@ -691,6 +691,7 @@ endif;
 if ( !function_exists('cgmp_on_activate_hook') ):
     function cgmp_on_activate_hook()  {
         cgmp_clear_cached_map_data(CGMP_ALL_MAP_CACHED_CONSTANTS_PREFIX);
+
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
     }
