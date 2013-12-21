@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 9.0.11
+Version: 9.0.12
 Author: Alexander Zagniotov
 Author URI: http://initbinder.com
 License: GPLv2
@@ -28,7 +28,6 @@ if ( !function_exists( 'add_action' ) ) {
 	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
 	exit;
 }
-
 
 if ( !function_exists('cgmp_define_constants') ):
 	function cgmp_define_constants() {
@@ -64,7 +63,6 @@ endif;
 if ( !function_exists('cgmp_register_hooks') ):
 	function cgmp_register_hooks() {
 		register_activation_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_on_activate_hook');
-		register_uninstall_hook( CGMP_PLUGIN_BOOTSTRAP, 'cgmp_on_uninstall_hook');
 	}
 endif;
 
@@ -74,6 +72,7 @@ if ( !function_exists('cgmp_add_actions') ):
 		add_action('init', 'cgmp_google_map_register_scripts');
 		add_action('init', 'cgmp_load_plugin_textdomain');
 		add_action('admin_notices', 'cgmp_show_message');
+		add_action('admin_notices', 'cgmp_show_initial_warning_message');
 		add_action('admin_init', 'cgmp_google_map_admin_add_style');
 		add_action('admin_init', 'cgmp_google_map_admin_add_script');
 		add_action('admin_footer', 'cgmp_google_map_init_global_admin_html_object');

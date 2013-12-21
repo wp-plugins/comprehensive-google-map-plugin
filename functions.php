@@ -670,7 +670,7 @@ if ( !function_exists('extract_published_content_containing_shortcode') ):
                         $addresss_segments = explode(CGMP_SEP, $address_matches[1][0]);
                         $address_as_string = $addresss_segments[0];
                         if (isset($address_as_string) && trim($address_as_string) != "") {
-                            if (!is_array($addresses[$content_id])) {
+                            if (!isset($addresses[$content_id]) || !is_array($addresses[$content_id])) {
                                 $addresses[$content_id] = array();
                             }
                             $addresses[$content_id][] = $address_as_string;
@@ -694,37 +694,45 @@ if ( !function_exists('cgmp_on_activate_hook') ):
 
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE, "");
         update_option(CGMP_DB_GEOMASHUP_DATA_CACHE_TIME, "");
+        update_option(CGMP_INITIAL_WARNING, 1);
     }
 endif;
 
-
-if ( !function_exists('cgmp_on_uninstall_hook') ):
-    function cgmp_on_uninstall_hook()  {
-
-        if ( CGMP_PLUGIN_BOOTSTRAP != WP_UNINSTALL_PLUGIN ) {
-            return;
+if ( !function_exists('cgmp_show_initial_warning_message') ):
+    function cgmp_show_initial_warning_message()  {
+        $conter = get_option(CGMP_INITIAL_WARNING);
+        global $pagenow;
+        if (isset($_GET['activate']) && $_GET['activate'] == "true" && $pagenow == "plugins.php" && $conter < 2) {
+           ob_start();
+            ?>
+            <div id="message" class="error">
+                <p>
+                    <strong>One-time Warning</strong> from <strong>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?>:</strong><br />
+                    Some 3rd party theme & plugin developers ship their products with older versions of jQuery and disable<br />
+                    loading of default jQuery (1.9+) shipped with WordPress these days
+                </p>
+                <p>
+                    <strong>Please be mindful:</strong><br />
+                    In order for <b>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?></b> to function without issues, it requires <b>one of the</b> following:<br /><br />
+                    <b>[a]</b> Your blog has to use jQuery 1.9+ <br />
+                    <b>[b]</b> If your blog uses an older version of jQuery, make sure it is used in conjunction with jQuery Migrate plugin
+                </p>
+                <p>If <b>[a]</b> nor <b>[b]</b> are true, it will result in broken plugin</p>
+            </div>
+            <?php
+            update_option(CGMP_INITIAL_WARNING, 2);
+            echo ob_get_clean();
         }
-
-        cgmp_clear_cached_map_data(CGMP_ALL_MAP_CACHED_CONSTANTS_PREFIX);
-
-        //legacy
-        remove_option(CGMP_DB_PUBLISHED_POST_MARKERS);
-        remove_option(CGMP_DB_POST_COUNT);
-        remove_option(CGMP_DB_PUBLISHED_POST_IDS);
-        remove_option(CGMP_DB_PUBLISHED_PAGE_IDS);
-        remove_option(CGMP_DB_SETTINGS_SHOULD_BASE_OBJECT_RENDER);
-        remove_option(CGMP_DB_SETTINGS_WAS_BASE_OBJECT_RENDERED);
-        remove_option(CGMP_DB_PURGE_GEOMASHUP_CACHE);
-        remove_option(CGMP_DB_GEOMASHUP_CONTENT);
     }
 endif;
+
 
 if ( !function_exists('cgmp_clear_cached_map_data') ):
     function cgmp_clear_cached_map_data($prefix_constant)  {
         // Remove cache of posts, pages and widgets
         global $wpdb;
         $options_table = $wpdb->options;
-        $wpdb->query( "DELETE FROM ".$options_table." WHERE option_name LIKE '".$prefix_constant."%'" );
+        $wpdb->query( "DELETE FROM ".$options_table." WHERE option_name LIKE '".$prefix_constant."%';" );
     }
 endif;
 
