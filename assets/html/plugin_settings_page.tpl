@@ -15,13 +15,12 @@
 
 	<div class="tools-tab-body" id="settings" style="">
 		<div class="tools-tab-content settings">
-			<h3 class="hide-if-js">Enable/Disable shortcode builder under post/page HTML WYSIWYG editor</h3>
 				<form action='' name='' id='' method='post'>
 				<div id='google-map-container-settings' style='margin-top: 20px'>
 				<table cellspacing='0' cellpadding='0' border='0'>
 					<tbody>
 						<tr>
-							<td><b>Shortcode builder under post/page HTML WYSIWYG editor?</b></td>
+							<td><b>Shortcode builder under default post/page HTML WYSIWYG editor?</b></td>
 						</tr>
 						<tr>
 							<td>
@@ -35,23 +34,46 @@
 				<table cellspacing='0' cellpadding='0' border='0'>
 					<tbody>
 						<tr>
-							<td>&nbsp;</td>
+                            <td><br />&nbsp;<br /></td>
 						</tr>
 					</tbody>
 				</table>
 				<table cellspacing='0' cellpadding='0' border='0'>
 					<tbody>
 						<tr>
-							<td><b>Shortcode builder should be visible under HTML WYSIWYG editor of the following custom post/page types</b></td>
+							<td><b>The following custom post/page types:</b><br />
+                                <span style="color: green; font-weight: bold;">[a]</span>&nbsp;Will be included in Geo Mashup maps<br />
+                                <span style="color: green; font-weight: bold;">[b]</span>&nbsp;Will have shortcode builder visible under HTML WYSIWYG editor</td>
 						</tr>
 						<tr>
 							<td>
-								<label id='custom-post-types' for='custom-post-types'>Enter comma-separated values:</label>
+								<label id='custom-post-types' for='custom-post-types'>Enter <span style="color: green; font-weight: bold;">comma</span>-separated values:</label>
 								<input type='text' id='custom-post-types' name='custom-post-types' maxlength="40" size="50" value='CUSTOM_POST_TYPES_TOKEN' />
 							</td>
 						</tr>
 					</tbody>
 				</table>
+                <table cellspacing='0' cellpadding='0' border='0'>
+                    <tbody>
+                    <tr>
+                        <td><br />&nbsp;<br /></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table cellspacing='0' cellpadding='0' border='0'>
+                    <tbody>
+                    <tr>
+                        <td><b>HTML WYSIWYG TinyMCE button to load saved shortcodes</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label id='yes-enabled-label' for='yes-enabled'>Enabled</label>
+                            <input type='radio' id='yes-enabled' name='tinymce-button-in-editor' value='true' YES_ENABLED_TINYMCE_BUTTON_TOKEN />&nbsp;
+                            <label id='no-enabled-label' for='no-enabled'>Disabled</label>
+                            <input type='radio' id='no-enabled' name='tinymce-button-in-editor' value='false' NO_ENABLED_TINYMCE_BUTTON_TOKEN /></td>
+                    </tr>
+                    </tbody>
+                </table>
 			</div><br /><br />
 			<input type='submit' onclick='' class='button-primary' tabindex='4' value=' Save Settings ' id='cgmp-save-settings' name='cgmp-save-settings' />
 		</form>
