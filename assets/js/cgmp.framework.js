@@ -61,7 +61,6 @@
                 Logger.fatal("Using parseJson stub..");
             }
 
-            var CGMPGlobal = {};
             var GoogleMapOrchestrator = (function () {
 
                 var builder = {};
@@ -133,7 +132,7 @@
                 }
 
                 var buildPanoramioLayer = function buildPanoramioLayer(userId) {
-                    if (typeof google.maps.panoramio == "undefined" || !google.maps.panoramio || google.maps.panoramio == null) {
+                    if (typeof google.maps.panoramio === "undefined" || !google.maps.panoramio || google.maps.panoramio == null) {
                         Logger.error("We cannot access Panoramio library. Aborting..");
                         return false;
                     }
@@ -175,32 +174,32 @@
                         switch (kmlStatus) {
 
                             case google.maps.KmlLayerStatus.DOCUMENT_NOT_FOUND:
-                                msg = CGMPGlobal.errors.kmlNotFound;
+                                msg = CGMPGlobal.kmlNotFound;
                                 break;
                             case google.maps.KmlLayerStatus.DOCUMENT_TOO_LARGE:
-                                msg = CGMPGlobal.errors.kmlTooLarge;
+                                msg = CGMPGlobal.kmlTooLarge;
                                 break;
                             case google.maps.KmlLayerStatus.FETCH_ERROR:
-                                msg = CGMPGlobal.errors.kmlFetchError;
+                                msg = CGMPGlobal.kmlFetchError;
                                 break;
                             case google.maps.KmlLayerStatus.INVALID_DOCUMENT:
-                                msg = CGMPGlobal.errors.kmlDocInvalid;
+                                msg = CGMPGlobal.kmlDocInvalid;
                                 break;
                             case google.maps.KmlLayerStatus.INVALID_REQUEST:
-                                msg = CGMPGlobal.errors.kmlRequestInvalid;
+                                msg = CGMPGlobal.kmlRequestInvalid;
                                 break;
                             case google.maps.KmlLayerStatus.LIMITS_EXCEEDED:
-                                msg = CGMPGlobal.errors.kmlLimits;
+                                msg = CGMPGlobal.kmlLimits;
                                 break;
                             case google.maps.KmlLayerStatus.TIMED_OUT:
-                                msg = CGMPGlobal.errors.kmlTimedOut;
+                                msg = CGMPGlobal.kmlTimedOut;
                                 break;
                             case google.maps.KmlLayerStatus.UNKNOWN:
-                                msg = CGMPGlobal.errors.kmlUnknown;
+                                msg = CGMPGlobal.kmlUnknown;
                                 break;
                         }
                         if (msg != '') {
-                            var error = CGMPGlobal.errors.kml.replace("[MSG]", msg);
+                            var error = CGMPGlobal.kml.replace("[MSG]", msg);
                             error = error.replace("[STATUS]", kmlStatus);
                             Errors.alertError(error);
                             Logger.error("Google returned KML error: " + msg + " (" + kmlStatus + ")");
@@ -220,36 +219,25 @@
 
 
             var MarkerBuilder = function () {
-                var markers, storedAddresses, badAddresses, defaultUnits, wasBuildAddressMarkersCalled, timeout, directionControlsBinded, googleMap, csvString, bubbleAutoPan, originalExtendedBounds, originalMapCenter, updatedZoom, mapDivId, geocoder, bounds, infowindow, streetViewService, directionsRenderer, directionsService;
+                var markers, toValidateAddresses, badAddresses, defaultUnits, wasBuildAddressMarkersCalled, timeout, directionControlsBinded, googleMap, csvString, bubbleAutoPan, originalExtendedBounds, originalMapCenter, updatedZoom, mapDivId, geocoder, bounds, infowindow, streetViewService, directionsRenderer, directionsService;
                 var geolocationMarker = null;
-                var init = function init(map, autoPan, units, enableGeoLocation) {
+                var isGeoMashupSet = false;
+                var resetCacheRequired = false;
+                var geoMashupJsonData = [];
+                var nonGeoMashupJsonData = [];
+                var init = function init(map, autoPan, units, mainJson) {
+                    nonGeoMashupJsonData = mainJson;
                     googleMap = map;
                     mapDivId = googleMap.getDiv().id;
                     bubbleAutoPan = autoPan;
                     defaultUnits = units;
-
-                    if (enableGeoLocation === "true") {
-                        geolocationMarker = new GeolocationMarker();
-
-                        google.maps.event.addListener(geolocationMarker, 'position_changed', function () {
-                            googleMap.setCenter(this.getPosition());
-                            googleMap.fitBounds(this.getBounds());
-                        });
-
-                        google.maps.event.addListener(geolocationMarker, 'geolocation_error', function (e) {
-                            Logger.error('There was an error obtaining your position. Message: ' + e.message);
-                        });
-                        geolocationMarker.setPositionOptions({enableHighAccuracy: true, timeout: 6000, maximumAge: 0});
-                        geolocationMarker.setMap(googleMap);
-                    }
-
                     google.maps.event.addListener(googleMap, 'click', function () {
                         resetMap();
                     });
 
                     markers = [];
                     badAddresses = [];
-                    storedAddresses = [];
+                    toValidateAddresses = [];
 
                     updatedZoom = 5;
 
@@ -274,8 +262,140 @@
                     directionsRenderer.setPanel(document.getElementById('rendered-directions-placeholder-' + mapDivId));
                 }
 
+                var setGeoLocationIfEnabled = function setGeoLocationIfEnabled(enableGeoLocation) {
+                    if (enableGeoLocation === "true") {
+                        geolocationMarker = new GeolocationMarker();
+
+                        google.maps.event.addListenerOnce(geolocationMarker, 'position_changed', function () {
+                            googleMap.setCenter(this.getPosition());
+                            googleMap.fitBounds(this.getBounds());
+                        });
+
+                        google.maps.event.addListener(geolocationMarker, 'geolocation_error', function (e) {
+                            alert('There was an error creating Geolocation marker: ' + e.message + "\n\nProceeding with normal map generation..");
+                            Logger.error('There was an error obtaining your position. Message: ' + e.message);
+                            geolocationMarker = null; // Makes sure that the map is rendered when there was a problem with Geo marker
+                        });
+                        geolocationMarker.setPositionOptions({enableHighAccuracy: true, timeout: 6000, maximumAge: 0});
+                        geolocationMarker.setMap(googleMap);
+                    }
+                }
+
                 var isBuildAddressMarkersCalled = function isBuildAddressMarkersCalled() {
                     return wasBuildAddressMarkersCalled;
+                }
+
+                function queryGeocoderService() {
+                    clearTimeout(timeout);
+                    if (toValidateAddresses.length > 0) {
+                        var element = toValidateAddresses.shift();
+                        Logger.info("Geocoding '" + element.address + "' Left " + toValidateAddresses.length + " items to geocode..");
+                        var geocoderRequest = {
+                            "address": element.address
+                        };
+                        geocoder.geocode(geocoderRequest, function (results, status) {
+                            geocoderCallback(results, status, element);
+                        });
+                    } else {
+                        setBounds();
+
+                        if (resetCacheRequired) {
+                            Logger.warn("Reset server map data cache required");
+
+                            if (isGeoMashupSet) {
+                                $.each(markers, function (index, marker) {
+                                    var position = (marker.position + "").replace(new RegExp("\\(|\\)", "g"), "");
+                                    $.each(geoMashupJsonData, function (jsonKey, jsonValue) {
+                                        if (jsonKey === marker.content) {
+                                            if (jsonValue.validated_address_csv_data.indexOf(CGMPGlobal.geoValidationClientRevalidate) != -1) {
+                                                jsonValue.validated_address_csv_data = jsonValue.validated_address_csv_data.replace(new RegExp(CGMPGlobal.geoValidationClientRevalidate, "g"), position);
+                                                return false;
+                                            }
+                                        }
+                                    });
+                                });
+                                var jsonDataAsString = JSON.stringify(geoMashupJsonData);
+                                $.post(CGMPGlobal.ajaxurl, {action: CGMPGlobal.ajaxCacheMapAction, data: jsonDataAsString, geoMashup: "true", timestamp: CGMPGlobal.timestamp}, function (response) {
+                                    Logger.info("Posting map data to the server..");
+                                    if (response != null && response === "OK") {
+                                        Logger.info("Map geo mashup cache was reset on the server");
+                                    }
+                                });
+                            } else {
+                                var rawMarkerCSV = nonGeoMashupJsonData.markerlist.split("|");
+                                var widgetId = nonGeoMashupJsonData.debug.widget_id;
+                                var postId = nonGeoMashupJsonData.debug.post_id;
+                                var postType = nonGeoMashupJsonData.debug.post_type;
+                                var shortcodeId = nonGeoMashupJsonData.debug.shortcodeid;
+
+                                var filtered = [];
+                                $.each(markers, function (buildMarkerIndex, marker) {
+                                    var position = (marker.position + "").replace(new RegExp("\\(|\\)", "g"), "");
+                                    $.each(rawMarkerCSV, function (rawCsvMarkerIndex, value) {
+
+                                        var chunks = value.split(CGMPGlobal.sep);
+                                        if (chunks[0] === marker.content) {
+                                            Logger.info(chunks[0] + " matched " + marker.content + " (marker#" + (buildMarkerIndex + 1) + ")");
+                                            if (value.indexOf(CGMPGlobal.geoValidationClientRevalidate) != -1) {
+                                                filtered[buildMarkerIndex] = value.replace(new RegExp(CGMPGlobal.geoValidationClientRevalidate, "g"), position);
+                                            } else {
+                                                filtered[buildMarkerIndex] = value;
+                                            }
+                                            return false;
+                                        }
+                                    });
+                                });
+
+                                var cleansedMarkerCSV = filtered.join("|");
+                                if (typeof widgetId !== "undefined" && widgetId !== "undefined") {
+                                    $.post(CGMPGlobal.ajaxurl, {action: CGMPGlobal.ajaxCacheMapAction, data: cleansedMarkerCSV, geoMashup: "false", widgetId: widgetId, timestamp: CGMPGlobal.timestamp}, function (response) {
+                                        Logger.info("Posting map data to the server..");
+                                        if (response != null) {
+                                            if (response === "OK_WIDGET") {
+                                                Logger.info("Map cache was reset on the server for widget#" + widgetId);
+                                            }
+                                        }
+                                    });
+                                } else if (typeof postId !== "undefined" && postId !== "undefined") {
+                                    $.post(CGMPGlobal.ajaxurl, {action: CGMPGlobal.ajaxCacheMapAction, data: cleansedMarkerCSV, geoMashup: "false", postId: postId, postType: postType, shortcodeId: shortcodeId, timestamp: CGMPGlobal.timestamp}, function (response) {
+                                        Logger.info("Posting map data to the server..");
+                                        if (response != null) {
+                                            if (response === "OK_POST") {
+                                                Logger.info("Map cache was reset on the server for post#" + postId + " shortcode#" + shortcodeId);
+                                            } else if (response === "OK_PAGE") {
+                                                Logger.info("Map cache was reset on the server for page#" + postId + " shortcode#" + shortcodeId);
+                                            } else if (response === "OK_CUSTOM") {
+                                                Logger.info("Map cache was reset on the server for type " + postType+ "#" + postId + " shortcode#" + shortcodeId);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            resetCacheRequired = false;
+                        }
+
+                        Logger.info("Have " + (markers.length) + " markers on the map");
+                    }
+                }
+
+                function geocoderCallback(results, status, element) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        Logger.info("Geocoding '" + element.address + "' OK!");
+                        var addressPoint = results[0].geometry.location;
+                        instrumentMarker(addressPoint, element);
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 200);
+                    } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                        Logger.warn("Geocoding '" + element.address + "' OVER_QUERY_LIMIT!");
+                        setBounds();
+                        toValidateAddresses.push(element);
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 2200);
+                    } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                        Logger.warn("Geocoding '" + element.address + "' ZERO_RESULTS!");
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 200);
+                    }  else  {
+                        Logger.warn("Geocoding '" + element.address + "' " + status + "!");
+                        timeout = setTimeout(function() { queryGeocoderService(); }, 200);
+                    }
                 }
 
                 var buildAddressMarkers = function buildAddressMarkers(markerLocations, isGeoMashap, isBubbleContainsPostLink) {
@@ -285,18 +405,163 @@
                     csvString = Utils.searchReplace(csvString, "'", "");
 
                     if (isGeoMashap === "true") {
+                        isGeoMashupSet = true;
                         var json = parseJson(csvString);
-
                         if (isBubbleContainsPostLink === "true") {
-                            parseJsonStructure(json, true);
+                            createGoogleMarkersFromGeomashupJson(json, true);
                         } else if (isBubbleContainsPostLink === "false") {
-                            parseJsonStructure(json, false);
+                            createGoogleMarkersFromGeomashupJson(json, false);
                         }
-                        queryGeocoderService();
-
                     } else if (isGeoMashap == null || isGeoMashap === "false") {
-                        parseCsv();
-                        queryGeocoderService();
+                        createGoogleMarkersFromCsvAddressData(csvString, '', '', '', false, false);
+                    }
+                    setBounds();
+                    queryGeocoderService();
+                }
+
+                function createGoogleMarkersFromGeomashupJson(json, infoBubbleContainPostLink) {
+                    var index = 1;
+
+                    geoMashupJsonData = json;
+
+                    $.each(json, function (key, value) {
+                        if (key === "live_debug" || key === "debug") {
+                            return true;
+                        }
+                        if (this.excerpt == null) {
+                            this.excerpt = '';
+                        }
+                        if (typeof this.validated_address_csv_data === "undefined" || this.validated_address_csv_data === "") {
+                            Logger.error("Validated address from: " + this.permalink + " returned empty, perhaps OVER_QUERY_LIMIT when validating on the server..");
+                        }
+
+                        createGoogleMarkersFromCsvAddressData(this.validated_address_csv_data, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink, true);
+                        index++;
+                    });
+                }
+
+                function createGoogleMarkersFromCsvAddressData(csvString, postTitle, postLink, postExcerpt, infoBubbleContainPostLink, geoMashup) {
+                    if (typeof csvString === "undefined" || csvString === "") {
+                        Logger.fatal("Not parsing empty validated address csv data.. Skipping");
+                        return;
+                    }
+                    Logger.info("Raw: " + csvString);
+                    var locations = csvString.split("|");
+                    for (var i = 0; i < locations.length; i++) {
+                        var target = locations[i];
+                        if (target != null && target != "") {
+                            // Will always be of size 4
+                            var targetArr = target.split(CGMPGlobal.sep);
+                            var userInputAddress = targetArr[0];
+                            var markerIcon = targetArr[1];
+                            var markerBubbleDescription = targetArr[2];
+                            var rawCoordinates = targetArr[3];
+
+                            if (markerBubbleDescription.indexOf(CGMPGlobal.noBubbleDescriptionProvided) != -1) {
+                                markerBubbleDescription = '';
+                            }
+
+                            var element = {
+                                address: userInputAddress,
+                                animation: google.maps.Animation.DROP,
+                                zIndex: (i + 1),
+                                markerIcon: markerIcon,
+                                customBubbleText: markerBubbleDescription,
+                                markerHoverText: markerBubbleDescription + " (" + userInputAddress + ")",
+                                postTitle: postTitle,
+                                postLink: postLink,
+                                postExcerpt: postExcerpt,
+                                infoBubbleContainPostLink: infoBubbleContainPostLink,
+                                geoMashup: geoMashup
+                            };
+
+                            if (rawCoordinates === CGMPGlobal.geoValidationClientRevalidate) {
+                                resetCacheRequired = true;
+                                toValidateAddresses.push(element);
+                                continue;
+                            }
+
+                            var latlngArr = [];
+                            if (rawCoordinates.indexOf(",") != -1) {
+                                latlngArr = rawCoordinates.split(",");
+                            } else if (rawCoordinates.indexOf(";") != -1) {
+                                latlngArr = rawCoordinates.split(";");
+                            }
+                            latlngArr[0] = Utils.trim(latlngArr[0]);
+                            latlngArr[1] = Utils.trim(latlngArr[1]);
+
+                            if (latlngArr[0] === "" || latlngArr[1] === "") {
+                                Logger.warn("Lat or Long are empty string");
+                                return false;
+                            }
+
+                            var latLngPoint = new google.maps.LatLng(parseFloat(latlngArr[0]), parseFloat(latlngArr[1]));
+                            instrumentMarker(latLngPoint, element);
+                        }
+                    }
+                }
+
+                function instrumentMarker(point, element) {
+                    var marker = new google.maps.Marker({
+                        position: point,
+                        title: element.markerHoverText,
+                        content: element.address,
+                        zIndex: (element.zIndex + 1000),
+                        map: googleMap
+                    });
+                    if (marker) {
+                        Logger.info("Built marker: " + element.address + " " + point);
+                        if (element.markerIcon) {
+                            var markerIcon = element.markerIcon;
+                            if (typeof markerIcon == "undefined" || markerIcon === "undefined") {
+                                markerIcon = "1-default.png";
+                            }
+                            if (markerIcon !== "1-default.png") {
+                                marker.setIcon(CGMPGlobal.customMarkersUri + markerIcon);
+                            }
+                        }
+
+                        attachEventlistener(marker, element);
+                        if (!directionControlsBinded) {
+                            bindDirectionControlsToEvents();
+                            directionControlsBinded = true;
+                        }
+                        markers.push(marker);
+                    }
+                }
+
+                function setBounds() {
+                    var fitToBounds = false;
+                    var isGeolocationMarker = geolocationMarker == null ? false : true;
+                    if (markers.length > 1) {
+                        $.each(markers, function (index, marker) {
+                            if (!bounds.contains(marker.position)) {
+                                bounds.extend(marker.position);
+                            }
+                        });
+                        fitToBounds = true;
+                    } else if (markers.length == 1) {
+                        if (isGeolocationMarker) {
+                            bounds.extend(markers[0].position);
+                            fitToBounds = true;
+                        } else {
+                            googleMap.setCenter(markers[0].position);
+                            updatedZoom = googleMap.getZoom();
+                            originalMapCenter = googleMap.getCenter();
+                        }
+                    }
+
+                    if (fitToBounds) {
+                        if (isGeolocationMarker) {
+                            if (geolocationMarker.getPosition() != null) {
+                                Logger.info("Extended bounds with Geo marker position: " + geolocationMarker.getPosition());
+                                bounds.extend(geolocationMarker.getPosition());
+                            }
+                        }
+                        originalExtendedBounds = bounds;
+                        if (bounds != null) {
+                            googleMap.fitBounds(bounds);
+                        }
                     }
                 }
 
@@ -342,7 +607,7 @@
                         $(dirDivId + ' button#print_sub').hide();
 
                         validateMarkerStreetViewExists(marker, localBubbleData, dirDivId);
-                        attachEventstoDirectionControls(marker, localBubbleData, dirDivId, targetDiv);
+                        attachDirectionControlsEvents(marker, localBubbleData, dirDivId, targetDiv);
 
                         infowindow.setContent(localBubbleData.bubbleContent);
                         infowindow.setOptions({
@@ -352,14 +617,15 @@
                     });
                 }
 
-                function attachEventstoDirectionControls(marker, localBubbleData, dirDivId, targetDiv) {
+                function attachDirectionControlsEvents(marker, localBubbleData, dirDivId, targetDiv) {
 
                     var parentInfoBubble = 'div#bubble-' + localBubbleData.bubbleHolderId;
                     var addy = marker.content;
 
                     addy = addy.replace("Lat/Long: ", "");
 
-                    var geoMarkerPosition = geolocationMarker == null ? '' : geolocationMarker.getPosition();
+                    var isGeolocationMarker = geolocationMarker == null ? false : true;
+                    var geoMarkerPosition = isGeolocationMarker == false || geolocationMarker.getPosition() == null ? '' : geolocationMarker.getPosition();
                     $(document).on("click", parentInfoBubble + ' a.dirToHereTrigger', function () {
                         var thisId = this.id;
                         if (thisId === 'toHere-' + localBubbleData.bubbleHolderId) {
@@ -652,8 +918,8 @@
                     randomNumber = randomNumber + "-" + mapDivId;
 
                     var bubble = "<div id='bubble-" + randomNumber + "' style='height: 130px !important; width: 300px !important;' class='bubble-content'>";
-                    if (!markersElement.geoMashup) {
-                        bubble += "<h4>" + CGMPGlobal.translations.address + ":</h4>";
+                    if ((!markersElement.geoMashup || (markersElement.geoMashup && !markersElement.infoBubbleContainPostLink))) {
+                        bubble += "<h4>" + CGMPGlobal.address + ":</h4>";
                         bubble += "<p class='custom-bubble-text'>" + contentFromMarker + "</p>";
                         if (markersElement.customBubbleText != '') {
                             bubble += "<p class='custom-bubble-text'>" + markersElement.customBubbleText + "</p>";
@@ -666,7 +932,7 @@
                     }
                     bubble += "<div class='custom-bubble-links-section'>";
                     bubble += "<hr />";
-                    bubble += "<p class='custom-bubble-text'>" + CGMPGlobal.translations.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.translations.streetView + "</a></p>";
+                    bubble += "<p class='custom-bubble-text'>" + CGMPGlobal.directions + ": <a id='toHere-" + randomNumber + "' class='dirToHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.toHere + "</a> - <a id='fromHere-" + randomNumber + "' class='dirFromHereTrigger' href='javascript:void(0);'>" + CGMPGlobal.fromHere + "</a> | <a id='trigger-" + randomNumber + "' class='streetViewTrigger' href='javascript:void(0);'>" + CGMPGlobal.streetView + "</a></p>";
                     bubble += "</div></div>";
 
                     return {
@@ -675,257 +941,6 @@
                     };
                 }
 
-                function parseCsv() {
-                    var locations = csvString.split("|");
-
-                    Logger.info("Exploded CSV into locations: " + locations);
-                    for (var i = 0; i < locations.length; i++) {
-                        var target = locations[i];
-                        if (target != null && target != "") {
-                            target = Utils.trim(target);
-                            if (target == "") {
-                                Logger.warn("Given extra marker address is empty");
-                                continue;
-                            }
-                            pushGeoDestination(target, (i + 1));
-                        }
-                    }
-                }
-
-                function parseJsonStructure(json, infoBubbleContainPostLink) {
-
-                    var index = 1;
-                    $.each(json, function () {
-                        if (this.excerpt == null) {
-                            this.excerpt = '';
-                        }
-                        Logger.info("Looping over JSON object:\n\tTitle: " + this.title + "\n\tAddy: " + this.addy + "\n\tLink: " + this.permalink + "\n\tExcerpt: " + this.excerpt);
-                        var targetArr = this.addy.split(CGMPGlobal.sep);
-                        targetArr[0] = this.location;
-                        addGeoPoint(index, targetArr, this.title, this.permalink, this.excerpt, infoBubbleContainPostLink);
-                        index++;
-                    });
-                    Logger.info("Have " + (index - 1) + " destinations for marker Geo mashup..");
-                }
-
-                function pushGeoDestination(target, index) {
-
-                    var targetArr = target.split(CGMPGlobal.sep);
-
-                    if (Utils.isNumeric(targetArr[0])) {
-                        addGeoPoint(index, targetArr, '', '', '', false);
-                    } else if (Utils.isAlphaNumeric(targetArr[0])) {
-                        storeAddress(index, targetArr, '', '', '', false);
-                    } else {
-                        storeAddress(index, targetArr, '', '', '', false);
-                        Logger.warn("Unknown type of geo destination in regexp: " + targetArr[0] + ", fallingback to store it as an address");
-                    }
-                }
-
-                function storeAddress(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup) {
-
-                    if (targetArr[2] != null) {
-                        if (targetArr[2].indexOf("No description provided") != -1) {
-                            targetArr[2] = '';
-                        }
-                    } else {
-                        targetArr[2] = '';
-                    }
-                    Logger.info("Storing address: " + targetArr[0] + " for marker-to-be for the map ID: " + mapDivId);
-                    storedAddresses.push({
-                        address: targetArr[0],
-                        animation: google.maps.Animation.DROP,
-                        zIndex: zIndex,
-                        markerIcon: targetArr[1],
-                        customBubbleText: targetArr[2],
-                        markerHoverText: '',
-                        postTitle: postTitle,
-                        postLink: postLink,
-                        postExcerpt: postExcerpt,
-                        geoMashup: geoMashup
-                    });
-                }
-
-                function addGeoPoint(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup) {
-
-                    var latlngArr = [];
-                    if (targetArr[0].indexOf(",") != -1) {
-                        latlngArr = targetArr[0].split(",");
-                    } else if (targetArr[0].indexOf(";") != -1) {
-                        latlngArr = targetArr[0].split(";");
-                    }
-
-                    if (latlngArr.length == 0) {
-                        Logger.warn("Exploded lat/long array has length of zero");
-                        return false;
-                    }
-
-                    latlngArr[0] = Utils.trim(latlngArr[0]);
-                    latlngArr[1] = Utils.trim(latlngArr[1]);
-
-                    if (latlngArr[0] == '' || latlngArr[1] == '') {
-                        Logger.warn("Lat or Long are empty string");
-                        return false;
-                    }
-
-                    targetArr[0] = new google.maps.LatLng(parseFloat(latlngArr[0]), parseFloat(latlngArr[1]));
-                    storeAddress(zIndex, targetArr, postTitle, postLink, postExcerpt, geoMashup);
-                }
-
-                function queryGeocoderService() {
-                    clearTimeout(timeout);
-                    if (storedAddresses.length > 0) {
-                        var element = storedAddresses.shift();
-
-                        if (element.address instanceof google.maps.LatLng) {
-                            Logger.info("No need to query Geo service for [" + element.address + "]. Have left " + storedAddresses.length + " items to process!");
-                            buildLocationFromCoords(element);
-                            //setBounds();
-                        } else {
-                            Logger.info("Passing [" + element.address + "] to Geo service. Have left " + storedAddresses.length + " items to process!");
-                            var geocoderRequest = {
-                                "address": element.address
-                            };
-                            geocoder.geocode(geocoderRequest, function (results, status) {
-                                geocoderCallback(results, status, element);
-                            });
-                        }
-                    } else {
-
-                        setBounds();
-
-                        if (badAddresses.length > 0) {
-                            var msg = "";
-                            $.each(badAddresses, function (index, addy) {
-                                msg += "&nbsp;&nbsp;&nbsp;<b>" + (1 + index) + ". " + addy + "</b><br />";
-                            });
-
-                            Errors.alertError(CGMPGlobal.errors.badAddresses.replace('[REPLACE]', msg));
-                        }
-                        badAddresses = [];
-                    }
-                }
-
-                function setBounds() {
-                    var fitToBounds = false;
-                    var isGeolocationMarker = geolocationMarker != null ? true : false;
-                    if (markers.length > 1) {
-                        $.each(markers, function (index, marker) {
-                            if (!bounds.contains(marker.position)) {
-                                bounds.extend(marker.position);
-                            }
-                        });
-                        fitToBounds = true;
-                    } else if (markers.length == 1) {
-                        if (isGeolocationMarker) {
-                            bounds.extend(markers[0].position);
-                            fitToBounds = true;
-                        } else {
-                            googleMap.setCenter(markers[0].position);
-                            updatedZoom = googleMap.getZoom();
-                            originalMapCenter = googleMap.getCenter();
-                        }
-                    }
-
-                    if (fitToBounds) {
-                        if (isGeolocationMarker) {
-                            if (geolocationMarker.getPosition() != null) {
-                                bounds.extend(geolocationMarker.getPosition());
-                            }
-                        }
-                        originalExtendedBounds = bounds;
-                        if (!isGeolocationMarker && bounds != null) {
-                            googleMap.fitBounds(bounds);
-                        }
-                    }
-                }
-
-                function buildLocationFromCoords(element) {
-                    var addressPoint = element.address;
-                    var formattedAddress = addressPoint.lat().toFixed(6) + ", " + addressPoint.lng().toFixed(6);
-                    element.address = "Lat/Long: " + formattedAddress;
-                    element.markerHoverText =  element.customBubbleText + formattedAddress;
-                    instrumentMarker(addressPoint, element);
-                    queryGeocoderService();
-                }
-
-                function geocoderCallback(results, status, element) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        var addressPoint = results[0].geometry.location;
-                        element.markerHoverText =  element.customBubbleText + " (" + element.address + ")";
-                        instrumentMarker(addressPoint, element);
-                        timeout = setTimeout(function () {
-                            queryGeocoderService();
-                        }, 330);
-                    } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                        Logger.warn("GeocoderStatus.OVER_QUERY_LIMIT");
-                        setBounds();
-                        storedAddresses.push(element);
-                        timeout = setTimeout(function () {
-                            queryGeocoderService();
-                        }, 3000);
-                    } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-                        Logger.warn("GeocoderStatus.ZERO_RESULTS");
-                        Logger.warn("Got ZERO results for [" + element.address + "]. Have left " + markers.length + " items to process");
-                        badAddresses.push(element.address);
-                        timeout = setTimeout(function () {
-                            queryGeocoderService();
-                        }, 400);
-                    }
-
-                }
-
-
-                function instrumentMarker(point, element) {
-                    var marker = new google.maps.Marker({
-                        position: point,
-                        title: element.markerHoverText,
-                        content: element.address,
-                        zIndex: (element.zIndex + 1000),
-                        map: googleMap
-                    });
-                    if (marker) {
-
-                        if (element.markerIcon) {
-                            var markerIcon = element.markerIcon;
-                            if (typeof markerIcon == "undefined" || markerIcon === "undefined") {
-                                markerIcon = '1-default.png';
-                            }
-                            marker.setIcon(CGMPGlobal.customMarkersUri + markerIcon);
-
-                            var shadow = null;
-                            var defaultMarkers = ['1-default.png', '2-default.png'];
-                            var defaultPins = ['4-default.png', '5-default.png', '6-default.png', '7-default.png'];
-
-                            if ($.inArray(markerIcon, defaultMarkers) != -1) {
-                                var url = CGMPGlobal.customMarkersUri + "msmarker.shadow.png";
-                                shadow = buildMarkerImage(url, 59, 32, 0, 0, 16, 33);
-                            } else if ($.inArray(markerIcon, defaultPins) != -1) {
-                                var url = CGMPGlobal.customMarkersUri + "msmarker.shadow.png";
-                                shadow = buildMarkerImage(url, 59, 32, 0, 0, 21, 34);
-                            } else if (markerIcon.indexOf('3-default') != -1) {
-                                var url = CGMPGlobal.customMarkersUri + "beachflag_shadow.png";
-                                shadow = buildMarkerImage(url, 37, 32, 0, 0, 10, 33);
-                            } else {
-                                shadow = buildMarkerImage(CGMPGlobal.customMarkersUri + "shadow.png", 68, 37, 0, 0, 32, 38);
-                            }
-
-                            marker.setShadow(shadow);
-                        }
-
-                        attachEventlistener(marker, element);
-                        if (!directionControlsBinded) {
-                            bindDirectionControlsToEvents();
-                            directionControlsBinded = true;
-                        }
-
-                        markers.push(marker);
-                    }
-                }
-
-                function buildMarkerImage(url, sizeX, sizeY, pointAX, pointAY, pointBX, pointBY) {
-                    return new google.maps.MarkerImage(url, new google.maps.Size(sizeX, sizeY), new google.maps.Point(pointAX, pointAY), new google.maps.Point(pointBX, pointBY));
-                }
 
                 /*
                  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1214,6 +1229,7 @@
 
                 return {
                     init: init,
+                    setGeoLocationIfEnabled: setGeoLocationIfEnabled,
                     buildAddressMarkers: buildAddressMarkers,
                     isBuildAddressMarkersCalled: isBuildAddressMarkersCalled
                 }
@@ -1294,7 +1310,7 @@
                     var mask = $('<div id="cgmp-popup-mask"/>');
                     var id = Math.random().toString(36).substring(3);
                     var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window">');
-                    shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>Ã—</a></div><p style='text-align: left; padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
+                    shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>x</a></div><p style='text-align: left; padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
 
                     $('body').append(mask);
                     $('body').append(shortcode_dialog);
@@ -1360,46 +1376,30 @@
                 }
             })();
 
-            if ($('object#global-data-placeholder').length == 0) {
-                Logger.fatal("The global HTML <object> element is undefined. Aborting map generation .. d[-_-]b");
-                return;
-            }
-
             var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             var link = document.createElement('link');
             link.type = 'text/css';
             link.rel = 'stylesheet';
-            link.href = $("object#global-data-placeholder").find("param#cssHref").val();
+            link.href = CGMPGlobal.cssHref;
             link.media = 'screen';
             head.appendChild(link);
 
-            CGMPGlobal.sep = $("object#global-data-placeholder").find("param#sep").val();
-            CGMPGlobal.customMarkersUri = $("object#global-data-placeholder").find("param#customMarkersUri").val();
-            CGMPGlobal.errors = $("object#global-data-placeholder").find("param#errors").val();
-
-            CGMPGlobal.errors = parseJson(CGMPGlobal.errors);
-            CGMPGlobal.translations = $("object#global-data-placeholder").find("param#translations").val();
-            CGMPGlobal.translations = parseJson(CGMPGlobal.translations);
-
             var versionMajor = parseFloat($.fn.jquery.split(".")[0]);
             var versionMinor = parseFloat($.fn.jquery.split(".")[1]);
-            if ((versionMajor < 1) || (versionMajor >= 1 && versionMajor < 2 && versionMinor < 3)) {
-                alert(CGMPGlobal.errors.oldJquery);
-                Logger.fatal("Client uses jQuery older than the version 1.3.0. Aborting map generation ..");
-                return false;
+            if ((versionMajor < 1) || (versionMajor >= 1 && versionMajor < 2 && versionMinor < 9)) {
+                Logger.fatal("Client uses jQuery older than the version 1.9.0, check if he is using jQuery Migrate plugin");
             }
 
             if (typeof google === "undefined" || !google) {
-                Errors.alertError(CGMPGlobal.errors.msgNoGoogle);
+                Errors.alertError(CGMPGlobal.msgNoGoogle);
                 Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
                 return false;
             } else if (typeof GMap2 !== "undefined" && GMap2) {
-                Errors.alertError(CGMPGlobal.errors.msgApiV2);
+                Errors.alertError(CGMPGlobal.msgApiV2);
                 Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
                 return false;
             }
 
-            CGMPGlobal.language = $("object#global-data-placeholder").find("param#language").val();
             google.load('maps', '3', {
                 other_params: 'sensor=false&libraries=panoramio&language=' + CGMPGlobal.language,
                 callback: function () {
@@ -1425,13 +1425,30 @@
 
                     if ($('div#' + json.id).length > 0) {
 
-                        var googleMap = new google.maps.Map(document.getElementById(json.id));
+                        // Very basic mobile user agent detection
+                        var userAgent = navigator.userAgent;
+                        var mapDiv = document.getElementById(json.id);
+                        //http://www.zytrax.com/tech/web/mobile_ids.html
+                        if(userAgent.match(/Android|BlackBerry|IEMobile|i(Phone|Pad|Pod)|Kindle|MeeGo|NetFront|Nokia|Opera M(ob|in)i|Pie|PalmOS|PDA|Polaris|Plucker|Samsung|SonyEricsson|SymbianOS|UP.Browser|Vodafone|webOS|Windows Phone/i)) {
+                            mapDiv.style.width = '100%';
+                            var viewPortHeight = $(window).height() + "";
 
+                            if (viewPortHeight.indexOf("px") != -1) {
+                                mapDiv.style.height = viewPortHeight;
+                            } else if (viewPortHeight.indexOf("%") != -1) {
+                                mapDiv.style.height = "100%";
+                            } else {
+                                mapDiv.style.height = viewPortHeight + "px";
+                            }
+                        }
+
+                        var googleMap = new google.maps.Map(mapDiv);
                         GoogleMapOrchestrator.initMap(googleMap, json.bubbleautopan, parseInt(json.zoom), json.maptype);
                         LayerBuilder.init(googleMap);
 
                         var markerBuilder = new MarkerBuilder();
-                        markerBuilder.init(googleMap, json.bubbleautopan, json.distanceunits, json.enablegeolocationmarker);
+                        markerBuilder.init(googleMap, json.bubbleautopan, json.distanceunits, json);
+                        markerBuilder.setGeoLocationIfEnabled(json.enablegeolocationmarker);
 
                         var controlOptions = {
                             mapTypeControl: (json.maptypecontrol === 'true'),
@@ -1463,54 +1480,58 @@
                         if (json.kml != null && Utils.trim(json.kml) != '') {
                             LayerBuilder.buildKmlLayer(json.kml);
                         } else {
-
+                            //json.debug.geo_errors = parseJson('{"39\u00b0 26 56.42 N 8\u00b0 11 26.38 W":{"39\u00b0 26 56.42 N 8\u00b0 11 26.38 W":"OVER_QUERY_LIMIT"},"Estrada do Cabrito - Rossio ao sul do Tejo - Abrantes":{"Estrada do Cabrito - Rossio ao sul do Tejo - Abrantes":"OVER_QUERY_LIMIT"}}');
                             if (json.markerlist != null && Utils.trim(json.markerlist) != '') {
                                 markerBuilder.buildAddressMarkers(json.markerlist, json.addmarkermashup, json.addmarkermashupbubble);
                             }
 
                             var isBuildAddressMarkersCalled = markerBuilder.isBuildAddressMarkersCalled();
                             if (!isBuildAddressMarkersCalled) {
-                                Errors.alertError(CGMPGlobal.errors.msgMissingMarkers);
+                                Errors.alertError(CGMPGlobal.msgMissingMarkers);
                             }
                         }
 
                         // An attempt to resolve a problem of Google Maps & jQuery Tabs
                         $(document).ready(function () {
+                            var timeout = null;
+                            var timeoutDelay = 500;
                             var mapPlaceholder = 'div#' + json.id;
-                            if ($(mapPlaceholder).children().length > 0) {
-                                if ($(mapPlaceholder).closest('.ui-tabs-panel').length > 0) {
-                                    var parentTab = $(mapPlaceholder).closest('.ui-tabs-panel');
-                                    resizeMapWhenParentVisible(parentTab);
-                                } else {
-                                    setTimeout(function () {
-                                        resize_map(googleMap);
-                                    }, 2000);
-                                }
+
+                            if ($(mapPlaceholder).is(":hidden")) {
+                                Logger.warn("Map placeholder DIV is hidden, must resize the map!");
+                                resizeMapWhenPlaceholderBecomesVisible();
+                            } else {
+                                // Just to be on a safe side lets resize
+                                timeout = setTimeout(function () { resizeMapWhenPlaceholderBecomesVisible(); }, (timeoutDelay * 3));
                             }
 
-                            var timer = null;
-                            function resizeMapWhenParentVisible(parentTab) {
-                                if ($(parentTab).is(":visible")) {
-                                    if (timer != null) {
-                                        clearTimeout(timer);
-                                    }
-                                    setTimeout(function () {
-                                        resize_map(googleMap);
-                                    }, 500);
+                            function resizeMapWhenPlaceholderBecomesVisible() {
+                                if (timeout != null) {
+                                    clearTimeout(timeout);
+                                }
+                                if ($(mapPlaceholder).is(":hidden")) {
+                                    timeout = setTimeout(resizeMapWhenPlaceholderBecomesVisible, timeoutDelay);
                                 } else {
-                                    timer = setTimeout(resizeMapWhenParentVisible(parentTab), 1000);
+                                    timeout = setTimeout(function () {resize_map(googleMap);}, timeoutDelay);
                                 }
                             }
 
                             function resize_map(googleMap) {
+                                if (timeout != null) {
+                                    clearTimeout(timeout);
+                                }
                                 if (googleMap) {
-                                    var oldZoom = googleMap.getZoom();
-                                    var oldBounds = googleMap.getBounds();
-                                    var oldCenter = googleMap.getCenter();
                                     google.maps.event.trigger(googleMap, "resize");
-                                    googleMap.setZoom(oldZoom);
-                                    googleMap.setCenter(oldCenter);
-                                    googleMap.getBounds(oldBounds);
+                                    timeout = setTimeout(function() { click_map(googleMap); }, timeoutDelay / 2)
+                                }
+                            }
+
+                            function click_map(googleMap) {
+                                if (timeout != null) {
+                                    clearTimeout(timeout);
+                                }
+                                if (googleMap) {
+                                    google.maps.event.trigger(googleMap, "click");
                                 }
                             }
                         });
