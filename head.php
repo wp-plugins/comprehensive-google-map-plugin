@@ -25,9 +25,7 @@ endif;
 
 if ( !function_exists('cgmp_google_map_admin_add_style') ):
         function cgmp_google_map_admin_add_style()  {
-            if (cgmp_should_load_admin_scripts()) {
-                wp_enqueue_style('comprehensive-google-map-style', CGMP_PLUGIN_CSS . '/cgmp.admin.css', false, CGMP_VERSION, "screen");
-            }
+            wp_enqueue_style('comprehensive-google-map-style', CGMP_PLUGIN_CSS . '/cgmp.admin.css', false, CGMP_VERSION, "screen");
         }
 endif;
 
@@ -44,11 +42,48 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
                     $minified = "";
                 }
                 wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
-                wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
+                wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'media', 'wp-ajax-response'), CGMP_VERSION, true);
+            }
+
+            if (cgmp_should_find_posts_scripts()) {
+                add_action('admin_footer', 'find_posts_div', 99);
             }
 		}
 endif;
 
+if ( !function_exists('cgmp_insert_shortcode_to_post_action_callback') ):
+    function cgmp_insert_shortcode_to_post_action_callback() {
+        //check_ajax_referer( "cgmp_insert_shortcode_to_post_action", "_ajax_nonce");
+
+        if (isset($_POST['postId']) && isset($_POST['shortcodeName']))  {
+            $post = get_post($_POST['postId']);
+            $post_content = $post->post_content;
+
+            $persisted_shortcodes_json = get_option(CGMP_PERSISTED_SHORTCODES);
+            if (isset($persisted_shortcodes_json) && trim($persisted_shortcodes_json) != "") {
+                $persisted_shortcodes = json_decode($persisted_shortcodes_json, true);
+
+                if (is_array($persisted_shortcodes) && !empty($persisted_shortcodes)) {
+
+                    if (isset($persisted_shortcodes[$_POST['shortcodeName']])) {
+                        $shortcode = $persisted_shortcodes[$_POST['shortcodeName']];
+
+                        if (is_array($shortcode)) {
+                            $shortcode_id = substr(md5(rand()), 0, 10);
+                            $raw_code = $shortcode['code'];
+                            $cleaned_code = str_replace("TO_BE_GENERATED", $shortcode_id, $raw_code);
+                            $updated_post_attribs = array('ID' => $_POST['postId'], 'post_content' => $post_content."<br />".$cleaned_code);
+
+                            wp_update_post( $updated_post_attribs );
+                            echo isset($post->post_title) && trim($post->post_title) != "" ? $post->post_title : "Titleless";
+                        }
+                    }
+                }
+            }
+        }
+        die();
+    }
+endif;
 
 if ( !function_exists('cgmp_should_load_admin_scripts') ):
     function cgmp_should_load_admin_scripts()  {
@@ -67,6 +102,15 @@ if ( !function_exists('cgmp_should_load_admin_scripts') ):
 
         // Either we are viewing plugin's admin pages or we are creating new post or any other type
         return ($is_plugin_menu_page || $is_post_create_mode || $is_post_edit_mode || $is_widgets_page);
+    }
+endif;
+
+if ( !function_exists('cgmp_should_find_posts_scripts') ):
+    function cgmp_should_find_posts_scripts()  {
+        $admin_pages = array('cgmp-saved-shortcodes');
+        $plugin_admin_page = isset($_REQUEST['page']) && trim($_REQUEST['page']) != "" ? $_REQUEST['page'] : "";
+
+        return in_array($plugin_admin_page, $admin_pages);
     }
 endif;
 
@@ -103,6 +147,7 @@ if ( !function_exists('cgmp_google_map_init_global_admin_html_object') ):
 			if (is_admin()) {
 				echo "<object id='global-data-placeholder' class='cgmp-data-placeholder'>".PHP_EOL;
 				echo "    <param id='sep' name='sep' value='".CGMP_SEP."' />".PHP_EOL;
+				echo "    <param id='ajaxurl' name='ajaxurl' value='".admin_url('admin-ajax.php')."' />".PHP_EOL;
                 echo "    <param id='version' name='version' value='".CGMP_VERSION."' />".PHP_EOL;
                 $persisted_shortcodes_json = get_option(CGMP_PERSISTED_SHORTCODES);
                 if (isset($persisted_shortcodes_json) && trim($persisted_shortcodes_json) != "" && is_array(json_decode($persisted_shortcodes_json, true))) {

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Comprehensive Google Map Plugin
-Plugin URI: http://initbinder.com/comprehensive-google-map-plugin
+Plugin URI: http://wordpress.org/support/plugin/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 9.0.16
-Author: Alexander Zagniotov
-Author URI: http://initbinder.com
+Version: 9.0.17
+Author: Alex Zagniotov
+Author URI: http://wordpress.org/support/plugin/comprehensive-google-map-plugin
 License: GPLv2
 
 
@@ -55,7 +55,8 @@ if ( !function_exists('cgmp_require_dependancies') ):
 		require_once (CGMP_PLUGIN_DIR . '/widget.php');
 		require_once (CGMP_PLUGIN_DIR . '/shortcode.php');
 		require_once (CGMP_PLUGIN_DIR . '/metabox.php');
-		require_once (CGMP_PLUGIN_DIR . '/menu.php');
+		require_once (CGMP_PLUGIN_DIR . '/admin-menu.php');
+        require_once (CGMP_PLUGIN_DIR . '/admin-bar-menu.php');
 		require_once (CGMP_PLUGIN_DIR . '/head.php');
 	}
 endif;
@@ -77,6 +78,7 @@ if ( !function_exists('cgmp_add_actions') ):
 		add_action('admin_init', 'cgmp_google_map_admin_add_script');
 		add_action('admin_footer', 'cgmp_google_map_init_global_admin_html_object');
 		add_action('admin_menu', 'cgmp_google_map_plugin_menu');
+        add_action('admin_bar_menu', 'cgmp_admin_bar_menu', 99999);
 		add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
 		add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
 		add_action('wp_head', 'cgmp_generate_global_options');
@@ -91,6 +93,7 @@ if ( !function_exists('cgmp_add_actions') ):
 
         add_action('wp_ajax_nopriv_cgmp_ajax_cache_map_action', 'cgmp_ajax_cache_map_action_callback');
         add_action('wp_ajax_cgmp_ajax_cache_map_action', 'cgmp_ajax_cache_map_action_callback');
+        add_action('wp_ajax_cgmp_insert_shortcode_to_post_action', 'cgmp_insert_shortcode_to_post_action_callback');
 
         add_action('save_post', 'cgmp_save_post_hook' );
         add_action('save_page', 'cgmp_save_page_hook' );
@@ -113,8 +116,9 @@ endif;
 
 if ( !function_exists('cgmp_add_filters') ):
 	function cgmp_add_filters() {
-		add_filter('widget_text', 'do_shortcode');
+		add_filter( 'widget_text', 'do_shortcode');
 		add_filter( 'plugin_row_meta', 'cgmp_plugin_row_meta', 10, 2 );
+        add_filter( 'plugin_action_links', 'cgmp_plugin_action_links', 10, 2 );
 	}
 endif;
 
