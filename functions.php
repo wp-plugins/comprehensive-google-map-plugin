@@ -134,6 +134,26 @@ if ( !function_exists('cgmp_parse_wiki_style_links') ):
 endif;
 
 
+if ( !function_exists('cgmp_should_load_admin_scripts') ):
+    function cgmp_should_load_admin_scripts()  {
+        global $pagenow;
+
+        $admin_pages = array('cgmp-documentation', 'cgmp-shortcodebuilder', 'cgmp-settings', 'cgmp-saved-shortcodes');
+        $plugin_admin_page = isset($_REQUEST['page']) && trim($_REQUEST['page']) != "" ? $_REQUEST['page'] : "";
+        $is_plugin_menu_page = in_array($plugin_admin_page, $admin_pages);
+
+        $action_type = isset($_REQUEST['action']) && trim($_REQUEST['action']) != "" ? $_REQUEST['action'] : "";
+        $is_post_edit_mode = ($action_type == "edit" && $pagenow == "post.php");
+
+        $is_post_create_mode = ($pagenow == "post-new.php");
+
+        $is_widgets_page = ($pagenow == "widgets.php");
+
+        // Either we are viewing plugin's admin pages or we are creating new post or any other type
+        return ($is_plugin_menu_page || $is_post_create_mode || $is_post_edit_mode || $is_widgets_page);
+    }
+endif;
+
 
 if ( !function_exists('cgmp_load_plugin_textdomain') ):
 	function cgmp_load_plugin_textdomain() {
@@ -378,6 +398,14 @@ if ( !function_exists('cgmp_clean_kml') ):
 	}
 endif;
 
+if ( !function_exists('cgmp_clean_styles') ):
+    function cgmp_clean_styles($styles) {
+        $styles = trim($styles);
+        $styles = preg_replace('/\s+/', '', $styles);
+        return str_replace(array("'", '"', "&quot;", "&#39;", "&#8217;"), '"', $styles);
+    }
+endif;
+
 
 if ( !function_exists('cgmp_clean_panoramiouid') ):
 	function cgmp_clean_panoramiouid($userId) {
@@ -447,6 +475,22 @@ if ( !function_exists('cgmp_create_html_list') ):
 endif;
 
 
+if ( !function_exists('cgmp_create_html_textarea') ):
+    function cgmp_create_html_textarea($attr) {
+        if (strpos($attr['class'], "notshortcodeitem") === false) {
+            $attr['class'] = $attr['class']." shortcodeitem";
+        }
+
+        return sprintf('<textarea id="%s" name="%s" role="%s" class="%s" style="%s">%s</textarea>',
+            $attr['id'],
+            $attr['name'],
+            $attr['role'],
+            $attr['class'],
+            $attr['style'],
+            $attr['value']
+        );
+    }
+endif;
 
 if ( !function_exists('cgmp_create_html_label') ):
 	function cgmp_create_html_label($attr) {
@@ -478,10 +522,7 @@ endif;
 
 if ( !function_exists('cgmp_create_html_custom') ):
 		function cgmp_create_html_custom($attr) {
-				$start =  "<ul class='".$attr['class']."' id='".$attr['id']."' name='".$attr['name']."' style='".$attr['style']."'>";
-
 				$markerDir = CGMP_PLUGIN_IMAGES_DIR . "/markers/";
-
 				$items = "<div id='".$attr['id']."' class='".$attr['class']."' style='margin-bottom: 15px; padding-bottom: 10px; padding-top: 10px; padding-left: 30px; height: 200px; overflow: auto; border-radius: 4px 4px 4px 4px; border: 1px solid #C9C9C9;'>";
 				if (is_readable($markerDir)) {
 
@@ -652,8 +693,8 @@ if ( !function_exists('cgmp_plugin_action_links') ):
         if ($file == $plugin) {
             $settings_link = sprintf( '<a href="admin.php?page=cgmp-settings">%s</a>', __('Settings',CGMP_NAME) );
             $docs_link = sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Docs',CGMP_NAME) );
-            $shortcodes_link = sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcodes',CGMP_NAME) );
-            array_unshift($links, $settings_link, $docs_link, $shortcodes_link);
+            //$shortcodes_link = sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcodes',CGMP_NAME) );
+            array_unshift($links, $settings_link, $docs_link);
         }
         return $links;
     }
@@ -734,11 +775,9 @@ if ( !function_exists('cgmp_show_initial_warning_message') ):
         if (isset($_GET['activate']) && $_GET['activate'] == "true" && $pagenow == "plugins.php" && $conter < 2) {
            ob_start();
             ?>
-            <div id="message" class="error">
+            <div id="message" class="updated">
                 <p>
-                    <strong>One-time Warning</strong> from <strong>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?>:</strong><br />
-                    Some 3rd party theme & plugin developers ship their products with older versions of jQuery and disable<br />
-                    loading of default jQuery (1.9+) shipped with WordPress these days
+                    <strong>One-time Warning</strong> from <strong>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?>:</strong>
                 </p>
                 <p>
                     <strong>Please be mindful:</strong><br />

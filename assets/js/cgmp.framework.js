@@ -65,7 +65,7 @@
 
                 var builder = {};
                 var googleMap = {};
-                var initMap = function initMap(map, bubbleAutoPan, zoom, mapType) {
+                var initMap = function initMap(map, bubbleAutoPan, zoom, mapType, styles) {
                     googleMap = map;
 
                     var mapTypeIds = [];
@@ -96,6 +96,7 @@
                     googleMap.setOptions({
                         zoom: zoom,
                         mapTypeId: mapType,
+                        styles: styles,
                         mapTypeControlOptions: {
                             mapTypeIds: mapTypeIds
                         }
@@ -264,20 +265,21 @@
 
                 var setGeoLocationIfEnabled = function setGeoLocationIfEnabled(enableGeoLocation) {
                     if (enableGeoLocation === "true") {
-                        geolocationMarker = new GeolocationMarker();
+                        if (is_mobile_device()) {
+                            geolocationMarker = new GeolocationMarker();
+                            google.maps.event.addListenerOnce(geolocationMarker, 'position_changed', function () {
+                                googleMap.setCenter(this.getPosition());
+                                googleMap.fitBounds(this.getBounds());
+                            });
 
-                        google.maps.event.addListenerOnce(geolocationMarker, 'position_changed', function () {
-                            googleMap.setCenter(this.getPosition());
-                            googleMap.fitBounds(this.getBounds());
-                        });
-
-                        google.maps.event.addListener(geolocationMarker, 'geolocation_error', function (e) {
-                            alert('There was an error creating Geolocation marker: ' + e.message + "\n\nProceeding with normal map generation..");
-                            Logger.error('There was an error obtaining your position. Message: ' + e.message);
-                            geolocationMarker = null; // Makes sure that the map is rendered when there was a problem with Geo marker
-                        });
-                        geolocationMarker.setPositionOptions({enableHighAccuracy: true, timeout: 6000, maximumAge: 0});
-                        geolocationMarker.setMap(googleMap);
+                            google.maps.event.addListener(geolocationMarker, 'geolocation_error', function (e) {
+                                //alert('There was an error creating Geolocation marker: ' + e.message + "\n\nProceeding with normal map generation..");
+                                Logger.error('There was an error obtaining your position. Message: ' + e.message);
+                                geolocationMarker = null; // Makes sure that the map is rendered when there was a problem with Geo marker
+                            });
+                            geolocationMarker.setPositionOptions({enableHighAccuracy: true, timeout: 6000, maximumAge: 0});
+                            geolocationMarker.setMap(googleMap);
+                        }
                     }
                 }
 
@@ -1424,26 +1426,37 @@
                     }
 
                     if ($('div#' + json.id).length > 0) {
-
-                        // Very basic mobile user agent detection
-                        var userAgent = navigator.userAgent;
                         var mapDiv = document.getElementById(json.id);
-                        //http://www.zytrax.com/tech/web/mobile_ids.html
-                        if(userAgent.match(/Android|BlackBerry|IEMobile|i(Phone|Pad|Pod)|Kindle|MeeGo|NetFront|Nokia|Opera M(ob|in)i|Pie|PalmOS|PDA|Polaris|Plucker|Samsung|SonyEricsson|SymbianOS|UP.Browser|Vodafone|webOS|Windows Phone/i)) {
-                            mapDiv.style.width = '100%';
-                            var viewPortHeight = $(window).height() + "";
+                        if (CGMPGlobal.mapFillViewport) {
+                            // Very basic mobile user agent detection
+                            if (is_mobile_device()) {
+                                mapDiv.style.width = '99%';
+                                var viewPortHeight = $(window).height() + "";
 
-                            if (viewPortHeight.indexOf("px") != -1) {
-                                mapDiv.style.height = viewPortHeight;
-                            } else if (viewPortHeight.indexOf("%") != -1) {
-                                mapDiv.style.height = "100%";
-                            } else {
-                                mapDiv.style.height = viewPortHeight + "px";
+                                if (viewPortHeight.indexOf("px") != -1) {
+                                    mapDiv.style.height = viewPortHeight;
+                                } else if (viewPortHeight.indexOf("%") != -1) {
+                                    mapDiv.style.height = "99%";
+                                } else {
+                                    mapDiv.style.height = (viewPortHeight - 15) + "px";
+                                }
                             }
                         }
 
                         var googleMap = new google.maps.Map(mapDiv);
-                        GoogleMapOrchestrator.initMap(googleMap, json.bubbleautopan, parseInt(json.zoom), json.maptype);
+                        if (typeof json.styles !== "undefined" && Utils.trim(json.styles) !== "") {
+                            json.styles = base64_decode(json.styles);
+                            try {
+                                json.styles = parseJson(json.styles);
+                            }
+                            catch(err) {
+                                Logger.fatal("Could not parse map styles as a JSON object");
+                                json.styles = "";
+                            }
+                        } else {
+                            json.styles = "";
+                        }
+                        GoogleMapOrchestrator.initMap(googleMap, json.bubbleautopan, parseInt(json.zoom), json.maptype, json.styles);
                         LayerBuilder.init(googleMap);
 
                         var markerBuilder = new MarkerBuilder();
@@ -1543,3 +1556,69 @@
         }(jQueryObj));
     }
 })();
+
+function is_mobile_device() {
+    var userAgent = navigator.userAgent;
+    //http://www.zytrax.com/tech/web/mobile_ids.html
+    if (typeof userAgent !== "undefined" && userAgent != "") {
+        return userAgent.match(/Android|BlackBerry|IEMobile|i(Phone|Pad|Pod)|Kindle|MeeGo|NetFront|Nokia|Opera M(ob|in)i|Pie|PalmOS|PDA|Polaris|Plucker|Samsung|SonyEricsson|SymbianOS|UP.Browser|Vodafone|webOS|Windows Phone/i);
+    }
+    return false;
+}
+
+function base64_decode (data) {
+    // From: http://phpjs.org/functions
+    // +   original by: Tyler Akins (http://rumkin.com)
+    // +   improved by: Thunder.m
+    // +      input by: Aman Gupta
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // +   bugfixed by: Pellentesque Malesuada
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +      input by: Brett Zamir (http://brett-zamir.me)
+    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // *     example 1: base64_decode('S2V2aW4gdmFuIFpvbm5ldmVsZA==');
+    // *     returns 1: 'Kevin van Zonneveld'
+    // mozilla has this native
+    // - but breaks in 2.0.0.12!
+    //if (typeof this.window['atob'] === 'function') {
+    //    return atob(data);
+    //}
+    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+        ac = 0,
+        dec = "",
+        tmp_arr = [];
+
+    if (!data) {
+        return data;
+    }
+
+    data += '';
+
+    do { // unpack four hexets into three octets using index points in b64
+        h1 = b64.indexOf(data.charAt(i++));
+        h2 = b64.indexOf(data.charAt(i++));
+        h3 = b64.indexOf(data.charAt(i++));
+        h4 = b64.indexOf(data.charAt(i++));
+
+        bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
+
+        o1 = bits >> 16 & 0xff;
+        o2 = bits >> 8 & 0xff;
+        o3 = bits & 0xff;
+
+        if (h3 == 64) {
+            tmp_arr[ac++] = String.fromCharCode(o1);
+        } else if (h4 == 64) {
+            tmp_arr[ac++] = String.fromCharCode(o1, o2);
+        } else {
+            tmp_arr[ac++] = String.fromCharCode(o1, o2, o3);
+        }
+    } while (i < data.length);
+
+    dec = tmp_arr.join('');
+
+    return dec;
+}
+

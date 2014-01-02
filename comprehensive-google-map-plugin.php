@@ -3,7 +3,7 @@
 Plugin Name: Comprehensive Google Map Plugin
 Plugin URI: http://wordpress.org/support/plugin/comprehensive-google-map-plugin
 Description: A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for markers, over 250 custom marker icons, marker Geo mashup, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more. 
-Version: 9.0.17
+Version: 9.0.18
 Author: Alex Zagniotov
 Author URI: http://wordpress.org/support/plugin/comprehensive-google-map-plugin
 License: GPLv2
@@ -78,7 +78,14 @@ if ( !function_exists('cgmp_add_actions') ):
 		add_action('admin_init', 'cgmp_google_map_admin_add_script');
 		add_action('admin_footer', 'cgmp_google_map_init_global_admin_html_object');
 		add_action('admin_menu', 'cgmp_google_map_plugin_menu');
-        add_action('admin_bar_menu', 'cgmp_admin_bar_menu', 99999);
+
+        if ( is_admin() ) {
+            $setting_plugin_menu_bar_menu = get_option(CGMP_DB_SETTINGS_PLUGIN_ADMIN_BAR_MENU);
+            if (!isset($setting_plugin_menu_bar_menu) || (isset($setting_plugin_menu_bar_menu) && $setting_plugin_menu_bar_menu != "false")) {
+                add_action('admin_bar_menu', 'cgmp_admin_bar_menu', 99999);
+            }
+        }
+
 		add_action('widgets_init', create_function('', 'return register_widget("ComprehensiveGoogleMap_Widget");'));
 		add_action('wp_head', 'cgmp_google_map_deregister_scripts', 200);
 		add_action('wp_head', 'cgmp_generate_global_options');
@@ -86,8 +93,10 @@ if ( !function_exists('cgmp_add_actions') ):
         if ( is_admin() ) {
             $setting_tiny_mce_button = get_option(CGMP_DB_SETTINGS_TINYMCE_BUTTON);
             if (!isset($setting_tiny_mce_button) || (isset($setting_tiny_mce_button) && $setting_tiny_mce_button != "false")) {
-                add_action('init', 'cgmp_register_mce');
-                add_action('wp_ajax_cgmp_mce_ajax_action', 'cgmp_mce_ajax_action_callback');
+                if (cgmp_should_load_admin_scripts()) {
+                    add_action('init', 'cgmp_register_mce');
+                    add_action('wp_ajax_cgmp_mce_ajax_action', 'cgmp_mce_ajax_action_callback');
+                }
             }
         }
 

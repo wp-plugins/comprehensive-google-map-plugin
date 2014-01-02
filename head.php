@@ -85,25 +85,6 @@ if ( !function_exists('cgmp_insert_shortcode_to_post_action_callback') ):
     }
 endif;
 
-if ( !function_exists('cgmp_should_load_admin_scripts') ):
-    function cgmp_should_load_admin_scripts()  {
-        global $pagenow;
-
-        $admin_pages = array('cgmp-documentation', 'cgmp-shortcodebuilder', 'cgmp-settings', 'cgmp-saved-shortcodes');
-        $plugin_admin_page = isset($_REQUEST['page']) && trim($_REQUEST['page']) != "" ? $_REQUEST['page'] : "";
-        $is_plugin_menu_page = in_array($plugin_admin_page, $admin_pages);
-
-        $action_type = isset($_REQUEST['action']) && trim($_REQUEST['action']) != "" ? $_REQUEST['action'] : "";
-        $is_post_edit_mode = ($action_type == "edit" && $pagenow == "post.php");
-
-        $is_post_create_mode = ($pagenow == "post-new.php");
-
-        $is_widgets_page = ($pagenow == "widgets.php");
-
-        // Either we are viewing plugin's admin pages or we are creating new post or any other type
-        return ($is_plugin_menu_page || $is_post_create_mode || $is_post_edit_mode || $is_widgets_page);
-    }
-endif;
 
 if ( !function_exists('cgmp_should_find_posts_scripts') ):
     function cgmp_should_find_posts_scripts()  {
@@ -216,6 +197,12 @@ if ( !function_exists('cgmp_generate_global_options') ):
         }
         foreach($translationArray as $name => $value) {
             echo "      $name: \"".$value."\",".PHP_EOL;
+        }
+        $setting_map_should_fill_viewport = get_option(CGMP_DB_SETTINGS_MAP_SHOULD_FILL_VIEWPORT);
+        if (isset($setting_map_should_fill_viewport) && $setting_map_should_fill_viewport == "true") {
+            echo "      mapFillViewport: true,".PHP_EOL;
+        } else {
+            echo "      mapFillViewport: false,".PHP_EOL;
         }
         echo "      ".CGMP_TIMESTAMP.": \"".wp_create_nonce(CGMP_AJAX_CACHE_MAP_ACTION)."\",".PHP_EOL;
         echo "      ajaxCacheMapAction: \"".CGMP_AJAX_CACHE_MAP_ACTION."\",".PHP_EOL;
