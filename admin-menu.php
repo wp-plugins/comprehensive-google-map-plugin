@@ -21,13 +21,16 @@ if ( !function_exists('cgmp_google_map_plugin_menu') ):
       		$hook = add_menu_page("Comprehensive Google Map", 'Google Map', 'activate_plugins', CGMP_HOOK, 'cgmp_parse_menu_html', CGMP_PLUGIN_IMAGES .'/google_map.png');
 	  		add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 
+            $hook = add_submenu_page(CGMP_HOOK, 'Documentation', 'Documentation', 'activate_plugins', CGMP_HOOK);
+            add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+
             $hook = add_submenu_page(CGMP_HOOK, 'Shortcode Builder', 'Shortcode Builder', 'activate_plugins', 'cgmp-shortcodebuilder', 'cgmp_shortcodebuilder_callback' );
 			add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 
             $hook = add_submenu_page(CGMP_HOOK, 'Saved Shortcodes', 'Saved Shortcodes', 'activate_plugins', 'cgmp-saved-shortcodes', 'cgmp_saved_shortcodes_callback' );
             add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 
-            $hook = add_submenu_page(CGMP_HOOK, 'Settings', 'Settings', 'activate_plugins', 'cgmp-settings', 'cgmp_settings_callback' );
+            $hook = add_submenu_page(CGMP_HOOK, 'Settings & Support', 'Settings & Support', 'activate_plugins', 'cgmp-settings', 'cgmp_settings_callback' );
 		   	add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 	  }
 endif;
@@ -44,13 +47,18 @@ if ( !function_exists('cgmp_settings_callback') ):
 		    update_option(CGMP_DB_SETTINGS_BUILDER_LOCATION, $_POST['builder-under-post']);
 		    update_option(CGMP_DB_SETTINGS_CUSTOM_POST_TYPES, $_POST['custom-post-types']);
 		    update_option(CGMP_DB_SETTINGS_TINYMCE_BUTTON, $_POST['tinymce-button-in-editor']);
+		    update_option(CGMP_DB_SETTINGS_PLUGIN_ADMIN_BAR_MENU, $_POST['plugin-admin-bar-menu']);
+		    update_option(CGMP_DB_SETTINGS_MAP_SHOULD_FILL_VIEWPORT, $_POST['map-fill-viewport']);
             cgmp_show_message("Settings updated successfully!");
 		}
 
         $template_values = array();
-        $template_values = populate_token_builder_under_post($template_values);
-        $template_values = populate_token_custom_post_types($template_values);
-        $template_values = populate_tiny_mce_button($template_values);
+        $template_values = cgmp_populate_token_builder_under_post($template_values);
+        $template_values = cgmp_populate_token_custom_post_types($template_values);
+        $template_values = cgmp_populate_tiny_mce_button($template_values);
+        $template_values = cgmp_populate_plugin_admin_bar_menu($template_values);
+        $template_values = cgmp_populate_map_should_fill_viewport($template_values);
+        $template_values["SUPPORT_DATA"] = cgmp_generate_support_data();
         echo cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_PLUGIN_SETTINGS_PAGE);
 	}
 
@@ -90,6 +98,8 @@ function cgmp_generate_support_data() {
     $plugin_names = scandir(CGMP_PLUGIN_DIR."/..");
     $plugin_names = array_flip($plugin_names);
 
+    //echo "aaaaa: " . print_r($GLOBALS, true);
+
     return
     "<h4>Environment</h4>"
     ."<ul>"
@@ -105,6 +115,13 @@ function cgmp_generate_support_data() {
     ."<li>Published pages: ".$published_pages."</li>"
     .$custom_types_count
     ."</ul>"
+    ."<h4>JavaScript</h4>"
+    ."<ul>"
+    ."<li>jQuery v".($GLOBALS['wp_scripts']->registered["jquery"]->ver).(isset($GLOBALS['wp_scripts']->registered["jquery"]->src) && trim($GLOBALS['wp_scripts']->registered["jquery"]->src) != "" ?  ", src: ".($GLOBALS['wp_scripts']->registered["jquery"]->src)."</li>" : "</li>")
+    ."<li>jQuery Core v".($GLOBALS['wp_scripts']->registered["jquery-core"]->ver)."</li>"
+    ."<li>jQuery UI Core v".($GLOBALS['wp_scripts']->registered["jquery-ui-core"]->ver)."</li>"
+    .(isset($GLOBALS['wp_scripts']->registered["jquery-migrate"]) ?  "<li>jQuery Migrate v".($GLOBALS['wp_scripts']->registered["jquery-migrate"]->ver)."</li>" : "<li>jQuery Migrate is <b>not</b> installed</li>")
+    ."</ul>"
     ."<h4>Plugins known to modify global WordPress query</h4>"
     ."<ul>"
     ."<li>Advanced Category Excluder plugin: ".(isset($plugin_names['advanced-category-excluder']) ? "<b>Installed</b>" : "Not installed")."</li>"
@@ -115,7 +132,7 @@ function cgmp_generate_support_data() {
 }
 endif;
 
-function populate_token_builder_under_post($template_values) {
+function cgmp_populate_token_builder_under_post($template_values) {
    $setting_builder_location = get_option(CGMP_DB_SETTINGS_BUILDER_LOCATION);                                        
    $yes_display_radio_btn = "";                                                                                      
    $no_display_radio_btn = "checked='checked'";                                                                      
@@ -128,7 +145,7 @@ function populate_token_builder_under_post($template_values) {
    return $template_values;
 }
 
-function populate_tiny_mce_button($template_values) {
+function cgmp_populate_tiny_mce_button($template_values) {
     $setting_tiny_mce_button = get_option(CGMP_DB_SETTINGS_TINYMCE_BUTTON);
     $yes_enable_radio_btn = "checked='checked'";
     $no_enable_radio_btn = "";
@@ -141,7 +158,33 @@ function populate_tiny_mce_button($template_values) {
     return $template_values;
 }
 
-function populate_token_custom_post_types($template_values) {                                                                          
+function cgmp_populate_plugin_admin_bar_menu($template_values) {
+    $setting_plugin_admin_bar_menu = get_option(CGMP_DB_SETTINGS_PLUGIN_ADMIN_BAR_MENU);
+    $yes_enable_radio_btn = "checked='checked'";
+    $no_enable_radio_btn = "";
+    if (isset($setting_plugin_admin_bar_menu) && $setting_plugin_admin_bar_menu == "false") {
+        $yes_enable_radio_btn = "";
+        $no_enable_radio_btn = "checked='checked'";
+    }
+    $template_values["YES_ENABLED_PLUGIN_ADMIN_BAR_MENU_TOKEN"] = $yes_enable_radio_btn;
+    $template_values["NO_ENABLED_PLUGIN_ADMIN_BAR_MENU_TOKEN"] = $no_enable_radio_btn;
+    return $template_values;
+}
+
+function cgmp_populate_map_should_fill_viewport($template_values) {
+    $setting_map_fill_viewport = get_option(CGMP_DB_SETTINGS_MAP_SHOULD_FILL_VIEWPORT);
+    $yes_enable_radio_btn = "";
+    $no_enable_radio_btn = "checked='checked'";
+    if (isset($setting_map_fill_viewport) && $setting_map_fill_viewport == "true") {
+        $yes_enable_radio_btn = "checked='checked'";
+        $no_enable_radio_btn = "";
+    }
+    $template_values["YES_ENABLED_MAP_FILL_VIEWPORT_TOKEN"] = $yes_enable_radio_btn;
+    $template_values["NO_ENABLED_MAP_FILL_VIEWPORT_TOKEN"] = $no_enable_radio_btn;
+    return $template_values;
+}
+
+function cgmp_populate_token_custom_post_types($template_values) {
    $custom_post_types = get_option(CGMP_DB_SETTINGS_CUSTOM_POST_TYPES);                                           
    $template_values["CUSTOM_POST_TYPES_TOKEN"] = $custom_post_types;                             
    return $template_values;                 
@@ -178,7 +221,7 @@ if ( !function_exists('cgmp_shortcodebuilder_callback') ):
             update_option(CGMP_PERSISTED_SHORTCODES, json_encode($shortcodes));
 
             cgmp_show_message("Shortcode save successfully!");
-            cgmp_show_message("Look for the map icon&nbsp;<img src='".CGMP_PLUGIN_IMAGES."/google_map.png' border='0' valign='middle' />&nbsp;in WordPress page/post WYSIWYG editor");
+            cgmp_show_message("Look for the map icon&nbsp;<img src='".CGMP_PLUGIN_IMAGES."/google_map.png' border='0' valign='middle' />&nbsp;in WordPress page/post WYSIWYG editor or check <a href='admin.php?page=cgmp-saved-shortcodes'>Saved Shortcodes</a> page");
         }
 
         $settings = array();
@@ -239,7 +282,15 @@ if ( !function_exists('cgmp_saved_shortcodes_callback') ):
                         $raw_code = $shortcode['code'];
                         $raw_code = str_replace("TO_BE_GENERATED", $shortcode_id, $raw_code);
 
-                        $content .= "<a href='admin.php?page=cgmp-saved-shortcodes&delete_shortcode=".$shortcode['title']."'>[DELETE]</a><br /><div class='loaded-db-shortcodes'><b>".stripslashes($raw_code) . "</b></div><br />";
+                        $content .= "<div style='line-height: 15px; min-height: 20px; height: 20px; width: 70%; padding: 0; margin: 0'>";
+                        $content .= "Title: <span style='color: green;'><b>".$shortcode['title']."</b></span>";
+                        $content .= "&nbsp;&nbsp;&nbsp;";
+                        $content .= "<a id='".$shortcode['title']."' href='javascript:void(0)' class='insert-shortcode-to-post'>[insert to post]</a>";
+                        $content .= "&nbsp;&nbsp;&nbsp;";
+                        $content .= "<a href='javascript:void(0)' onclick='return confirmShortcodeDelete(\"admin.php?page=cgmp-saved-shortcodes&delete_shortcode=".$shortcode['title']."\", \"".$shortcode['title']."\");'>";
+                        $content .= "<img src='".CGMP_PLUGIN_IMAGES."/close.png' border='0' valign='middle' /></a>";
+                        $content .= "</div>";
+                        $content .= "<div class='loaded-db-shortcodes'><b>".stripslashes($raw_code) . "</b></div><br />";
                     }
                 }
                 $template_values["SAVED_SHORTCODES_TOKEN"] = $content;
@@ -264,7 +315,6 @@ function cgmp_parse_menu_html() {
 			$map_configuration_form_template = cgmp_render_template_with_values($json_html_doco_params, CGMP_HTML_TEMPLATE_MAP_CONFIGURATION_FORM);
 			$template_values = array();
         	$template_values["DOCUMENTATION_TOKEN"] = $map_configuration_form_template;
-            $template_values["SUPPORT_DATA"] = cgmp_generate_support_data();
 
         	echo cgmp_render_template_with_values($template_values, CGMP_HTML_TEMPLATE_MAP_CONFIG_DOCUMENTATION_PAGE);
 		}

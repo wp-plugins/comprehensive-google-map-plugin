@@ -9,6 +9,24 @@
         "templateTokenNameSuffix": "title"
     },
     {
+        "backendFunctionNameSuffix": "input",
+        "cssClasses": "widefat notshortcodeitem",
+        "dbParameterId": "shortcode-title",
+        "dbParameterName": "shortcode-title",
+        "htmlLabelValue": "Title (unique per sh.code)",
+        "inlineCss": "width: 98% !important;",
+        "templateTokenNameSuffix": "shortcodetitle"
+    },
+    {
+        "backendFunctionNameSuffix": "textarea",
+        "cssClasses": "cgmp-styles-textarea",
+        "dbParameterId": "styles",
+        "dbParameterName": "styles",
+        "htmlLabelValue": "",
+        "inlineCss": "",
+        "templateTokenNameSuffix": "styles"
+    },
+    {
         "backendFunctionNameSuffix": "select",
         "cssClasses": "widefat",
         "dbParameterId": "mapalign",

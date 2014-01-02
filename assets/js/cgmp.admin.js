@@ -15,33 +15,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var CGMPGlobal = {};
 var jQueryCgmp = jQuery.noConflict();
 
 function sendShortcodeToEditor(container_id) {
 	(function ($) {
 		var id = '#' + container_id;
-		var code = buildShortcode(id, $);
+		var code = buildShortcode(id, muid(), $);
 		send_to_editor('<br />' + code + '<br />');
 	}(jQueryCgmp));
 }
 
+function confirmShortcodeDelete(url, title) {
+    var r = confirm("Are you sure you want to delete shortcode\n'" + title + "' ?");
+    if (r == true) {
+        window.location.href = url;
+    }
+}
 
 function displayShortcodeInPopup(container_id) {
 	(function ($) {
 		var id = '#' + container_id;
-		var code = buildShortcode(id, $);
-		var content = "Select the generated shortcode text below including the square brackets and press CTRL+C (CMMND+C on Mac) to copy:<br /><br /><div id='inner-shortcode-dialog'><b>" 
-			+ code + "</b></div><br /><br />Paste the copied text into your post/page";
-		displayPopupWithContent(content, $);
+		var code = buildShortcode(id, "TO_BE_GENERATED", $);
+		var content = "Upon saving, the shortcode will be available to you in post/page WYSIWYG editor -<br />just look for the map icon in the editor panel<br /><br /><div id='inner-shortcode-dialog'><b>"
+			+ code + "</b></div><br />";
+		displayPopupWithContent(content, code, $);
 	}(jQueryCgmp));
 }
 
-function displayPopupWithContent(content, $)  {
+function displayPopupWithContent(content, code, $)  {
 
 		var mask = $('<div id="cgmp-popup-mask"/>');
 		var id = Math.random().toString(36).substring(3);
 		var shortcode_dialog = $('<div id="' + id + '" class="cgmp-popup-shortcode-dialog cgmp-popup-window">');
-		shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='close-dialog' value='Close' /></div>");
+		shortcode_dialog.html("<div class='dismiss-container'><a class='dialog-dismiss' href='javascript:void(0)'>×</a></div><p style='padding: 10px 10px 0 10px'>" + content + "</p><div align='center'><input type='button' class='save-dialog' value='Save' /></div>");
 
 		$('body').append(mask);
 		$('body').append(shortcode_dialog);
@@ -59,8 +66,19 @@ function displayPopupWithContent(content, $)  {
 		$("div#" + id).css('top',  winH/2-$("div#" + id).height()/2);
 		$("div#" + id).css('left', winW/2-$("div#" + id).width()/2);
 		$("div#" + id).fadeIn(500); 
-		$('.cgmp-popup-window .close-dialog').click(function (e) {
-			close_dialog(e, $(this));
+		$('.cgmp-popup-window .save-dialog').click(function (e) {
+
+            var title = $("input#shortcode-title").val();
+            if (typeof title === "undefined" || title.replace(/^\s+|\s+$/g, '') === "") {
+                title = "Nameless";
+            }
+            title = title.replace(new RegExp("'", "g"), "");
+			$("input#hidden-shortcode-title").val(title);
+
+            code = code.replace(new RegExp("'", "g"), "");
+			$("input#hidden-shortcode-code").val(code);
+
+            $("form#shortcode-save-form").submit();
 		});
 		$('.cgmp-popup-window .dialog-dismiss').click(function (e) {
 			 close_dialog(e, $(this));
@@ -95,18 +113,29 @@ function displayPopupWithContent(content, $)  {
 		});
 }
 
-function buildShortcode(id, $) {
+function muid() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1) + "" + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+}
+
+function buildShortcode(id, shortcodeId, $) {
 	var used_roles = {};
-	var code = "[google-map-v3 ";
+	var code = "[google-map-v3 shortcodeid=\"" + shortcodeId + "\" ";
 	$(id + ' .shortcodeitem').each(function() {
 		var role = $(this).attr('role');
 		var val =  $(this).val();
 
 		if (role === 'addmarkerlisthidden') {
-			val = $('<div />').text(val).html();
+			val = $('<div />').text(val).html(); // from text to HTML
 			val = val.replace(new RegExp("'", "g"), "");
 			val = val.replace(new RegExp("\"", "g"), "");
+            val = val.replace(new RegExp("\\[|\\]", "g"), "");
+            val = val.replace(new RegExp("\\|", "g"), " - ");
 		}
+
+        if (role === 'styles') {
+            val = val.replace(/\s+/g, " ");
+            val = base64_encode(val);
+        }
 
 		if ($(this).attr('type') === "checkbox") {
 			val = $(this).is(":checked");
@@ -144,8 +173,6 @@ function buildShortcode(id, $) {
 
 (function ($) {
 
-	var CGMPGlobal = {};
-
 	CGMPGlobal.sep = $("object#global-data-placeholder param#sep").val();
 
 	if (CGMPGlobal.sep == null || CGMPGlobal.sep == "undefined") {
@@ -154,6 +181,10 @@ function buildShortcode(id, $) {
 	CGMPGlobal.customMarkersUri = $("object#global-data-placeholder param#customMarkersUri").val();
 	CGMPGlobal.defaultLocationText = $("object#global-data-placeholder param#defaultLocationText").val();
 	CGMPGlobal.defaultBubbleText = $("object#global-data-placeholder param#defaultBubbleText").val();
+    CGMPGlobal.assets = $("object#global-data-placeholder param#assets").val();
+    CGMPGlobal.version = $("object#global-data-placeholder param#version").val();
+    CGMPGlobal.shortcodes = $("object#global-data-placeholder param#shortcodes").val();
+    CGMPGlobal.ajaxurl = $("object#global-data-placeholder param#ajaxurl").val();
 
 	var lists = [];
 
@@ -236,8 +267,7 @@ function buildShortcode(id, $) {
 				if ($(targetInput).val() != null && $(targetInput).val() != "" && $(targetInput).val().indexOf("Enter marker") == -1) {
 
 					var target = $(targetInput).val().replace(/^\s+|\s+$/g, '');
-					var chars = new RegExp(/^(?=.*(\d|[a-zA-Z])).{5,}$/);
-					var hasValidChars = chars.test(target);
+					var hasValidChars = (target !== "" && target.length > 1);
 					if (hasValidChars) {
 
 						customBubbleText = CGMPGlobal.sep + customBubbleText;
@@ -380,6 +410,46 @@ function buildShortcode(id, $) {
 			});
 		}
 
+        function initInsertShortcodeToPostEvent() {
+            var dataName = 'cgmp-find-posts-target';
+            $(document).on("click", "a.insert-shortcode-to-post", function (source) {
+                var shortcodeName = $(this).attr("id");
+                $("div.find-box-search input#affected").val(shortcodeName);
+                $('#find-posts').data(dataName, $(this));
+                findPosts.open();
+
+                $('#find-posts-submit').click(function(e) {
+                    e.preventDefault();
+
+                    // Be nice!
+                    if ( !$('#find-posts').data(dataName)) {
+                        return;
+                    }
+
+                    var selected = $('#find-posts-response').find('input:checked');
+                    if (!selected.length) {
+                        return false;
+                    }
+
+                    var postId = selected.val();
+                    var _ajax_nonce = $("div.find-box-search input#_ajax_nonce").val();
+                    var shortcodeName = $("div.find-box-search input#affected").val();
+
+                    $.post(CGMPGlobal.ajaxurl, {action: 'cgmp_insert_shortcode_to_post_action', postId: postId, shortcodeName: shortcodeName}, function (response) {
+                        console.log("Posting selected post ID#" + postId + " and shortcode name '" + shortcodeName + "' to the server..");
+                        if (response != null && response.length > 1) {
+                            alert("Shortcode '" + shortcodeName + "' was injected into post titled '" + response + "', ID#" + postId);
+                            $('#find-posts-close' ).click();
+                        }
+                    });
+                });
+
+                $('#find-posts-close' ).click(function() {
+                    $('#find-posts').removeData(dataName);
+                });
+            });
+        }
+
 		function checkedGeoMashupOnInit() {
 
 			$.each($("input.marker-geo-mashup"), function() {
@@ -425,7 +495,6 @@ function buildShortcode(id, $) {
             });
         }
 
-
 		$(document).ready(function() {
 			initTokenHolders();
 			initAddLocationEevent();
@@ -435,7 +504,8 @@ function buildShortcode(id, $) {
             checkedGPSMarkerOnInit();
             initGPSMarkerEvent();
 			checkedGeoMashupOnInit();
-			initGeoMashupEvent() ;
+			initGeoMashupEvent();
+            initInsertShortcodeToPostEvent() ;
 
 			if (typeof $("ul.tools-tabs-nav").tabs == "function") {
 				$("ul.tools-tabs-nav").tabs("div.tools-tab-body", {
@@ -448,7 +518,7 @@ function buildShortcode(id, $) {
 
 		$(document).ajaxSuccess(
 			function (e, x, o) {
-				if (o.data != null)	{
+				if (o != null && o.data != null)	{
                     var indexOf = o.data.indexOf('id_base=comprehensivegooglemap');
                     if (indexOf > 0) {
                         initTokenHolders();
@@ -460,3 +530,53 @@ function buildShortcode(id, $) {
 		);
 
 }(jQueryCgmp));
+
+function base64_encode (data) {
+    // From: http://phpjs.org/functions
+    // +   original by: Tyler Akins (http://rumkin.com)
+    // +   improved by: Bayron Guevara
+    // +   improved by: Thunder.m
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Pellentesque Malesuada
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Rafał Kukawski (http://kukawski.pl)
+    // *     example 1: base64_encode('Kevin van Zonneveld');
+    // *     returns 1: 'S2V2aW4gdmFuIFpvbm5ldmVsZA=='
+    // mozilla has this native
+    // - but breaks in 2.0.0.12!
+    //if (typeof this.window['btoa'] === 'function') {
+    //    return btoa(data);
+    //}
+    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+        ac = 0,
+        enc = "",
+        tmp_arr = [];
+
+    if (!data) {
+        return data;
+    }
+
+    do { // pack three octets into four hexets
+        o1 = data.charCodeAt(i++);
+        o2 = data.charCodeAt(i++);
+        o3 = data.charCodeAt(i++);
+
+        bits = o1 << 16 | o2 << 8 | o3;
+
+        h1 = bits >> 18 & 0x3f;
+        h2 = bits >> 12 & 0x3f;
+        h3 = bits >> 6 & 0x3f;
+        h4 = bits & 0x3f;
+
+        // use hexets to index into b64, and append result to encoded string
+        tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+    } while (i < data.length);
+
+    enc = tmp_arr.join('');
+
+    var r = data.length % 3;
+
+    return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+
+}
