@@ -1,10 +1,10 @@
 === Comprehensive Google Map Plugin ===
 Contributors: alexanderzagniotov
 Donate link: http://goo.gl/yI5j6O
-Tags: google map, google map widget, jquery tabs, map styles, styling, google map styles, google map short code, google map short code, map widget, map short code, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
+Tags: google map, google map widget, jquery tabs, clustering, marker clustering, map styles, styling, google map styles, google map short code, google map short code, map widget, map short code, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.6
 Tested up to: 3.8
-Stable tag: 9.0.18
+Stable tag: 9.0.19
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
 
@@ -17,7 +17,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. OpenStreetMap imagery available
 * With over 250 amazing custom marker icons to choose from!
 * Aggregate all markers from your published content in one map - Marker Geo Mashup!
-* Dozens of configuration options to choose from
+* Dozens of configuration options to choose from, including marker clustering
 * Add end-user's current GPS location to the map! Useful for end-users that want to find directions from their current location to map's markers
 * Fully documented. If help tooltips are not enough, you can always refer to the full documentation about each of the settings
 * Shortcode builder available, which integrates with post/page editor.
@@ -90,6 +90,13 @@ You can use one of the following formats:<br />
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 9.0.19 =
+* Enhancement: Added marker clustering functionality
+* Enhancement: Corrections in French translation by Marcello Cavallucci
+* Cleanup: Changed the way map data is rendered on the client-side
+* Cleanup: Removed all JS alerts from the client-side in favor of console logging
+* Bug: marker list separator (pipe character |) was cleaned up too much
 
 = 9.0.18 =
 * Enhancement: Added ability to set styles to the generated maps: https://developers.google.com/maps/documentation/javascript/styling

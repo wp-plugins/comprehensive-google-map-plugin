@@ -200,9 +200,9 @@
                                 break;
                         }
                         if (msg != '') {
-                            var error = CGMPGlobal.kml.replace("[MSG]", msg);
+                            var error = CGMPGlobal.kml.replace("[TITLE]", "<b>Comprehensive Google Map Plugin</b><br /><br /><b>Google KML error:</b><br />");
+                            error = error.replace("[MSG]", msg);
                             error = error.replace("[STATUS]", kmlStatus);
-                            Errors.alertError(error);
                             Logger.error("Google returned KML error: " + msg + " (" + kmlStatus + ")");
                             Logger.error("KML file: " + kmlLayer.getUrl());
                         }
@@ -223,16 +223,19 @@
                 var markers, toValidateAddresses, badAddresses, defaultUnits, wasBuildAddressMarkersCalled, timeout, directionControlsBinded, googleMap, csvString, bubbleAutoPan, originalExtendedBounds, originalMapCenter, updatedZoom, mapDivId, geocoder, bounds, infowindow, streetViewService, directionsRenderer, directionsService;
                 var geolocationMarker = null;
                 var isGeoMashupSet = false;
+                var enablemarkerclustering = false;
                 var resetCacheRequired = false;
                 var geoMashupJsonData = [];
                 var nonGeoMashupJsonData = [];
+                var mapClickListener = {};
                 var init = function init(map, autoPan, units, mainJson) {
                     nonGeoMashupJsonData = mainJson;
                     googleMap = map;
                     mapDivId = googleMap.getDiv().id;
                     bubbleAutoPan = autoPan;
                     defaultUnits = units;
-                    google.maps.event.addListener(googleMap, 'click', function () {
+                    enablemarkerclustering = mainJson.enablemarkerclustering !== "false";
+                    mapClickListener = google.maps.event.addListener(googleMap, 'click', function () {
                         resetMap();
                     });
 
@@ -300,6 +303,33 @@
                         });
                     } else {
                         setBounds();
+
+                        if (enablemarkerclustering) {
+                            var doneClustering = false;
+                            var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+                            var script = document.createElement('script');
+                            script.type = 'text/javascript';
+                            script.src = "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js";
+                            script.onload = script.onreadystatechange = function () {
+                                if (!doneClustering && (!this.readyState || /loaded|complete/.test(script.readyState))) {
+                                    doneClustering = true;
+                                    //http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js
+
+                                    google.maps.event.removeListener(mapClickListener);
+                                    markerClusterer = new MarkerClusterer(googleMap, markers, {averageCenter: true, zoomOnClick: true});
+
+                                    // Handle memory leak in IE
+                                    script.onload = script.onreadystatechange = null;
+                                    if (head && script.parentNode) {
+                                        head.removeChild(script);
+                                    }
+                                    script = undefined;
+                                }
+                            };
+                            // Use insertBefore instead of appendChild  to circumvent an IE6 bug - die IE6, just die! A.Z.
+                            // head.insertBefore( script, head.firstChild );
+                            head.appendChild(script);
+                        }
 
                         if (resetCacheRequired) {
                             Logger.warn("Reset server map data cache required");
@@ -1393,11 +1423,9 @@
             }
 
             if (typeof google === "undefined" || !google) {
-                Errors.alertError(CGMPGlobal.msgNoGoogle);
                 Logger.fatal("We do not have reference to Google API. Aborting map generation ..");
                 return false;
             } else if (typeof GMap2 !== "undefined" && GMap2) {
-                Errors.alertError(CGMPGlobal.msgApiV2);
                 Logger.fatal("It looks like the webpage has reference to GMap2 object from Google API v2. Aborting map generation ..");
                 return false;
             }
@@ -1430,15 +1458,15 @@
                         if (CGMPGlobal.mapFillViewport) {
                             // Very basic mobile user agent detection
                             if (is_mobile_device()) {
-                                mapDiv.style.width = '99%';
+                                mapDiv.style.width = '100%';
                                 var viewPortHeight = $(window).height() + "";
 
                                 if (viewPortHeight.indexOf("px") != -1) {
                                     mapDiv.style.height = viewPortHeight;
                                 } else if (viewPortHeight.indexOf("%") != -1) {
-                                    mapDiv.style.height = "99%";
+                                    mapDiv.style.height = "100%";
                                 } else {
-                                    mapDiv.style.height = (viewPortHeight - 15) + "px";
+                                    mapDiv.style.height = viewPortHeight + "px";
                                 }
                             }
                         }
@@ -1500,7 +1528,7 @@
 
                             var isBuildAddressMarkersCalled = markerBuilder.isBuildAddressMarkersCalled();
                             if (!isBuildAddressMarkersCalled) {
-                                Errors.alertError(CGMPGlobal.msgMissingMarkers);
+                                Logger.fatal("No markers specified for the Google map..")
                             }
                         }
 
