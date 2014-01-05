@@ -1,4 +1,6 @@
-	<fieldset class="fieldset">
+
+    SHORTCODEBUILDER_FORM_TITLE
+    <fieldset class="fieldset">
 		<legend>Basic Settings</legend>
 		<table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
 			<tbody>
@@ -29,6 +31,24 @@
 			</tbody>
 		</table>
 	</fieldset>
+
+    <fieldset class="fieldset"  class="collapsible">
+        <legend>Map Styles</legend>
+        <table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
+            <tbody>
+                <tr>
+                    <td valign="top" class="first-td">
+                        Styled maps allow you to customize the presentation of the standard Google base maps, changing the visual display of such elements as roads, parks, and built-up areas. <br /><br />If you want to apply custom map styles, use the <a href='http://gmaps-samples-v3.googlecode.com/svn/trunk/styledmaps/wizard/index.html' target='_blank'>Styled Maps Wizard</a><br />(http://gmaps-samples-v3.googlecode.com/svn/trunk/styledmaps/wizard/index.html) to generate styles JSON. Once generated, copy the JSON (<b>DO NOT COPY</b> the sentence <i>"Google Maps API v3 Styled Maps JSON"</i>, but just the square brackets and including whats within) and paste in the text area
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="first-td">
+                        TEXTAREA_STYLES
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
 
 	<fieldset class="fieldset"  class="collapsible">
 		<legend>Map Controls</legend>
@@ -78,6 +98,29 @@
 						<span>
 							HIDDEN_ENABLEGEOLOCATIONMARKERHIDDEN
 							INPUT_ENABLEGEOLOCATIONMARKER&nbsp;LABEL_ENABLEGEOLOCATIONMARKER
+						</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </fieldset>
+
+    <fieldset class="fieldset">
+        <legend>Marker Clustering</legend>
+        <table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
+            <tbody>
+            <tr>
+                <td valign="top" class="first-td first-td-cell" align="left"></td>
+                <td valign="top" class="second-td" align="left"></td>
+                <td valign="top" class="third-td" align="left"></td>
+                <td valign="top" class="fourth-td" align="left"></td>
+            </tr>
+            <tr>
+                <td class="first-td-cell"><a id="tooltip-marker-gps-location" class="google-map-tooltip-marker" href="javascript:;" title="Some applications are required to display a large number of locations or markers. Naively plotting hundreds-to-thousands of markers on a map can quickly lead to a degraded user experience. Too many markers on the map cause both visual overload and sluggish interaction with the map. To overcome this poor performance, the information displayed on the map can be simplified by organizing markers into clusters">[Help?]</a></td>
+                <td align="left" colspan="3">
+						<span>
+							HIDDEN_ENABLEMARKERCLUSTERINGHIDDEN
+							INPUT_ENABLEMARKERCLUSTERING&nbsp;LABEL_ENABLEMARKERCLUSTERING
 						</span>
                 </td>
             </tr>
@@ -217,5 +260,6 @@
 		</table>
 	</fieldset>
 
+    SHORTCODEBUILDER_HTML_FORM
 
-    <div align="right"><span style="font-size: 9px;"><a href="admin.php?page=cgmp-documentation">Documentation</a> | <a target="_blank" href="https://www.paypal.com/cgi-bin/webscrinfocmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8">Donate</a></span></div>
+<div align="right"><span style="font-size: 10px;"><a href="admin.php?page=cgmp-documentation">Documentation</a> | <a target="_blank" href="http://goo.gl/yI5j6O">Donate</a></span></div>

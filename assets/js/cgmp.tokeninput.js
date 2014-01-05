@@ -32,9 +32,15 @@ var jQueryCgmp = jQuery.noConflict();
 					var value_arr = value.split(CGMPGlobal.sep);
 					var bubbleText = "<p style='padding-left: 50px'><i>No description provided</i> ..</p>";
 
-					if (value_arr[2] != null && value_arr[2] != '') {
-						bubbleText = "<p style='padding-left: 50px'><i>" + value_arr[2] + "</i></p>";
-					}
+                var description = value_arr[2];
+                if (value_arr[0] != null && value_arr[0] !== "") {
+                    value_arr[0] = value_arr[0].replace(new RegExp("\\|", "g"), " - ");
+                }
+                if (description != null && description !== "") {
+                    description = description.replace(new RegExp("\\[|\\]", "g"), "");
+                    description = description.replace(new RegExp("\\|", "g"), " - ");
+                    bubbleText = "<p style='padding-left: 50px'><i>" + description + "</i></p>";
+                }
 					
 					return "<li><img src='" + CGMPGlobal.customMarkersUri + value_arr[1] + 
 		"' border='0' style='float: left; margin-right: 8px;'><p><b>" + value_arr[0] + 
@@ -124,7 +130,8 @@ var jQueryCgmp = jQuery.noConflict();
 		    }
 			
 			function add_token(input_value) {
-				if (input_value != null && input_value != "") { 
+				if (input_value != null && input_value != "") {
+                    input_value = input_value.replace(new RegExp("\\|", "g"), " - ");
 					var token_data = {id: (saved_tokens.length + 1), value: input_value};
 					var exists = false;
             		token_list.children().each(function () {
