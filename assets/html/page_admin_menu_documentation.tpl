@@ -1,7 +1,7 @@
 <h2>Comprehensive Google Map by Alexander Zagniotov</h2>
 <div style="border: 1px solid #FFCC99; width: 70%; padding: 5px 15px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;">
-<p>This plugin is continuing to evolve because of contributions from users like you. Thank you. If you found this plugin useful, especially if you use it for commercial purposes, please consider making a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donation</a>. Your support helps me to spend more time on development and provide suberb customer service. Please check my other plugins at <a href="http://initbinder.com/plugins" target="_blank">InitBinder.com</a>.</p> 
-<p>Alternatively, you can write on your own blog about the plugin, join the <a href="http://www.facebook.com/pages/Comprehensive-Google-Map-Plugin/180316032076503" target="_blank">Comprehensive Google Map Fan Page</a> on Facebook, <a href="http://twitter.com/InitBinder" target="_blank">spread the word</a> about it on Twitter, <a href="http://wordpress.org/extend/plugins/comprehensive-google-map-plugin/" target="_blank">rate it</a> on Wordpress.org or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CWNZ5P4Z8RTQ8" target="_blank">donate</a>, thanks!</p>
+<p>This plugin is continuing to evolve because of contributions from users like you. Thank you. If you found this plugin useful, especially if you use it for commercial purposes, please consider making a <a href="http://goo.gl/yI5j6O" target="_blank">donation</a>. Your support helps me to spend more time on development and provide suberb customer service. Please check my other plugins at <a href="http://initbinder.com/plugins" target="_blank">InitBinder.com</a>.</p>
+<p>Alternatively, you can write on your own blog about the plugin, join the <a href="http://www.facebook.com/pages/Comprehensive-Google-Map-Plugin/180316032076503" target="_blank">Comprehensive Google Map Fan Page</a> on Facebook, <a href="http://twitter.com/InitBinder" target="_blank">spread the word</a> about it on Twitter, <a href="http://wordpress.org/extend/plugins/comprehensive-google-map-plugin/" target="_blank">rate it</a> on Wordpress.org or <a href="http://goo.gl/yI5j6O" target="_blank">donate</a>, thanks!</p>
 </div>
 <div class="tools-tabs">
 	<ul class="tools-tabs-nav hide-if-no-js">
@@ -9,10 +9,7 @@
 			<a title="Documentation" href="#documentation">Settings Explained</a>
 		</li>
 		<li class="">
-			<a title="Documentation" href="#shortcodedocs">Shortcode Explained</a>
-		</li>
-		<li class="">
-			<a title="FAQ" href="#faq">FAQ</a>
+			<a title="Shortcode Explained" href="#shortcodedocs">Shortcode Explained</a>
 		</li>
 
 		<li class="">
@@ -35,20 +32,19 @@
 			<h4>List of allowed values for the manual shortcode configuration</h4>
 			<p style="">
 				[google-map-v3<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;shortcodeid="<span class="italic">Very important its MUST be unique per shortcode, do not copy/paste! Make sure that it s a random string containing letters and numbers (length of 8-10 characters is enough)</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;addmarkerlist="<span class="italic">one or more full geo address strings or latitude/longitude seperated by comma. When providing multiple locations, they must be seperated by the  <span class="sep">|</span>  sign</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;addmarkermashup="<span class="italic">true <span class="sep">or</span> false. Marker mashup gets marker locations from your other posts that have map on them. Anything in 'addmarkerlist' property will be ignored.</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;addmarkermashupbubble="<span class="italic">true <span class="sep">or</span> false. The "true" - displays in the marker info bubble marker's original post title and a few words from excerpt, while "false" - displays in the marker info bubble marker's address and lat/long.</span>". This property should be used together with  <span class="italic">addmarkermashup</span>.<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;addresscontent="<span class="italic">full geo address string or latitude/longitude</span>" <span style="color: red;">(Deprecated, but supported for backwards compatibility. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />
                 &nbsp;&nbsp;&nbsp;&nbsp;animation="<span class="italic">DROP <span class="sep">or</span> BOUNCE</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;bubbleautopan="<span class="italic">true <span class="sep">or</span> false. The "true" - enables auto-pan, while "false" - disables auto-pan</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;directionhint="<span class="italic">true <span class="sep">or</span> false</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;distanceunits="<span class="italic">miles <span class="sep">or</span> km</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;draggable="<span class="italic">true <span class="sep">or</span> false</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;enablegeolocationmarker="<span class="italic">true <span class="sep">or</span> false. If selected, the generated map will add end-user's GPS current location and accuracy circle to a map upon end-user's confirmation. The end-user can choose not to disclose his current location. The GPS marker position is automatically updated as the end-user's position changes. Useful for users on mobile devices that want to find directions from their current location to map's marker or vice versa. Please note, this feature  will function in browsers supporting the W3C Geolocation API. This excludes Internet Explorer versions 8 and older.</span>"<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;enablemarkerclustering="<span class="italic">true <span class="sep">or</span> false. If selected, the marker information displayed on the map will be simplified by organizing markers into clusters.</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;height="<span class="italic">any positive numeric character, without decimal points</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;language="<span class="italic">Please choose one of the supported language codes from the v3 API from Google's <a target="_blank" href="https://spreadsheets.google.com/pub?key=p9pdwsai2hDMsLkXsoM05KQ&gid=1">spreadsheet</a></span>"<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;latitude="<span class="italic">any numeric character, between -90 and 90</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />
-                &nbsp;&nbsp;&nbsp;&nbsp;longitude="<span class="italic">any numeric character, between -180 and 180</span>" <span style="color: red;">(Deprecated. Do not use. Please use the <span class="italic">addmarkerlist</span> property instead)</span><br />
                 &nbsp;&nbsp;&nbsp;&nbsp;mapalign="<span class="italic">left <span class="sep">or</span> center <span class="sep">or</span> right</span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;maptype="<span class="italic">ROADMAP <span class="sep">or</span> SATELLITE <span class="sep">or</span> HYBRID <span class="sep">or</span> TERRAIN <span class="sep">or</span> OSM </span>"<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;maptypecontrol="<span class="italic">true <span class="sep">or</span> false</span>"<br />
@@ -70,21 +66,12 @@
 		</div>
 	</div>
 
-	<div class="tools-tab-body" id="faq" style="">
-		<div class="tools-tab-content">
-			<h3 class="hide-if-js">FAQ</h3>
-			<h4>Frequently Asked Questions</h4>
-			<h5>Coming soon!</h5>
-			<p>Please refer to FAQ on the Wordpress.org for now. Thank you for your patience</p>
-		</div>
-	</div>
-
 	<div class="tools-tab-body" id="contribute" style="">
 		<div class="tools-tab-content">
 			<h3 class="hide-if-js">Contribute</h3>
 			<h4>Supporting This Plugin</h4>
 			<p>If you’ve found some value in the features which Comprehensive Google Map provides for enhancing your site, and you'd like to say thanks, a direct contribution toward the development effort via PayPal is always welcome. Alternatively, you can write on your own blog about the plugin, like it on Facebook and/or spread the word about it on Twitter, thanks!</p>
-			<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CWNZ5P4Z8RTQ8"><img src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online." /></a>
+			<a target="_blank" href="http://goo.gl/yI5j6O"><img src="https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online." /></a>
 		</div>
 	</div>
 </div>
