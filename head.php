@@ -42,7 +42,8 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
                     $minified = "";
                 }
                 wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
-                wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'media', 'wp-ajax-response'), CGMP_VERSION, true);
+                //hotfix for WP4.0 wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'media', 'wp-ajax-response'), CGMP_VERSION, true);
+				wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'wp-ajax-response'), CGMP_VERSION, true);
             }
 
             if (cgmp_should_find_posts_scripts()) {
