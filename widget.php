@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2011  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 if ( !function_exists( 'add_action' ) ) {
 	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
 	exit;
@@ -27,7 +26,7 @@ class ComprehensiveGoogleMap_Widget extends WP_Widget {
         parent::__construct(
             'comprehensivegooglemap',
             __('AZ :: Google Map', CGMP_NAME),
-            array( 'classname' => 'comprehensivegooglemap_widget', 'description' => __("A simple and intuitive, yet elegant fully documented Google map plugin that installs as a widget and a short code. The plugin is packed with useful features. Widget and shortcode enabled. Offers extensive configuration options for marker, controls, size, KML files, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes and more.", CGMP_NAME)),
+            array( 'classname' => 'comprehensivegooglemap_widget', 'description' => __("Attention: the development and maintenance of the 'Comprehensive Google Map Plugin' has been discontinued! A switch to the mapping plugin 'Maps Marker Pro' is recommended!", CGMP_NAME)),
             array( 'width' => 570)
         );
     }

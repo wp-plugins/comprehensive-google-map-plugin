@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2011  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+if ( !function_exists( 'add_action' ) ) {
+	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
+	exit;
+}
 
 if ( !function_exists('cgmp_shortcode_googlemap_handler') ):
 	function cgmp_shortcode_googlemap_handler($attr, $content = null, $code = null) {

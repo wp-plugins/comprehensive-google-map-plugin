@@ -1,9 +1,8 @@
 === Comprehensive Google Map Plugin ===
 Contributors: alexanderzagniotov
-Donate link: http://goo.gl/yI5j6O
 Tags: google map, google map widget, jquery tabs, clustering, marker clustering, map styles, styling, google map styles, google map short code, google map short code, map widget, map short code, fully documented, marker, controls, size, KML, GPX, GeoRSS, location by latitude/longitude, location by address, info window, directions, traffic/bike lanes, cross browser, google maps v3, google, multiple markers, panoramio photos, marker icons, custom marker icons and text, geo, geo mashup, marker geo mashup, custom marker text, openstreetmap
 Requires at least: 3.6
-Tested up to: 3.8
+Tested up to: 4.0
 Stable tag: 9.0.20
 
 A simple and intuitive,  yet elegant and fully documented Google map plugin that installs as a widget and a short code.
@@ -12,8 +11,6 @@ A simple and intuitive,  yet elegant and fully documented Google map plugin that
 
 A simple and intuitive, yet elegant and fully documented Google map plugin that installs as a widget and a short code. No limited plugin editions or limited functionality! This is the full version of this free and premium plugin, which comes packed with useful features: 
 
-* Compatible with jQuery tabs! No more poorly rendered map on your site!
-* Compatible with W3 Total Cache, read the <a href="http://wordpress.org/support/topic/how-to-make-w3-total-cache-plugin-to-play-nicely-together">solution</a>
 * Intuitive and user friendly interface, which makes it very easy to configure Google map. No complex configuration options. OpenStreetMap imagery available
 * With over 250 amazing custom marker icons to choose from!
 * Aggregate all markers from your published content in one map - Marker Geo Mashup!
@@ -23,16 +20,13 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 * Shortcode builder available, which integrates with post/page editor.
 * Insert saved shortcodes directly to posts/pages
 * Widget enabled.
-
-If you liked the plugin, you can join the <a href="http://www.facebook.com/pages/Comprehensive-Google-Map-Plugin/180316032076503" target="_blank">Comprehensive Google Map Fan Page</a> on Facebook. 
- 
-
-Please note: 
-Although I try my best to release a bug-free code, one or two may slip through. It would be so cool and I would really appreciate it if you would report any bugs to me first at http://wordpress.org/plugins/comprehensive-google-map-plugin/, before reporting the plugin to be broken. I am quick to respond.
-Thanks!
+* Compatible with jQuery tabs! No more poorly rendered map on your site!
+* Compatible with W3 Total Cache, read the <a href="http://wordpress.org/support/topic/how-to-make-w3-total-cache-plugin-to-play-nicely-together">solution</a>
 
 Licenses:
 The plugin uses wonderful custom marker icons from the <a href="http://mapicons.nicolasmollet.com" target="_blank">Maps Icons Collection</a> <img src="http://mapicons.nicolasmollet.com/wp-content/uploads/2011/03/miclogo-88x31.gif" border="0" /> project by Nicolas Mollet.
+
+Please note: the official support and maintenance of this plugin has been discontinued. For more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>.
 
 == Contributors ==
 
@@ -48,8 +42,6 @@ Install this plugin by downloading and unzipping the ZIP archive into your plugi
 
 To use the widget, simply drag the 'AZ :: Google Map' widget into a sidebar. Please note, your theme has to be widget-enabled. To change the styles of the contact form, open style.css file in the plugin editor in Wordpress. The short code builder can be found under the post/page editor. To access documentation please find "Google Map" link, under the "Settings" in your Wordpress admin panel.
 
-Do you have a question or a feature request? Sure, drop me a line here: http://initbinder.com/comprehensive-google-map-plugin
-
 == Frequently Asked Questions ==
 
 1. Where can I find the short code builder?<br />
@@ -64,13 +56,10 @@ Yes
 4. Where is plugin documentation?<br />
 After plugin activation, look at the left hand side menu of WP admin, look for "Google Map" item
 
-5. Where to find my saved shortcode?<br />
-Look for little map icon in post/page WYSIWYG editor
-
-6. Do I lose my saved shortcodes after plugin update?<br />
+5. Do I lose my saved shortcodes after plugin update?<br />
 No, they will still be there
 
-7. Whats the correct way to define coordinates?
+6. Whats the correct way to define coordinates?
 You can use one of the following formats:<br />
 [a] N43°38 19.39, W116°14 28.86 (Please note: single quote or apostrophe has been replaced with SPACE and no double quotes)<br />
 [b] 43°38 19.39N, 116°14 28.86W<br />
@@ -90,6 +79,13 @@ You can use one of the following formats:<br />
 9. When having marker Geo mashup, you can display in the info bubble marker's original post and post content excerpt instead of normally address and lat/long
 
 == Changelog ==
+
+= 9.1 =
+* last official release - development & maintenance has been continued - for more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>
+* Bug: edit screen/media editor was broken in WordPress 4.0
+* Enhancement: Maps Marker Pro plugin installer
+* Enhancement: function to convert maps for Maps Marker Pro
+* Enhancement: added Afrikaans translation thanks to Johnny Dunhin
 
 = 9.0.20 =
 * Bug: PHP warnings
@@ -621,5 +617,4 @@ You can use one of the following formats:<br />
 * Initial release
 
 == Upgrade Notice ==
-
-Remove the old version of the plugin and install the most recent one. No additional configuration is required.
+* last official release - development & maintenance has been continued, for more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>

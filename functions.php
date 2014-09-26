@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2011-2013  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if ( !function_exists( 'add_action' ) ) {
+	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
+	exit;
+}
   
 if ( !function_exists('cgmp_draw_map_placeholder') ):
 		function cgmp_draw_map_placeholder($id, $width, $height, $align, $hint, $poweredby) {
@@ -161,29 +165,31 @@ if ( !function_exists('cgmp_load_plugin_textdomain') ):
 	}
 endif;
 
-if ( !function_exists('cgmp_register_mce') ):
-    function cgmp_register_mce() {
-        if ( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
-            add_filter('mce_external_plugins', 'cgmp_load_button_js_into_mce_editor');
-            add_filter('mce_buttons', 'cgmp_load_button_into_mce_editor');
-        }
-    }
-endif;
+global $wp_version;
+if (version_compare($wp_version,"3.9","<")){
+	if ( !function_exists('cgmp_register_mce') ):
+		function cgmp_register_mce() {
+			if ( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
+				add_filter('mce_external_plugins', 'cgmp_load_button_js_into_mce_editor');
+				add_filter('mce_buttons', 'cgmp_load_button_into_mce_editor');
+			}
+		}
+	endif;
 
-if ( !function_exists('cgmp_load_button_js_into_mce_editor') ):
-    function cgmp_load_button_js_into_mce_editor($plugin_array) {
-        $plugin_array['shortcode'] = CGMP_PLUGIN_JS.'/cgmp.mce.js';
-        return $plugin_array;
-    }
-endif;
-
-if ( !function_exists('cgmp_load_button_into_mce_editor') ):
-    function cgmp_load_button_into_mce_editor($buttons) {
-        array_push($buttons, "shortcode");
-        return $buttons;
-    }
-endif;
-
+	if ( !function_exists('cgmp_load_button_js_into_mce_editor') ):
+		function cgmp_load_button_js_into_mce_editor($plugin_array) {
+			$plugin_array['shortcode'] = CGMP_PLUGIN_JS.'/cgmp.mce.js';
+			return $plugin_array;
+		}
+	endif;
+	
+	if ( !function_exists('cgmp_load_button_into_mce_editor') ):
+		function cgmp_load_button_into_mce_editor($buttons) {
+			array_push($buttons, "shortcode");
+			return $buttons;
+		}
+	endif;
+}
 
 if ( !function_exists('cgmp_ajax_cache_map_action_callback') ):
     function cgmp_ajax_cache_map_action_callback() {
@@ -670,21 +676,18 @@ function cgmp_google_map_deregister_scripts() {
 }
 endif;
 
-
 if ( !function_exists('cgmp_plugin_row_meta') ):
 	function cgmp_plugin_row_meta($links, $file) {
-		$plugin =  plugin_basename(CGMP_PLUGIN_BOOTSTRAP);
-
-		if ($file == $plugin) {
-
-			$links = array_merge( $links,
-				array( sprintf( '<img style="float: left; margin-top: 1px; margin-left: 2px; margin-right: 4px" src="%s" border="0" valign="middle" /><a href="admin.php?page=cgmp-settings">%s</a>', CGMP_PLUGIN_IMAGES .'/google_map.png', __('Settings',CGMP_NAME) ) ),
-				array( sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Docs',CGMP_NAME) ) ),
-				array( '<a href="http://goo.gl/yI5j6O" target="_blank">' . __('Donate') . '</a>' )
-			);
+		$cgmp_options = get_option('cgmp_options');
+		if ($cgmp_options['plugin_notice'] == 'show') {		
+			$plugin =  plugin_basename(CGMP_PLUGIN_BOOTSTRAP);
+			if ($file == $plugin) {
+				$note = sprintf('<br/></td></tr><tr><td colspan="3" style="border-bottom:1px solid #ccc;padding:0;"><div style="padding: 3px 5px;background-color: #FFEBE8;border: 1px solid #CC0000;color: #333;"><div style="float:right;padding-top:10px;"><a href="admin.php?page=cgmp_info&plugin_notice=hide">hide message</a></div><strong>Attention: the development and maintenance of the "Comprehensive Google Map Plugin" has been discontinued!</strong><br/>A switch to the mapping plugin "Maps Marker Pro" is recommended - <a href="admin.php?page=cgmp_info">please click here for more information</a></div>', 'xxx' );
+				$links[] = $note;
+			}
+			return $links;
 		}
-		return $links;
-}
+	}
 endif;
 
 if ( !function_exists('cgmp_plugin_action_links') ):
@@ -692,9 +695,7 @@ if ( !function_exists('cgmp_plugin_action_links') ):
         $plugin =  plugin_basename(CGMP_PLUGIN_BOOTSTRAP);
         if ($file == $plugin) {
             $settings_link = sprintf( '<a href="admin.php?page=cgmp-settings">%s</a>', __('Settings',CGMP_NAME) );
-            $docs_link = sprintf( '<a href="admin.php?page=cgmp-documentation">%s</a>', __('Docs',CGMP_NAME) );
-            //$shortcodes_link = sprintf( '<a href="admin.php?page=cgmp-shortcodebuilder">%s</a>', __('Shortcodes',CGMP_NAME) );
-            array_unshift($links, $settings_link, $docs_link);
+            array_unshift($links, $settings_link);
         }
         return $links;
     }
@@ -767,33 +768,6 @@ if ( !function_exists('cgmp_on_activate_hook') ):
         update_option(CGMP_INITIAL_WARNING, 1);
     }
 endif;
-
-if ( !function_exists('cgmp_show_initial_warning_message') ):
-    function cgmp_show_initial_warning_message()  {
-        $conter = get_option(CGMP_INITIAL_WARNING);
-        global $pagenow;
-        if (isset($_GET['activate']) && $_GET['activate'] == "true" && $pagenow == "plugins.php" && $conter < 2) {
-           ob_start();
-            ?>
-            <div id="message" class="updated">
-                <p>
-                    <strong>One-time Warning</strong> from <strong>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?>:</strong>
-                </p>
-                <p>
-                    <strong>Please be mindful:</strong><br />
-                    In order for <b>Comprehensive Google Map Plugin v<?php echo CGMP_VERSION; ?></b> to function without issues, it requires <b>one of the</b> following:<br /><br />
-                    <b>[a]</b> Your blog has to use jQuery 1.9+ <br />
-                    <b>[b]</b> If your blog uses an older version of jQuery, make sure it is used in conjunction with jQuery Migrate plugin
-                </p>
-                <p>If <b>[a]</b> nor <b>[b]</b> are true, it will result in broken plugin. Just give it a try and see. In any case, <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin" target="_blank">support forum</a> is available to you.</p>
-            </div>
-            <?php
-            update_option(CGMP_INITIAL_WARNING, 2);
-            echo ob_get_clean();
-        }
-    }
-endif;
-
 
 if ( !function_exists('cgmp_clear_cached_map_data') ):
     function cgmp_clear_cached_map_data($prefix_constant)  {

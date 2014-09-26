@@ -1,7 +1,6 @@
 <?php
-
 /*
-Copyright (C) 2011  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,13 +15,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if ( !function_exists( 'add_action' ) ) {
+	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
+	exit;
+}
 
 add_action('admin_menu', 'cgmp_google_map_meta_boxes');
 
 if ( !function_exists('cgmp_google_map_meta_boxes') ):
 function cgmp_google_map_meta_boxes() {
 		$id = "google_map_shortcode_builder";
-		$title = "AZ :: Google Map Shortcode Builder"; 
+		$cgmp_options = get_option('cgmp_options');
+		if ($cgmp_options['metabox_notice'] == 'show') {
+			$title = 'AZ :: Google Map Shortcode Builder<div style="padding:2px 2px 2px 4px;background:#F99755;color:#000;"><div style="float:right;margin-top:9px;"><a href="admin.php?page=cgmp_info&metabox_notice=hide" style="font-size:1em;">hide message</a></div><strong>Attention: the development and maintenance of the "Comprehensive Google Map Plugin" has been discontinued!</strong><br/>A switch to the mapping plugin "Maps Marker Pro" is recommended - <a href="admin.php?page=cgmp_info" style="font-size:1em;">please click here for more information</a></div>';
+		} else {
+			$title = 'AZ :: Google Map Shortcode Builder';
+		}
 		$context = "normal";
 
       $setting_builder_location = get_option(CGMP_DB_SETTINGS_BUILDER_LOCATION);

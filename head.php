@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2011  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if ( !function_exists( 'add_action' ) ) {
+	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
+	exit;
+}
 
 if ( !function_exists('cgmp_enqueue_head_scripts') ):
         function cgmp_enqueue_head_scripts()  {
@@ -30,7 +34,6 @@ if ( !function_exists('cgmp_google_map_admin_add_style') ):
 endif;
 
 
-
 if ( !function_exists('cgmp_google_map_admin_add_script') ):
 		function cgmp_google_map_admin_add_script()  {
 
@@ -42,7 +45,9 @@ if ( !function_exists('cgmp_google_map_admin_add_script') ):
                     $minified = "";
                 }
                 wp_enqueue_script('cgmp-jquery-tokeninput', CGMP_PLUGIN_JS. '/cgmp.tokeninput'.$minified.'.js', array('jquery'), CGMP_VERSION, true);
-                //hotfix for WP4.0 wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'media', 'wp-ajax-response'), CGMP_VERSION, true);
+                /* temp fix - will probably be fixed with https://core.trac.wordpress.org/ticket/29520#comment:17
+				wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'media', 'wp-ajax-response'), CGMP_VERSION, true);
+				*/
 				wp_enqueue_script('comprehensive-google-map-plugin', CGMP_PLUGIN_JS. '/cgmp.admin'.$minified.'.js', array('jquery', 'wp-ajax-response'), CGMP_VERSION, true);
             }
 

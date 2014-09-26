@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2011  Alexander Zagniotov
+Copyright (C) 2011-08/2014  Alexander Zagniotov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if ( !function_exists( 'add_action' ) ) {
+	echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
+	exit;
+}
 
 if ( !function_exists('cgmp_google_map_plugin_menu') ):
       function cgmp_google_map_plugin_menu() {
@@ -30,9 +34,27 @@ if ( !function_exists('cgmp_google_map_plugin_menu') ):
             $hook = add_submenu_page(CGMP_HOOK, 'Saved Shortcodes', 'Saved Shortcodes', 'activate_plugins', 'cgmp-saved-shortcodes', 'cgmp_saved_shortcodes_callback' );
             add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 
-            $hook = add_submenu_page(CGMP_HOOK, 'Settings & Support', 'Settings & Support', 'activate_plugins', 'cgmp-settings', 'cgmp_settings_callback' );
+            $hook = add_submenu_page(CGMP_HOOK, 'Settings', 'Settings', 'activate_plugins', 'cgmp-settings', 'cgmp_settings_callback' );
+		   	add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+
+            $hook = add_submenu_page(CGMP_HOOK, 'Notice of discontinuation', '<div style="background:#F99755;color:#000;padding:2px;line-height:1.2em;text-align:center;">Notice of plugin discontinuation</div>', 'activate_plugins', 'cgmp_info', 'cgmp_info_callback');
+		   	add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
+
+            $hook = add_submenu_page(CGMP_HOOK, 'Transfer maps to Maps Marker Pro', '<div style="background:#F99755;color:#000;padding:2px;line-height:1.2em;text-align:center;">Transfer maps to Maps Marker Pro</div>', 'activate_plugins', 'cgmp_export', 'cgmp_export_callback');
 		   	add_action('admin_print_scripts-'.$hook, 'cgmp_google_map_tab_script');
 	  }
+endif;
+
+if ( !function_exists('cgmp_export_callback') ):
+	function cgmp_export_callback() {
+		include('cgmp-export.php');
+	}
+endif;
+
+if ( !function_exists('cgmp_info_callback') ):
+	function cgmp_info_callback() {
+		include('info.php');
+	}
 endif;
 
 if ( !function_exists('cgmp_settings_callback') ):
@@ -97,8 +119,6 @@ function cgmp_generate_support_data() {
 
     $plugin_names = scandir(CGMP_PLUGIN_DIR."/..");
     $plugin_names = array_flip($plugin_names);
-
-    //echo "aaaaa: " . print_r($GLOBALS, true);
 
     return
     "<h4>Environment</h4>"
@@ -221,7 +241,7 @@ if ( !function_exists('cgmp_shortcodebuilder_callback') ):
             update_option(CGMP_PERSISTED_SHORTCODES, json_encode($shortcodes));
 
             cgmp_show_message("Shortcode save successfully!");
-            cgmp_show_message("Look for the map icon&nbsp;<img src='".CGMP_PLUGIN_IMAGES."/google_map.png' border='0' valign='middle' />&nbsp;in WordPress page/post WYSIWYG editor or check <a href='admin.php?page=cgmp-saved-shortcodes'>Saved Shortcodes</a> page");
+            //cgmp_show_message("Look for the map icon&nbsp;<img src='".CGMP_PLUGIN_IMAGES."/google_map.png' border='0' valign='middle' />&nbsp;in WordPress page/post WYSIWYG editor or check <a href='admin.php?page=cgmp-saved-shortcodes'>Saved Shortcodes</a> page");
         }
 
         $settings = array();
@@ -269,7 +289,7 @@ if ( !function_exists('cgmp_saved_shortcodes_callback') ):
 
         $template_values = array();
         $template_values["CGMP_PLUGIN_IMAGES"] = CGMP_PLUGIN_IMAGES;
-        $template_values["SAVED_SHORTCODES_TOKEN"] = "No shortcodes found in the database. Would you like to <a href='admin.php?page=cgmp-shortcodebuilder'>create some</a>?";
+        $template_values["SAVED_SHORTCODES_TOKEN"] = "No shortcodes found in the database.";
 
         $persisted_shortcodes_json = get_option(CGMP_PERSISTED_SHORTCODES);
         if (isset($persisted_shortcodes_json) && trim($persisted_shortcodes_json) != "") {
@@ -284,8 +304,10 @@ if ( !function_exists('cgmp_saved_shortcodes_callback') ):
 
                         $content .= "<div style='line-height: 15px; min-height: 20px; height: 20px; width: 70%; padding: 0; margin: 0'>";
                         $content .= "Title: <span style='color: green;'><b>".$shortcode['title']."</b></span>";
-                        $content .= "&nbsp;&nbsp;&nbsp;";
+                        /* broken with WP 4.0
+						$content .= "&nbsp;&nbsp;&nbsp;";
                         $content .= "<a id='".$shortcode['title']."' href='javascript:void(0)' class='insert-shortcode-to-post'>[insert to post]</a>";
+						*/
                         $content .= "&nbsp;&nbsp;&nbsp;";
                         $content .= "<a href='javascript:void(0)' onclick='return confirmShortcodeDelete(\"admin.php?page=cgmp-saved-shortcodes&delete_shortcode=".$shortcode['title']."\", \"".$shortcode['title']."\");'>";
                         $content .= "<img src='".CGMP_PLUGIN_IMAGES."/close.png' border='0' valign='middle' /></a>";

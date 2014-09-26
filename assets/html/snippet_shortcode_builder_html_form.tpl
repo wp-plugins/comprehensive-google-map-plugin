@@ -1,5 +1,6 @@
 
     SHORTCODEBUILDER_FORM_TITLE
+	
     <fieldset class="fieldset">
 		<legend>Basic Settings</legend>
 		<table class="cgmp-widget-table" cellspacing="0" cellpadding="0" border="0">
@@ -262,4 +263,4 @@
 
     SHORTCODEBUILDER_HTML_FORM
 
-<div align="right"><span style="font-size: 10px;"><a href="admin.php?page=cgmp-documentation">Documentation</a> | <a target="_blank" href="http://goo.gl/yI5j6O">Donate</a></span></div>
+<div align="right"><span style="font-size: 10px;"><a href="admin.php?page=cgmp-documentation">Documentation</a></span></div>

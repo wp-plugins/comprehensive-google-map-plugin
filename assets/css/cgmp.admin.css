@@ -45,7 +45,7 @@ div#menu_content_content_shortcode_menu .mceText {text-align: right !important}
 .uiCloseButtonSmall:active{background-position:left -36px}
 ul.tools-tabs-nav{margin-bottom:5px;padding-left:4.2em;padding-right:3.5em;padding-top:3.1em;white-space:nowrap}
 ul.tools-tabs-nav {*margin-bottom: 1px !important; margin-bottom: 1px\0/ !important; margin-bottom: 1px\9 !important;}
-@-moz-document url-prefix() {ul.tools-tabs-nav {margin-bottom: -1px;}}
+@-moz-document url-prefix() {ul.tools-tabs-nav {/*RH margin-bottom: -1px;*/}}
 @media not all and (-webkit-min-device-pixel-ratio:0) {ul.tools-tabs-nav {margin-bottom: 0px;}}
 ul.tools-tabs-nav li{-moz-border-radius-topleft:6px;-moz-border-radius-topright:6px;-webkit-border-top-left-radius:6px;-webkit-border-top-right-radius:6px;background:none repeat scroll 0 0 #F8F8F8;border:1px solid #C0C0C0;border-top-left-radius:6px;border-top-right-radius:6px;display:inline-block;font-weight:700;margin:0 0.2em 0 0;max-width:20%;/*overflow:hidden;*/text-align:center;text-shadow:0 1px 0 #FFF}
 @media not all and (-webkit-min-device-pixel-ratio:0) {ul.tools-tabs-nav li {margin: 0px 0.2em -1px 0px;}}
@@ -75,16 +75,6 @@ fieldset.fieldset table input.marker-text-details,div.shortcodebuilder fieldset.
 .cgmp-popup-shortcode-dialog .save-dialog:active,.cgmp-popup-shortcode-dialog .save-dialog:focus:active,.cgmp-popup-shortcode-dialog .save-dialog.focus:active{background-color:#B0281A;background-image:0;border:1px solid #992A1B;box-shadow:0 1px 2px rgba(0, 0, 0, 0.3) inset}
 #wp-admin-bar-cgmp > .ab-item .ab-icon:before {content: url('images/google_map.png');}
 #wp-admin-bar-new-content #wp-admin-bar-cgmp-admin-bar-menu-new-shortcode > .ab-item .ab-icon:before {content: url('images/google_map.png');}
-#comprehensive-google-map-plugin .plugin-version-author-uri {
-    background-color: #EAEAEA;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 8px 6px -6px black;
-    color: #111111;
-    font-weight: bold;
-    margin-bottom: 10px;
-    min-height: 16px;
-    padding: 5px;
-}
 .cgmp-styles-textarea {
     margin-top: 12px !important;
     -moz-border-radius: 4px;
