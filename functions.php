@@ -684,10 +684,10 @@ if ( !function_exists('cgmp_plugin_row_meta') ):
 			if ($file == $plugin) {
 				$note = sprintf('<br/></td></tr><tr><td colspan="3" style="border-bottom:1px solid #ccc;padding:0;"><div style="padding: 3px 5px;background-color: #FFEBE8;border: 1px solid #CC0000;color: #333;"><div style="float:right;padding-top:10px;"><a href="admin.php?page=cgmp_info&plugin_notice=hide">hide message</a></div><strong>Attention: the development and maintenance of the "Comprehensive Google Map Plugin" has been discontinued!</strong><br/>A switch to the mapping plugin "Maps Marker Pro" is recommended - <a href="admin.php?page=cgmp_info">please click here for more information</a></div>', 'xxx' );
 				$links[] = $note;
-			}
-			return $links;
 		}
 	}
+	return $links;
+}
 endif;
 
 if ( !function_exists('cgmp_plugin_action_links') ):

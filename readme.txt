@@ -26,7 +26,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 Licenses:
 The plugin uses wonderful custom marker icons from the <a href="http://mapicons.nicolasmollet.com" target="_blank">Maps Icons Collection</a> <img src="http://mapicons.nicolasmollet.com/wp-content/uploads/2011/03/miclogo-88x31.gif" border="0" /> project by Nicolas Mollet.
 
-Please note: the official support and maintenance of this plugin has been discontinued. For more details and recommendations please <a href="https://wordpress.org/support/topic/notice-about-plugin-discontinuation-future-recommendations?replies=1">visit the support forum</a>.
+Please note: the official support and maintenance of this plugin has been discontinued. For more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>.
 
 == Contributors ==
 
@@ -80,12 +80,13 @@ You can use one of the following formats:<br />
 
 == Changelog ==
 
-= 9.1 =
+= 9.1.1 =
 * last official release - development & maintenance has been continued - for more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>
 * Bug: edit screen/media editor was broken in WordPress 4.0
 * Enhancement: Maps Marker Pro plugin installer
 * Enhancement: function to convert maps for Maps Marker Pro
 * Enhancement: added Afrikaans translation thanks to Johnny Dunhin
+* Bug: broken all plugin list items (thx kitchin!)
 
 = 9.0.20 =
 * Bug: PHP warnings
