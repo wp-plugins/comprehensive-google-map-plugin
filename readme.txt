@@ -26,7 +26,7 @@ A simple and intuitive, yet elegant and fully documented Google map plugin that 
 Licenses:
 The plugin uses wonderful custom marker icons from the <a href="http://mapicons.nicolasmollet.com" target="_blank">Maps Icons Collection</a> <img src="http://mapicons.nicolasmollet.com/wp-content/uploads/2011/03/miclogo-88x31.gif" border="0" /> project by Nicolas Mollet.
 
-Please note: the official support and maintenance of this plugin has been discontinued. For more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>.
+Please note: the official support and maintenance of this plugin has been discontinued. For more details and recommendations please <a href="https://wordpress.org/support/topic/notice-about-plugin-discontinuation-future-recommendations?replies=1">visit the support forum</a>.
 
 == Contributors ==
 
