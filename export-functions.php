@@ -116,10 +116,13 @@ if (!function_exists('cgmp_get_posts_shortcodes')):
                         }
                         $shortcodes[$i]['attributes'] = shortcode_parse_atts($match[0]);
                         $shortcodes[$i]['post_id'] = $post->ID;
-                        $saved_shortcode_exist = array_search(cgmp_remove_shortcodeid($match[0]), array_map('cgmp_remove_shortcodeid', $saved_shortcodes));
-                        if ($saved_shortcode_exist !== FALSE) {
-                            unset($saved_shortcodes[$saved_shortcode_exist]);
+                        if($saved_shortcodes != NULL){
+                                $saved_shortcode_exist = array_search(cgmp_remove_shortcodeid($match[0]), array_map('cgmp_remove_shortcodeid', $saved_shortcodes));
+                            if ($saved_shortcode_exist !== FALSE) {
+                                unset($saved_shortcodes[$saved_shortcode_exist]);
+                            }
                         }
+                        
                         $i++;
                     }
                 }
@@ -219,11 +222,13 @@ if (!function_exists('cgmp_get_posts_shortcodes')):
                     $shortcodes[$i]['widget_id'] = $w_key;
                     $shortcodes[$i]['widget_type'] = 'comprehensivegooglemap';
                     $shortcodes[$i]['widget_title'] = $widget['title'];
-                    
-                    $saved_shortcode_exist = array_search($shortcode, $saved_shortcodes);
-                    if ($saved_shortcode_exist !== FALSE) {
-                        unset($saved_shortcodes[$saved_shortcode_exist]);
+                    if( $saved_shortcodes != NULL){
+                         $saved_shortcode_exist = array_search($shortcode, $saved_shortcodes);
+                            if ($saved_shortcode_exist !== FALSE) {
+                                unset($saved_shortcodes[$saved_shortcode_exist]);
+                            }
                     }
+                   
                     
                     $i++;
                 }
@@ -312,11 +317,13 @@ if (!function_exists('cgmp_get_posts_shortcodes')):
                     $shortcodes[$i]['widget_type'] = 'text';
                     $shortcodes[$i]['widget_id'] = $key;
                     $shortcodes[$i]['widget_title'] = $widget['title'];
-                    
-                    $saved_shortcode_exist = array_search($matches[0], $saved_shortcodes);
-                    if ($saved_shortcode_exist !== FALSE) {
-                        unset($saved_shortcodes[$saved_shortcode_exist]);
+                    if($saved_shortcodes != NULL){
+                        $saved_shortcode_exist = array_search($matches[0], $saved_shortcodes);
+                        if ($saved_shortcode_exist !== FALSE) {
+                            unset($saved_shortcodes[$saved_shortcode_exist]);
+                        }
                     }
+                    
                     
                     $i++;
                 endif;
@@ -1169,11 +1176,16 @@ endif;
 if (!function_exists('cgmp_get_saved_shortcodes')):
     function cgmp_get_saved_shortcodes() {
         $saved_shortcodes = get_option('cgmp_persisted_shortcodes');
+         if( $saved_shortcodes === FALSE) return NULL;
         $saved_shortcodes = json_decode(stripslashes($saved_shortcodes), TRUE);
         $extracted_codes = array();
-        foreach ($saved_shortcodes as $key => $shortcode) {
-            array_push($extracted_codes, $shortcode['code']);
-        }
+        if( is_array($saved_shortcodes)){
+
+
+            foreach ($saved_shortcodes as $key => $shortcode) {
+                array_push($extracted_codes, $shortcode['code']);
+            }
+         }
         return $extracted_codes;
     }
 endif;

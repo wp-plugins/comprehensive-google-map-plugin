@@ -80,13 +80,14 @@ You can use one of the following formats:<br />
 
 == Changelog ==
 
-= 9.1.1 =
+= 9.1.2 =
 * last official release - development & maintenance has been continued - for more details and recommendations please <a href="http://wordpress.org/support/plugin/comprehensive-google-map-plugin">visit the support forum</a>
 * Bug: edit screen/media editor was broken in WordPress 4.0
 * Enhancement: Maps Marker Pro plugin installer
 * Enhancement: function to convert maps for Maps Marker Pro
 * Enhancement: added Afrikaans translation thanks to Johnny Dunhin
 * Bug: broken all plugin list items (thx kitchin!)
+* Bug: transfer feature did not work on special setups
 
 = 9.0.20 =
 * Bug: PHP warnings

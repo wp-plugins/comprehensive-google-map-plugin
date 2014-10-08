@@ -43,7 +43,8 @@ if (!function_exists('add_action')) {
     echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
     exit;
 }
-define('MMP_API_URL', WP_CONTENT_URL . '/plugins/leaflet-maps-marker-pro/leaflet-api.php');
+
+define('MMP_API_URL', get_option('siteurl') . '/wp-content' . '/plugins/leaflet-maps-marker-pro/leaflet-api.php');
 require 'lib/spherical-geometry.class.php';
 require ('export-functions.php');
 
