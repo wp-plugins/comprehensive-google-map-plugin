@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+@ini_set('memory_limit', '96M');
 if(isset($_POST['cgmp-reset-export'])):
     global $wpdb;
      $shortcodes =  get_transient('cgmp_layers_markers_export');
