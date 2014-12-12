@@ -7,7 +7,7 @@ if (!function_exists('cgmp_get_posts_shortcodes')):
         
         
         $saved_shortcodes = cgmp_get_saved_shortcodes();
-        $args = array('post_type' => get_post_types(array('public' => true)), 's' => '[google-map-v3', 'post_status' => 'any');
+		$args = array('post_type' => get_post_types(array('public' => true)),'posts_per_page'=>-1, 's' => '[google-map-v3', 'post_status' => 'any');
         
         $posts = get_posts($args);
         
