@@ -1,6 +1,8 @@
 <p>
 For a tutorial and more information on how to transfer your maps from "Comprehensive Google Map Plugin" to "Maps Marker Pro", please visit <a href="https://www.mapsmarker.com/cgmp-transfer" target="_blank">https://www.mapsmarker.com/cgmp-transfer</a>.
 <br/><br/>
+<strong>Important: although the transfer mechanism has been tested thoroughly and is being used successfully since its first release, we suggest making a full database backup before finishing the transfer (clicking step 2/2), just in case any special issue arises. Once the transfer is finished, the CGMP shortcodes could only be restored from that backup!</strong>
+<br/><br/>
 To start the transfer, please click the button <strong>step 1/2: create "Maps Marker Pro" maps</strong> below, which will create the according maps within your Maps Marker Pro installation.
 <br/>
 After that step it is advised to review those maps. With step 2/2 you can then automatically replace all existing CGMP shortcodes with the new "Maps Marker Pro" shortcodes.<br/>
